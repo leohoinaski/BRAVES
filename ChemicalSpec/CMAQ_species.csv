@@ -1,0 +1,63 @@
+ID,Formula,Description
+ACET,C3H6O,
+ACROLEIN,C3H4O,
+ALD2,C2H4O,
+ALD2_PRIMARY,C2H4O,acetaldehyde from emissions only
+ALDX,ALDX,aldehydes with 3 or more carbons
+BENZ,C6H6,
+BUTADIENE13,C4H6,
+CH4,CH4,
+CH4_INV,CH4,
+CL2,CL2,molecular chlorine
+CO,CO,
+CO2_INV,CO2,
+ETH,C2H4,
+ETHA,C2H6,
+ETHY,C2H2,
+ETOH,C2H6O,
+FORM,CH2O,
+FORM_PRIMARY,CH2O,
+HCL,HCL,
+HONO,HNO2,
+IOLE,IOLE,
+ISO,C5H8,
+KET,KET,
+MEOH,CH4O,
+N2O_INV,N2O,
+NAPH,C10H8,
+NH3,NH3,
+NH3_FERT,NH3,
+NO,NO,
+NO2,NO2,
+NVOL,NVOL,non‐volatilespecies
+OLE,OLE,terminal alkene bond
+PAL,Al,aluminum
+PAR,PAR,carbon-carbon single bond
+PCA,Ca,calcium
+PCL,Cl,chloride
+PEC,C,Elemental carbon
+PFE,Fe,iron
+PH2O,PH2O,water
+PK,K,potassium
+PMC,PM10,Coarse mode primary PM 
+PMG,Mg,magnesium
+PMN,Mn,manganese
+PMOTHR,PMOTHR,Unspeciated PM2.5
+PNA,Na,Fine mode sodium 
+PNCOM,PNCOM,non-­‐carbon organic matter
+PNH4,H4N,ammonium
+PNO3,NO3,nitrate
+POC,OC,Organic carbon
+PRPA,C3H8,propane
+PSI,Si,silica
+PSO4,O4S,sulfate
+PTI,Ti,titanium
+SO2,SO2,
+SOAALK,SOAALK,tracer for alkanes that can form secondary organic aerosol
+SULF,H2SO4,sulfuric acid (gaseous)
+TERP,C10H16,monoterpenes
+TOL,C7H8,toluene and other monoalkyl aromatics
+UNK,UNK,
+UNR,UNR,"Unreactivecarbongroups(e.g.,halogenatedcarbons)"
+VOC_INV,VOC,
+XYLMN,C8H10,xylene and other polyalkyl aromatics except naphthalene
