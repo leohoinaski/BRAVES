@@ -46,7 +46,8 @@ OUTPUTS:
 REQUIRED DATA:
 
 	You can download the openstreetmaps files and BRAVES outputs data 
-	at: 
+	at: https://arquivos.ufsc.br/d/c04a184981a94dab87e9/ and 
+	https://arquivos.ufsc.br/d/7f126a12c9f04b228031/
 
 	The folders "Shapefiles" and BRAVESoutputs must be in the same 
 	directory as the BRAVESdatabase_main.py. You should keep this 
