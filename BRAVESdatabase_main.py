@@ -71,7 +71,8 @@ Author: Leonardo Hoinaski - leonardo.hoinaski@ufsc.br
 
 -------------------------------------------------------------------------------
 """
-from roadDensity_v1 import roadDensity
+#from roadDensity_v1 import roadDensity
+from parallelRoadDensity_v1 import roadDensity
 from roadEmiss_v1 import roadEmiss
 from mergeRoadEmiss_v1 import mergeRoadEmiss
 from BRAVES2netCDF_v1 import BRAVES2netCDF
@@ -115,9 +116,9 @@ loni = -54 #loni = int(round(bound.minx)) # Initial longitude (lower-left)
 
 lonf = -47 #lonf = int(round(bound.maxx)) # Final longitude (upper-right)
 
-deltaX = 0.01 # Grid resolution/spacing in x direction
+deltaX = 0.05 # Grid resolution/spacing in x direction
 
-deltaY = 0.01 # Grig resolution/spacing in y direction
+deltaY = 0.05 # Grig resolution/spacing in y direction
 
 #---------------------------Vehicular emissions--------------------------------
 
