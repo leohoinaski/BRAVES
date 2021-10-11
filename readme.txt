@@ -53,6 +53,10 @@ REQUIRED DATA:
 	directory as the BRAVESdatabase_main.py. You should keep this 
 	names for this folders. 
 
+	Before you run the BRAVESdatabase_main.py script you should install
+	the requires python packages in requirements.txt. You can do this by
+	pip install -r requirements.txt
+
 
 
 
