@@ -301,7 +301,7 @@ def roadDensity (dirPath,outPath,IBGE_CODES,lati,latf,loni,lonf,
             gridLength = pd.merge(gridLength, ggdf, on="geometry")
             
             
-        gpd.GeoDataFrame(pd.concat(roadDensChunks,axis=1), crs=shpSC.crs)
+        #gpd.GeoDataFrame(pd.concat(roadDensChunks,axis=1), crs=shpSC.crs)
             
         
         gridLength.to_csv(outPath+'/roadDensity_'+roadDensPrefix+'UF_'+str(IBGE_CODES[pp])+'.csv')

@@ -115,7 +115,7 @@ def temporalDisagVehicular(dataNC,year,month,day,hourdis,weekdis,monthdis):
 
 
 #%%
-def BRAVES_temporalDisag(rootPath,outPath,file,fileId,month,day):
+def BRAVES_temporalDisag(rootPath,outPath,file,fileId,month,day,dx,dy):
     print('===================STARTING BRAVES_temporalDisag_v1.py=======================')
     hourdis = list(pd.read_csv(rootPath+'/TemporalAloc/hourdis.csv').iloc[:,1])
     weekdis = list(pd.read_csv(rootPath+'/TemporalAloc/weekdis.csv').iloc[:,1])
@@ -139,8 +139,8 @@ def BRAVES_temporalDisag(rootPath,outPath,file,fileId,month,day):
     # Informações das grades 
     xi = ds.getncattr('XORIG')
     yi = ds.getncattr('YORIG')
-    dx = ds.getncattr('XCELL')
-    dy = ds.getncattr('YCELL')
+    #dx = ds.getncattr('XCELL')
+    #dy = ds.getncattr('YCELL')
     
     center = {'x': [float(ds.XCENT)],'y': [float(ds.YCENT)] }
     center = pd.DataFrame(center)

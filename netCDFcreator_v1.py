@@ -62,7 +62,7 @@ def createNETCDFtemporal(folder,name,data,xv,yv,lat,lon,center,dates,month):
         tflag[ii,:,1]=int(str(dates['hour'][ii])+'0000')
     
     sdate =  dates['year'][0]*1000 + dates.index[0].timetuple().tm_yday            
-    
+
     f2 = nc4.Dataset(folder+'/'+name,'w', format='NETCDF4_CLASSIC') #'w' stands for write    
     #Add global attributes
     f2.IOAPI_VERSION ='$Id: @(#) ioapi library version 3.1 $'
@@ -77,7 +77,9 @@ def createNETCDFtemporal(folder,name,data,xv,yv,lat,lon,center,dates,month):
     f2.TSTEP= 10000
     f2.NTHIK= 1
     f2.NCOLS= np.size(xv,1)-1
+    print('NCOLS=' +str(np.size(xv,1)-1))
     f2.NROWS= np.size(yv,0)-1
+    print('NROWS=' +str(np.size(yv,0)-1))
     f2.NLAYS= 1
     f2.NVARS= 62 #dataEmiss.shape[1]
     f2.GDTYP= 1
@@ -85,11 +87,17 @@ def createNETCDFtemporal(folder,name,data,xv,yv,lat,lon,center,dates,month):
     f2.P_BET= 0
     f2.P_GAM= center.x.mean()
     f2.XCENT= center.x.mean()
+    print('XCENT='+ str( center.x.mean()))
     f2.YCENT= center.y.mean()
+    print('YCENT='+ str( center.y.mean()))
     f2.XORIG= xv.min()
+    print('XORIG = ' + str(xv.min())) 
     f2.YORIG= yv.min()
+    print('YORIG = ' + str(yv.min())) 
     f2.XCELL= xv[0,1] - xv[0,0]
+    print('XCELL = '+str(xv[0,1] - xv[0,0]) )
     f2.YCELL= yv[1,0] - yv[0,0]
+    print('YCELL = '+str(yv[1,0] - yv[0,0]) )
     f2.VGTYP= -1
     f2.VGTOP= 0.0
     f2.VGLVLS= [0,0]
@@ -380,6 +388,14 @@ def createNETCDFtemporalfromNC(folder,name,data,xv,yv,lat,lon,center,dates,month
     f2.VGTYP= -1
     f2.VGTOP= 0.0
     f2.VGLVLS= [0,0]
+    print('NCOLS=' +str(np.size(xv,1)))   
+    print('NROWS=' +str(np.size(yv,0)))   
+    print('XCENT='+ str( center.x.mean()))
+    print('YCENT='+ str( center.y.mean()))
+    print('XORIG = ' + str(xv.min())) 
+    print('YORIG = ' + str(yv.min())) 
+    print('XCELL = '+str(xv[0,1] - xv[0,0]) )
+    print('YCELL = '+str(yv[1,0] - yv[0,0]) )
     
     f2.GDNAM= 'SE53BENCH'       
     f2.UPNAM= 'M3WNDW'   
@@ -649,9 +665,9 @@ def createNETCDFtemporalBySpecies(folder,name,data,xv,yv,lat,lon,center,dates,sp
     f2.GDTYP= 1
     f2.P_ALP= -10
     f2.P_BET= 0
-    f2.P_GAM= center.x.mean()
-    f2.XCENT= center.x.mean()
-    f2.YCENT= center.y.mean()
+    f2.P_GAM= center.x.mean()-(xv[0,1] - xv[0,0])
+    f2.XCENT= center.x.mean()-(xv[0,1] - xv[0,0])
+    f2.YCENT= center.y.mean()-(yv[1,0] - yv[0,0])
     f2.XORIG= xv.min()
     f2.YORIG= yv.min()
     f2.XCELL= xv[0,1] - xv[0,0]
@@ -659,6 +675,14 @@ def createNETCDFtemporalBySpecies(folder,name,data,xv,yv,lat,lon,center,dates,sp
     f2.VGTYP= -1
     f2.VGTOP= 0.0
     f2.VGLVLS= [0,0]
+    print('NCOLS=' +str(np.size(xv,1)))   
+    print('NROWS=' +str(np.size(yv,0)))   
+    print('XCENT='+ str( center.x.mean()))
+    print('YCENT='+ str( center.y.mean()))
+    print('XORIG = ' + str(xv.min())) 
+    print('YORIG = ' + str(yv.min())) 
+    print('XCELL = '+str(xv[0,1] - xv[0,0]) )
+    print('YCELL = '+str(yv[1,0] - yv[0,0]) )
     
     f2.GDNAM= 'SE53BENCH'       
     f2.UPNAM= 'M3WNDW'   

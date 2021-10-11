@@ -90,19 +90,20 @@ import pandas as pd
 rootPath = "/media/leohoinaski/HDD/BRAVES_database"
 
 # Defining folder path with openstreetmaps folder
-dirPath = "/media/leohoinaski/HDD/BRAVES_database/Shapefiles"
+dirPath = rootPath + "/Shapefiles"
 
 # Path to folder with roadLenght....csv
-outPath = "/media/leohoinaski/HDD/BRAVES_database/Outputs"
+outPath = rootPath +"/Outputs"
 
 # Path to folder with BRAVES outputs'
-bravesPath = "/media/leohoinaski/HDD/BRAVES_database/BRAVESoutputs"
+bravesPath = rootPath +"/BRAVESoutputs"
 
 # Path to folder with chemical speciation profiles
-folderSpec = '/media/leohoinaski/HDD/BRAVES_database/ChemicalSpec'
+folderSpec = rootPath +'/ChemicalSpec'
 
 # Road file name - use gis_osm for states other than SC
-roadFileName = 'SC_ROADS.shp' # for SC state
+roadFileName = 'SC_ROADS.shp' # for SC 
+#roadFileName='roadFl.shp'
 #roadFileName = 'gis_osm_roads_free_1.shp'
 
 #-------------------------Setting grid resolution------------------------------
@@ -116,9 +117,9 @@ loni = -54 #loni = int(round(bound.minx)) # Initial longitude (lower-left)
 
 lonf = -47 #lonf = int(round(bound.maxx)) # Final longitude (upper-right)
 
-deltaX = 0.05 # Grid resolution/spacing in x direction
+deltaX = 0.01 # Grid resolution/spacing in x direction
 
-deltaY = 0.05 # Grig resolution/spacing in y direction
+deltaY = 0.01 # Grig resolution/spacing in y direction
 
 #---------------------------Vehicular emissions--------------------------------
 
@@ -134,7 +135,10 @@ months = [1] # Set the month of your simulation
 days = [1,2] # Set the day of your simulation
 
 
-#---------------------------Outputs definition--------------------------------
+#-------------------Controls and Outputs definition----------------------------
+
+# Run or not road density calculation.
+runOrnotRoadDens = 0 #0 for no and 1 for yes
 
 fileId = 'SC' # Code to identify your output files
 
@@ -159,8 +163,9 @@ if os.path.isdir(outPath)==0:
     os.mkdir(outPath)
 
 # Calling roadDensity function
-roadDensity(dirPath,outPath,IBGE_CODES,lati,latf,loni,lonf,
-            deltaX,deltaY,roadFileName,roadDensPrefix)
+if runOrnotRoadDens==1:
+    roadDensity(dirPath,outPath,IBGE_CODES,lati,latf,loni,lonf,
+                deltaX,deltaY,roadFileName,roadDensPrefix)
 
 # Calling roadEmiss function
 roadEmiss(outPath,bravesPath,years,IBGE_CODES,roadDensPrefix)
@@ -177,7 +182,8 @@ if runOrnotCMAQemiss==1:
         for year in years:
             for month in months:
                 for day in days:
-                    dataTempo,xv,yv,lat,lon,center,disvec,prefix=BRAVES_temporalDisag(rootPath,outPath,file,fileId,month,day)
+                    dataTempo=None
+                    dataTempo,xv,yv,lat,lon,center,disvec,prefix=BRAVES_temporalDisag(rootPath,outPath,file,fileId,month,day,deltaX,deltaY)
                     for jj in np.unique(disvec.day):       
                         name = 'BRAVESdatabase2CMAQ_'+fileId+'_'+prefix+'_'+str(year)+'_'+str(month)+'_'+str(jj)+'.nc'
                         dayT = np.where(disvec.day==jj)
@@ -193,6 +199,7 @@ if runOrnotTempFiles==1:
                         file_path = 'CMAQ_speciesMW.csv'
                         smm = pd.read_csv(folderSpec+'/'+file_path)
                         specIdx=smm[smm.ID==spec].index.to_numpy()[0]
+                        dataTempo=None
                         dataTempo,xv,yv,lat,lon,center,disvec,prefix=BRAVES_temporalDisag(rootPath,outPath,file,fileId,month,day)
                         for jj in np.unique(disvec.day):       
                             name = 'BRAVESdatabaseTempEmiss_'+fileId+'_'+prefix+'_'+str(year)+'_'+str(month)+'_'+str(jj)+'.nc'
