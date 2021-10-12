@@ -35,6 +35,8 @@ import numpy.matlib
 import netCDF4 as nc
 #from netCDFcreator_v1 import createNETCDFtemporal
 
+
+
 #%% temporal disagregation
 
 
@@ -119,7 +121,8 @@ def BRAVES_temporalDisag(rootPath,outPath,file,fileId,month,day,dx,dy):
     print('===================STARTING BRAVES_temporalDisag_v1.py=======================')
     hourdis = list(pd.read_csv(rootPath+'/TemporalAloc/hourdis.csv').iloc[:,1])
     weekdis = list(pd.read_csv(rootPath+'/TemporalAloc/weekdis.csv').iloc[:,1])
-    monthdis = list(pd.read_csv(rootPath+'/TemporalAloc/monthdis.csv').iloc[:,1])  
+    monthdis = list(pd.read_csv(rootPath+'/TemporalAloc/monthdis.csv').iloc[:,1])
+    
 
     prefix = file.split('_')[2]
     
@@ -131,10 +134,6 @@ def BRAVES_temporalDisag(rootPath,outPath,file,fileId,month,day,dx,dy):
     for ii in range(2,np.size(dataVar)):
         dataloop = ds[dataVar[ii]][:]
         dataNC =np.concatenate((dataloop,dataNC), axis=1)
-    
-    
-    dataTempo,datePfct,disvec = temporalDisagVehicular(dataNC,year,month,day,
-                                                       hourdis,weekdis,monthdis)
     
     # Informações das grades 
     xi = ds.getncattr('XORIG')
@@ -148,5 +147,9 @@ def BRAVES_temporalDisag(rootPath,outPath,file,fileId,month,day,dx,dy):
     lat = np.linspace(yi, yi+(dy*(dataNC.shape[3])), dataNC.shape[3])
     lon = np.linspace(xi, xi+(dx*(dataNC.shape[2])), dataNC.shape[2])
     xv, yv = np.meshgrid(lon, lat)
+    dataTempo,datePfct,disvec = temporalDisagVehicular(dataNC,year,month,day,
+                                                       hourdis,weekdis,monthdis)
+    
+
     
     return dataTempo,xv,yv,lat,lon,center,disvec,prefix

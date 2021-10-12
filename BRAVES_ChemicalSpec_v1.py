@@ -38,32 +38,37 @@ Author: Leonardo Hoinaski - leonardo.hoinaski@ufsc.br
 import pandas as pd
 
 def ChemicalSpeciationLight(roadX,dfSpc,smm,conver):
+    roadX.columns = roadX.columns.str.replace(' ', '')
     # Creating dataEmiss matrix
     dataEmissX=pd.DataFrame()
     print('===================STARTING BRAVES_ChemicalSpec_v1.py=======================')
     # Filling VOC emissions
     for ii in range(0,dfSpc.shape[0]):
-        dataEmissX[dfSpc.ID[ii]] = dfSpc['LightVOC'][ii]*roadX.iloc[:,6]*conver/smm.iloc[ii,1] +\
-           dfSpc['LightPM'][ii]*roadX.iloc[:,10]*conver/smm.iloc[ii,1]  +\
-               dfSpc['road'][ii]*roadX.iloc[:,18]*conver/smm.iloc[ii,1] +\
-                   dfSpc['road'][ii]*roadX.iloc[:,17]*conver/smm.iloc[ii,1] +\
-                       dfSpc['brakes'][ii]*roadX.iloc[:,16]*conver/smm.iloc[ii,1] +\
-                           dfSpc['tires'][ii]*roadX.iloc[:,16]*conver/smm.iloc[ii,1] +\
-                               dfSpc['LightEvap'][ii]*roadX.iloc[:,19]*conver/smm.iloc[ii,1] +\
-                                   dfSpc['LightEvap'][ii]*roadX.iloc[:,20]*conver/smm.iloc[ii,1] +\
-                                       dfSpc['LightEvap'][ii]*roadX.iloc[:,21]*conver/smm.iloc[ii,1] +\
-                                           dfSpc['LightEvap'][ii]*roadX.iloc[:,14]*conver/smm.iloc[ii,1]
+        dataEmissX[dfSpc.ID[ii]] = dfSpc['LightVOC'][ii]*roadX['Exh_EmissNMHC']*conver/smm.iloc[ii,1] +\
+           dfSpc['LightPM'][ii]*roadX['Exh_EmissMP2.5']*conver/smm.iloc[ii,1]  +\
+               dfSpc['road'][ii]*roadX['wear_EmissMP10']*conver/smm.iloc[ii,1] +\
+                   dfSpc['road'][ii]*roadX['Resus_EmissMP10']*conver/smm.iloc[ii,1] +\
+                       dfSpc['brakes'][ii]*roadX['break_tier_EmissMP10']*conver/smm.iloc[ii,1] +\
+                           dfSpc['tires'][ii]*roadX['break_tier_EmissMP10']*conver/smm.iloc[ii,1] +\
+                               dfSpc['LightEvap'][ii]*roadX['Refuel_EmissNMHC']*conver/smm.iloc[ii,1] +\
+                                   dfSpc['LightEvap'][ii]*roadX['Evap_D_EmissNMHC']*conver/smm.iloc[ii,1] +\
+                                       dfSpc['LightEvap'][ii]*roadX['Evap_H_EmissNMHC']*conver/smm.iloc[ii,1] +\
+                                           dfSpc['LightEvap'][ii]*roadX['Evap_R_EmissNMHC']*conver/smm.iloc[ii,1]
     
     # Filling direct emissions
-    dataEmissX['ALDX'] = roadX.iloc[:,9]*conver/smm[smm.iloc[:,0]=='ALDX'].MM   
-    dataEmissX['CH4_INV'] = roadX.iloc[:,7]*conver
-    dataEmissX['CH4'] = roadX.iloc[:,7]*conver/smm[smm.iloc[:,0]=='CH4'].MM
-    dataEmissX['CO'] = roadX.iloc[:,4]*conver/smm[smm.iloc[:,0]=='CO'].MM
-    dataEmissX['CO2_INV'] = roadX.iloc[:,11]*conver
-    dataEmissX['N2O_INV'] = roadX.iloc[:,12]*conver
-    dataEmissX['NO'] = roadX.iloc[:,8]*conver*0.495/smm[smm.iloc[:,0]=='NO'].MM # Para motor a diesel... considerei
-    dataEmissX['NO2'] = roadX.iloc[:,8]*conver*0.505/smm[smm.iloc[:,0]=='NO2'].MM # Para motor a diesel... considerei
-    dataEmissX['PMC'] = roadX.iloc[:,10]*conver
+    dataEmissX['ALDX'] = roadX['Exh_EmissRCHO']*conver/smm[smm.iloc[:,0]=='ALDX'].MM   
+    dataEmissX['CH4_INV'] = roadX['Exh_EmissCH4']*conver
+    dataEmissX['CH4'] = roadX['Exh_EmissCH4']*conver/smm[smm.iloc[:,0]=='CH4'].MM
+    dataEmissX['CO'] = roadX['Exh_EmissCO']*conver/smm[smm.iloc[:,0]=='CO'].MM
+    dataEmissX['CO2_INV'] = roadX['Exh_EmissCO2']*conver
+    dataEmissX['N2O_INV'] = roadX['Exh_EmissN2O']*conver
+    dataEmissX['NO'] = roadX['Exh_EmissNOx']*conver*0.495/smm[smm.iloc[:,0]=='NO'].MM # Para motor a diesel... considerei
+    dataEmissX['NO2'] = roadX['Exh_EmissNOx']*conver*0.505/smm[smm.iloc[:,0]=='NO2'].MM # Para motor a diesel... considerei
+    dataEmissX['PMC'] = roadX['break_tier_EmissMP10']*conver+\
+        roadX['Exh_EmissMP2.5']*conver+\
+            roadX['Resus_EmissMP10']*conver+\
+                roadX['wear_EmissMP10']*conver
+            
     dataEmissX['PNCOM'] = dataEmissX['POC']*0.25
     dataEmissX['PMOTHR'] = 1-(dataEmissX['POC'] + dataEmissX['PEC'] +
                               dataEmissX['PSO4'] + dataEmissX['PNO3'] +
@@ -74,37 +79,42 @@ def ChemicalSpeciationLight(roadX,dfSpc,smm,conver):
                               dataEmissX['PK'] + dataEmissX['PMN'] +
                               dataEmissX['PNA'] + dataEmissX['PCL'] +
                               dataEmissX['PH2O'])
-    dataEmissX['SO2'] = roadX.iloc[:,13]*conver/smm[smm.iloc[:,0]=='SO2'].MM
-    dataEmissX['VOC_INV'] = roadX.iloc[:,6]*conver + roadX.iloc[:,14]*conver +\
-        roadX.iloc[:,19]*conver + roadX.iloc[:,20]*conver + roadX.iloc[:,21]*conver
+    dataEmissX['SO2'] = roadX['Exh_EmissSO2']*conver/smm[smm.iloc[:,0]=='SO2'].MM
+    dataEmissX['VOC_INV'] = roadX['Exh_EmissNMHC']*conver + roadX['Evap_D_EmissNMHC']*conver +\
+        roadX['Refuel_EmissNMHC']*conver + roadX['Evap_H_EmissNMHC']*conver + roadX['Evap_R_EmissNMHC']*conver
     return dataEmissX
 
 def ChemicalSpeciationHeavy(roadX,dfSpc,smm,conver):  
+    roadX.columns = roadX.columns.str.replace(' ', '')
     # Creating dataEmiss matrix
     dataEmissX=pd.DataFrame()
     # Filling VOC emissions
     for ii in range(0,dfSpc.shape[0]):
-        dataEmissX[dfSpc.ID[ii]] = dfSpc['HeavyVOC'][ii]*roadX.iloc[:,6]*conver/smm.iloc[ii,1] +\
-           dfSpc['HeavyPM'][ii]*roadX.iloc[:,10]*conver/smm.iloc[ii,1]  +\
-               dfSpc['road'][ii]*roadX.iloc[:,18]*conver/smm.iloc[ii,1] +\
-                   dfSpc['road'][ii]*roadX.iloc[:,17]*conver/smm.iloc[ii,1] +\
-                       dfSpc['brakes'][ii]*roadX.iloc[:,16]*conver/smm.iloc[ii,1] +\
-                           dfSpc['tires'][ii]*roadX.iloc[:,16]*conver/smm.iloc[ii,1] +\
-                               dfSpc['HeavyEvap'][ii]*roadX.iloc[:,19]*conver/smm.iloc[ii,1] +\
-                                   dfSpc['HeavyEvap'][ii]*roadX.iloc[:,20]*conver/smm.iloc[ii,1] +\
-                                       dfSpc['HeavyEvap'][ii]*roadX.iloc[:,21]*conver/smm.iloc[ii,1] +\
-                                           dfSpc['HeavyEvap'][ii]*roadX.iloc[:,14]*conver/smm.iloc[ii,1]
+        dataEmissX[dfSpc.ID[ii]] = dfSpc['HeavyVOC'][ii]*roadX['Exh_EmissNMHC']*conver/smm.iloc[ii,1] +\
+           dfSpc['HeavyPM'][ii]*roadX['Exh_EmissMP2.5']*conver/smm.iloc[ii,1]  +\
+               dfSpc['road'][ii]*roadX['wear_EmissMP10']*conver/smm.iloc[ii,1] +\
+                   dfSpc['road'][ii]*roadX['Resus_EmissMP10']*conver/smm.iloc[ii,1] +\
+                       dfSpc['brakes'][ii]*roadX['break_tier_EmissMP10']*conver/smm.iloc[ii,1] +\
+                           dfSpc['tires'][ii]*roadX['break_tier_EmissMP10']*conver/smm.iloc[ii,1] +\
+                               dfSpc['HeavyEvap'][ii]*roadX['Refuel_EmissNMHC']*conver/smm.iloc[ii,1] +\
+                                   dfSpc['HeavyEvap'][ii]*roadX['Evap_D_EmissNMHC']*conver/smm.iloc[ii,1] +\
+                                       dfSpc['HeavyEvap'][ii]*roadX['Evap_H_EmissNMHC']*conver/smm.iloc[ii,1] +\
+                                           dfSpc['HeavyEvap'][ii]*roadX['Evap_R_EmissNMHC']*conver/smm.iloc[ii,1]
     
     # Filling direct emissions
-    dataEmissX['ALDX'] = roadX.iloc[:,9]*conver/smm[smm.iloc[:,0]=='ALDX'].MM  
-    dataEmissX['CH4_INV'] = roadX.iloc[:,7]*conver
-    dataEmissX['CH4'] = roadX.iloc[:,7]*conver/smm[smm.iloc[:,0]=='CH4'].MM
-    dataEmissX['CO'] = roadX.iloc[:,4]*conver/smm[smm.iloc[:,0]=='CO'].MM
-    dataEmissX['CO2_INV'] = roadX.iloc[:,11]*conver
-    dataEmissX['N2O_INV'] = roadX.iloc[:,12]*conver
-    dataEmissX['NO'] = roadX.iloc[:,8]*conver*0.495/smm[smm.iloc[:,0]=='NO'].MM # Para motor a diesel... considerei
-    dataEmissX['NO2'] = roadX.iloc[:,8]*conver*0.505/smm[smm.iloc[:,0]=='NO2'].MM # Para motor a diesel... considerei
-    dataEmissX['PMC'] = roadX.iloc[:,10]*conver
+    dataEmissX['ALDX'] = roadX['Exh_EmissRCHO']*conver/smm[smm.iloc[:,0]=='ALDX'].MM   
+    dataEmissX['CH4_INV'] = roadX['Exh_EmissCH4']*conver
+    dataEmissX['CH4'] = roadX['Exh_EmissCH4']*conver/smm[smm.iloc[:,0]=='CH4'].MM
+    dataEmissX['CO'] = roadX['Exh_EmissCO']*conver/smm[smm.iloc[:,0]=='CO'].MM
+    dataEmissX['CO2_INV'] = roadX['Exh_EmissCO2']*conver
+    dataEmissX['N2O_INV'] = roadX['Exh_EmissN2O']*conver
+    dataEmissX['NO'] = roadX['Exh_EmissNOx']*conver*0.495/smm[smm.iloc[:,0]=='NO'].MM # Para motor a diesel... considerei
+    dataEmissX['NO2'] = roadX['Exh_EmissNOx']*conver*0.505/smm[smm.iloc[:,0]=='NO2'].MM # Para motor a diesel... considerei
+    dataEmissX['PMC'] = roadX['break_tier_EmissMP10']*conver+\
+        roadX['Exh_EmissMP2.5']*conver+\
+            roadX['Resus_EmissMP10']*conver+\
+                roadX['wear_EmissMP10']*conver
+            
     dataEmissX['PNCOM'] = dataEmissX['POC']*0.25
     dataEmissX['PMOTHR'] = 1-(dataEmissX['POC'] + dataEmissX['PEC'] +
                               dataEmissX['PSO4'] + dataEmissX['PNO3'] +
@@ -115,7 +125,7 @@ def ChemicalSpeciationHeavy(roadX,dfSpc,smm,conver):
                               dataEmissX['PK'] + dataEmissX['PMN'] +
                               dataEmissX['PNA'] + dataEmissX['PCL'] +
                               dataEmissX['PH2O'])
-    dataEmissX['SO2'] = roadX.iloc[:,13]*conver/smm[smm.iloc[:,0]=='SO2'].MM
-    dataEmissX['VOC_INV'] = roadX.iloc[:,6]*conver + roadX.iloc[:,14]*conver +\
-        roadX.iloc[:,19]*conver + roadX.iloc[:,20]*conver + roadX.iloc[:,21]*conver
+    dataEmissX['SO2'] = roadX['Exh_EmissSO2']*conver/smm[smm.iloc[:,0]=='SO2'].MM
+    dataEmissX['VOC_INV'] = roadX['Exh_EmissNMHC']*conver + roadX['Evap_D_EmissNMHC']*conver +\
+        roadX['Refuel_EmissNMHC']*conver + roadX['Evap_H_EmissNMHC']*conver + roadX['Evap_R_EmissNMHC']*conver
     return dataEmissX
