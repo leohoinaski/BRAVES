@@ -234,4 +234,4 @@ def BRAVES2netCDF (folder,folderSpec,outPath,years,fileId):
         prefix='Total'
         splitnetCDFfiles(dataEmiss,centerX,xX,yY,xv,yv,lat,lon,year,prefix,outPath,fileId)
         print('Your files are ready in: ' + outPath)
-        return roadX, dataEmiss
+    return roadX, dataEmiss

@@ -33,6 +33,7 @@ import numpy as np
 import datetime
 import numpy.matlib
 import netCDF4 as nc
+from local2UTC import local2UTC
 #from netCDFcreator_v1 import createNETCDFtemporal
 
 
@@ -40,7 +41,7 @@ import netCDF4 as nc
 #%% temporal disagregation
 
 
-def temporalDisagVehicular(dataNC,year,month,day,hourdis,weekdis,monthdis):
+def temporalDisagVehicular(dataNC,year,month,day,hourdis,weekdis,monthdis,lc2utc,tag):
     # Create the MultiIndex from pollutant and time.
     #year=2013
     print('Temporal disagregation')
@@ -109,10 +110,23 @@ def temporalDisagVehicular(dataNC,year,month,day,hourdis,weekdis,monthdis):
                           dataNC.shape[2],dataNC.shape[3]])
     print(str(dataTempo.shape))
     
-    for jj in range(0,dataTempo.shape[1]):
-        for ii in range(0,dataTempo.shape[0]):
-            dataTempo[ii,jj,:,:]= dataNC[0,jj,:,:]* disvec['prod'][ii]
-    
+    #Condition for equal timezone in whole domain - roll vector to UTC time
+    if tag==1:        
+        for jj in range(0,dataTempo.shape[1]):
+            for ii in range(0,dataTempo.shape[0]):
+                utcoffs = numpy.unique(lc2utc)
+                for utcoff in utcoffs:
+                    idx = lc2utc==utcoff
+                    dataTempo[ii,jj,idx]= dataNC[0,jj,idx]* np.roll(disvec['prod'],int(utcoff))[ii]
+                #dataTempo[ii,jj,:,:]= dataNC[0,jj,:,:]* np.roll(disvec['prod'],lc2utc)[ii]
+    else:
+        for jj in range(0,dataTempo.shape[1]):
+            for ii in range(0,dataTempo.shape[0]):
+                utcoffs = numpy.unique(lc2utc)
+                for utcoff in utcoffs:
+                    idx = lc2utc==utcoff
+                    dataTempo[ii,jj,idx]= dataNC[0,jj,idx]* np.roll(disvec['prod'],int(utcoff))[ii]
+
     return dataTempo,datePfct,disvec
 
 
@@ -138,8 +152,8 @@ def BRAVES_temporalDisag(rootPath,outPath,file,fileId,month,day,dx,dy):
     # Informações das grades 
     xi = ds.getncattr('XORIG')
     yi = ds.getncattr('YORIG')
-    #dx = ds.getncattr('XCELL')
-    #dy = ds.getncattr('YCELL')
+    dx = ds.getncattr('XCELL')
+    dy = ds.getncattr('YCELL')
     
     center = {'x': [float(ds.XCENT)],'y': [float(ds.YCENT)] }
     center = pd.DataFrame(center)
@@ -147,8 +161,14 @@ def BRAVES_temporalDisag(rootPath,outPath,file,fileId,month,day,dx,dy):
     lat = np.linspace(yi, yi+(dy*(dataNC.shape[3])), dataNC.shape[3])
     lon = np.linspace(xi, xi+(dx*(dataNC.shape[2])), dataNC.shape[2])
     xv, yv = np.meshgrid(lon, lat)
+    
+    # Calling local2UTC
+    lc2utc, tag = local2UTC(xv,yv)
+    
+    # Calling temporalDisagVehicular
     dataTempo,datePfct,disvec = temporalDisagVehicular(dataNC,year,month,day,
-                                                       hourdis,weekdis,monthdis)
+                                                       hourdis,weekdis,monthdis,
+                                                       lc2utc,tag)
     
 
     

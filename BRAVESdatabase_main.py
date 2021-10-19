@@ -128,7 +128,7 @@ IBGE_CODES = [42] # include the IBGE code from the states to be considered
 
 #---------------------------- Time window--------------------------------------
 
-years=[2013]
+years=[2019]
 
 months = [1] # Set the month of your simulation
 
@@ -140,17 +140,24 @@ days = [1,2] # Set the day of your simulation
 # Run or not road density calculation.
 runOrnotRoadDens = 0 #0 for no and 1 for yes
 
-fileId = 'SC' # Code to identify your output files
+runOrnotRoadEmiss = 1 # 0 for no and 1 for yes
 
-roadDensPrefix = str(deltaX)+'x'+str(deltaY) # grid definition identification
+runOrnotMergeRoadEmiss = 1 # 0 for no and 1 for yes
+
+runOrnotBRAVES2netCDF = 1 # 0 for no and 1 for yes
 
 # Create disaggregated files - temporal, spatial, and one specie
-runOrnotTempFiles = 1 # 0 for no and 1 for yes
+runOrnotTempFiles = 0 # 0 for no and 1 for yes
 specs = ['SO2']  # Identification of the specie 
 
 # Create CMAQ emission inputs - temporal, spatial, and all species
-runOrnotCMAQemiss = 1 # 0 for no and 1 for yes
+runOrnotCMAQemiss = 0 # 0 for no and 1 for yes
 files = ['BRAVESdatabaseAnnual_SC_ComLight_2013.nc'] # Define the files to disaggregate
+
+
+fileId = 'SC' # Code to identify your output files
+
+roadDensPrefix = str(deltaX)+'x'+str(deltaY) # grid definition identification
 
 
 #%%============================PROCESSING========================================
@@ -168,13 +175,16 @@ if runOrnotRoadDens==1:
                 deltaX,deltaY,roadFileName,roadDensPrefix)
 
 # Calling roadEmiss function
-roadEmiss(outPath,bravesPath,years,IBGE_CODES,roadDensPrefix)
+if runOrnotRoadEmiss==1:
+    roadEmiss(outPath,bravesPath,years,IBGE_CODES,roadDensPrefix)
 
 # Calling mergeRoadEmiss function 
-mergeRoadEmiss(outPath,years,IBGE_CODES,roadDensPrefix)
+if runOrnotMergeRoadEmiss==1:
+    mergeRoadEmiss(outPath,years,IBGE_CODES,roadDensPrefix)
 
 # Calling BRAVES2netCDF
-BRAVES2netCDF(outPath,folderSpec,outPath,years,fileId)
+if runOrnotBRAVES2netCDF==1:
+    BRAVES2netCDF(outPath,folderSpec,outPath,years,fileId)
 
 # Creating input files for CMAQ
 if runOrnotCMAQemiss==1:
