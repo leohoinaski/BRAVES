@@ -36,6 +36,7 @@ Author: Leonardo Hoinaski - leonardo.hoinaski@ufsc.br
 """
 # Importando bibliotecas
 import pandas as pd
+import numpy as np
 
 def ChemicalSpeciationLight(roadX,dfSpc,smm,conver):
     roadX.columns = roadX.columns.str.replace(' ', '')
@@ -56,14 +57,14 @@ def ChemicalSpeciationLight(roadX,dfSpc,smm,conver):
                                            dfSpc['LightEvap'][ii]*roadX['Evap_R_EmissNMHC']*conver/smm.iloc[ii,1]
     
     # Filling direct emissions
-    dataEmissX['ALDX'] = roadX['Exh_EmissRCHO']*conver/smm[smm.iloc[:,0]=='ALDX'].MM   
+    dataEmissX['ALDX'] = roadX['Exh_EmissRCHO']*conver/np.array(smm[smm.iloc[:,0]=='ALDX'].MM)
     dataEmissX['CH4_INV'] = roadX['Exh_EmissCH4']*conver
-    dataEmissX['CH4'] = roadX['Exh_EmissCH4']*conver/smm[smm.iloc[:,0]=='CH4'].MM
-    dataEmissX['CO'] = roadX['Exh_EmissCO']*conver/smm[smm.iloc[:,0]=='CO'].MM
+    dataEmissX['CH4'] = roadX['Exh_EmissCH4']*conver/np.array(smm[smm.iloc[:,0]=='CH4'].MM)
+    dataEmissX['CO'] = roadX['Exh_EmissCO']*conver/np.array(smm[smm.iloc[:,0]=='CO'].MM)
     dataEmissX['CO2_INV'] = roadX['Exh_EmissCO2']*conver
     dataEmissX['N2O_INV'] = roadX['Exh_EmissN2O']*conver
-    dataEmissX['NO'] = roadX['Exh_EmissNOx']*conver*0.495/smm[smm.iloc[:,0]=='NO'].MM # Para motor a diesel... considerei
-    dataEmissX['NO2'] = roadX['Exh_EmissNOx']*conver*0.505/smm[smm.iloc[:,0]=='NO2'].MM # Para motor a diesel... considerei
+    dataEmissX['NO'] = roadX['Exh_EmissNOx']*conver*0.495/np.array(smm[smm.iloc[:,0]=='NO'].MM) # Para motor a diesel... considerei
+    dataEmissX['NO2'] = roadX['Exh_EmissNOx']*conver*0.505/np.array(smm[smm.iloc[:,0]=='NO2'].MM) # Para motor a diesel... considerei
     dataEmissX['PMC'] = roadX['break_tier_EmissMP10']*conver+\
         roadX['Exh_EmissMP2.5']*conver+\
             roadX['Resus_EmissMP10']*conver+\
@@ -79,7 +80,7 @@ def ChemicalSpeciationLight(roadX,dfSpc,smm,conver):
                               dataEmissX['PK'] + dataEmissX['PMN'] +
                               dataEmissX['PNA'] + dataEmissX['PCL'] +
                               dataEmissX['PH2O'])
-    dataEmissX['SO2'] = roadX['Exh_EmissSO2']*conver/smm[smm.iloc[:,0]=='SO2'].MM
+    dataEmissX['SO2'] = roadX['Exh_EmissSO2']*conver/np.array(smm[smm.iloc[:,0]=='SO2'].MM)
     dataEmissX['VOC_INV'] = roadX['Exh_EmissNMHC']*conver + roadX['Evap_D_EmissNMHC']*conver +\
         roadX['Refuel_EmissNMHC']*conver + roadX['Evap_H_EmissNMHC']*conver + roadX['Evap_R_EmissNMHC']*conver
     return dataEmissX
@@ -102,14 +103,14 @@ def ChemicalSpeciationHeavy(roadX,dfSpc,smm,conver):
                                            dfSpc['HeavyEvap'][ii]*roadX['Evap_R_EmissNMHC']*conver/smm.iloc[ii,1]
     
     # Filling direct emissions
-    dataEmissX['ALDX'] = roadX['Exh_EmissRCHO']*conver/smm[smm.iloc[:,0]=='ALDX'].MM   
+    dataEmissX['ALDX'] = roadX['Exh_EmissRCHO']*conver/np.array(smm[smm.iloc[:,0]=='ALDX'].MM)   
     dataEmissX['CH4_INV'] = roadX['Exh_EmissCH4']*conver
-    dataEmissX['CH4'] = roadX['Exh_EmissCH4']*conver/smm[smm.iloc[:,0]=='CH4'].MM
-    dataEmissX['CO'] = roadX['Exh_EmissCO']*conver/smm[smm.iloc[:,0]=='CO'].MM
+    dataEmissX['CH4'] = roadX['Exh_EmissCH4']*conver/np.array(smm[smm.iloc[:,0]=='CH4'].MM)
+    dataEmissX['CO'] = roadX['Exh_EmissCO']*conver/np.array(smm[smm.iloc[:,0]=='CO'].MM)
     dataEmissX['CO2_INV'] = roadX['Exh_EmissCO2']*conver
     dataEmissX['N2O_INV'] = roadX['Exh_EmissN2O']*conver
-    dataEmissX['NO'] = roadX['Exh_EmissNOx']*conver*0.495/smm[smm.iloc[:,0]=='NO'].MM # Para motor a diesel... considerei
-    dataEmissX['NO2'] = roadX['Exh_EmissNOx']*conver*0.505/smm[smm.iloc[:,0]=='NO2'].MM # Para motor a diesel... considerei
+    dataEmissX['NO'] = roadX['Exh_EmissNOx']*conver*0.495/np.array(smm[smm.iloc[:,0]=='NO'].MM) # Para motor a diesel... considerei
+    dataEmissX['NO2'] = roadX['Exh_EmissNOx']*conver*0.505/np.array(smm[smm.iloc[:,0]=='NO2'].MM) # Para motor a diesel... considerei
     dataEmissX['PMC'] = roadX['break_tier_EmissMP10']*conver+\
         roadX['Exh_EmissMP2.5']*conver+\
             roadX['Resus_EmissMP10']*conver+\
@@ -125,7 +126,7 @@ def ChemicalSpeciationHeavy(roadX,dfSpc,smm,conver):
                               dataEmissX['PK'] + dataEmissX['PMN'] +
                               dataEmissX['PNA'] + dataEmissX['PCL'] +
                               dataEmissX['PH2O'])
-    dataEmissX['SO2'] = roadX['Exh_EmissSO2']*conver/smm[smm.iloc[:,0]=='SO2'].MM
+    dataEmissX['SO2'] = roadX['Exh_EmissSO2']*conver/np.array(smm[smm.iloc[:,0]=='SO2'].MM)
     dataEmissX['VOC_INV'] = roadX['Exh_EmissNMHC']*conver + roadX['Evap_D_EmissNMHC']*conver +\
         roadX['Refuel_EmissNMHC']*conver + roadX['Evap_H_EmissNMHC']*conver + roadX['Evap_R_EmissNMHC']*conver
     return dataEmissX
