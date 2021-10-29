@@ -117,9 +117,9 @@ loni = -54 #loni = int(round(bound.minx)) # Initial longitude (lower-left)
 
 lonf = -47 #lonf = int(round(bound.maxx)) # Final longitude (upper-right)
 
-deltaX = 0.01 # Grid resolution/spacing in x direction
+deltaX = 0.05 # Grid resolution/spacing in x direction
 
-deltaY = 0.01 # Grig resolution/spacing in y direction
+deltaY = 0.05 # Grig resolution/spacing in y direction
 
 #---------------------------Vehicular emissions--------------------------------
 
@@ -184,7 +184,7 @@ if runOrnotMergeRoadEmiss==1:
 
 # Calling BRAVES2netCDF
 if runOrnotBRAVES2netCDF==1:
-    BRAVES2netCDF(outPath,folderSpec,outPath,years,fileId)
+    BRAVES2netCDF(outPath,folderSpec,outPath,years,fileId,roadDensPrefix)
 
 # Creating input files for CMAQ
 if runOrnotCMAQemiss==1:

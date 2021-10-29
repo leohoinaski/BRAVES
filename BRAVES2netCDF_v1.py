@@ -67,7 +67,7 @@ import datetime
 import numpy.matlib
 
 #%% -----------------------------INPUTS---------------------------------------
-conver = 1000000 # from tons to grams 
+conver = 1 # from grams to grams  :)
 
 #%% Gridding and populatingGrid functions
 
@@ -98,7 +98,7 @@ def populatingGridMat(dataMat,center,xX,yY):
 
 
 #%% Creating netCDF file
-def splitnetCDFfiles(dataEmiss,centerX,xX,yY,xv,yv,lat,lon,year,prefix,outPath,fileId):
+def splitnetCDFfiles(dataEmiss,centerX,xX,yY,xv,yv,lat,lon,year,prefix,outPath,fileId,roadDensPrefix):
     month = 1
     print('Spliting netCDF files')
        
@@ -118,7 +118,7 @@ def splitnetCDFfiles(dataEmiss,centerX,xX,yY,xv,yv,lat,lon,year,prefix,outPath,f
     disvec['day'] = 1
     disvec['hour'] = 00
     
-    name = 'BRAVESdatabaseAnnual_'+fileId+'_'+prefix+'_'+str(year)+'.nc'
+    name = 'BRAVESdatabaseAnnual_'+fileId+'_'+prefix+'_'+roadDensPrefix+'_'+str(year)+'.nc'
     dataTempo = populatingGridMat(dataMat[:,:,:],centerX,xX,yY)
     createNETCDFtemporal(outPath,name,dataTempo,xv,yv,lat,lon,centerX,disvec,month)
     print(name +' is ready')
@@ -129,9 +129,9 @@ def splitnetCDFfiles(dataEmiss,centerX,xX,yY,xv,yv,lat,lon,year,prefix,outPath,f
 
 #%%--------------Reading Road emission from BRAIN/BRAVES----------------------------------
 
-def BRAVES2netCDF (folder,folderSpec,outPath,years,fileId):
+def BRAVES2netCDF (folder,folderSpec,outPath,years,fileId,roadDensPrefix):
     print('===================STARTING BRAVES2netCDF_v1.py=======================')
-    conver = 1000000    
+    conver = 1    
     for year in years:
         file_path = [filename for filename in os.listdir(folder) if filename.startswith("BrRoadEmiss_BySource_Light_"+str(year)+'.csv')]
         print(file_path)
@@ -184,7 +184,7 @@ def BRAVES2netCDF (folder,folderSpec,outPath,years,fileId):
         centerX.to_crs("EPSG:4326")
         dataEmiss1 = ChemicalSpeciationLight(roadX,dfSpc,smm,conver)
         prefix = 'ComLight'
-        splitnetCDFfiles(dataEmiss1,centerX,xX,yY,xv,yv,lat,lon,year,prefix,outPath,fileId)
+        splitnetCDFfiles(dataEmiss1,centerX,xX,yY,xv,yv,lat,lon,year,prefix,outPath,fileId,roadDensPrefix)
         
         # Light
         file_path = [filename for filename in os.listdir(folder) if filename.startswith("BrRoadEmiss_BySource_Light_"+str(year)+".csv")]
@@ -198,7 +198,7 @@ def BRAVES2netCDF (folder,folderSpec,outPath,years,fileId):
         centerX.to_crs("EPSG:4326")
         dataEmiss2 = ChemicalSpeciationLight(roadX,dfSpc,smm,conver)
         prefix = 'Light'
-        splitnetCDFfiles(dataEmiss2,centerX,xX,yY,xv,yv,lat,lon,year,prefix,outPath,fileId)
+        splitnetCDFfiles(dataEmiss2,centerX,xX,yY,xv,yv,lat,lon,year,prefix,outPath,fileId,roadDensPrefix)
         
         # Motorcycles
         file_path = [filename for filename in os.listdir(folder) if filename.startswith("BrRoadEmiss_BySource_Motorcycle_"+str(year)+".csv")]
@@ -212,7 +212,7 @@ def BRAVES2netCDF (folder,folderSpec,outPath,years,fileId):
         centerX.to_crs("EPSG:4326")
         dataEmiss3 = ChemicalSpeciationLight(roadX,dfSpc,smm,conver)
         prefix = 'Motorcycles'
-        splitnetCDFfiles(dataEmiss3,centerX,xX,yY,xv,yv,lat,lon,year,prefix,outPath,fileId)
+        splitnetCDFfiles(dataEmiss3,centerX,xX,yY,xv,yv,lat,lon,year,prefix,outPath,fileId,roadDensPrefix)
         
         # Heavy
         file_path = [filename for filename in os.listdir(folder) if filename.startswith("BrRoadEmiss_BySource_Heavy_"+str(year)+".csv")]
@@ -226,12 +226,12 @@ def BRAVES2netCDF (folder,folderSpec,outPath,years,fileId):
         centerX.to_crs("EPSG:4326")
         dataEmiss4 = ChemicalSpeciationHeavy(roadX,dfSpc,smm,conver)
         prefix = 'Heavy'
-        splitnetCDFfiles(dataEmiss4,centerX,xX,yY,xv,yv,lat,lon,year,prefix,outPath,fileId)
+        splitnetCDFfiles(dataEmiss4,centerX,xX,yY,xv,yv,lat,lon,year,prefix,outPath,fileId,roadDensPrefix)
         
         
         #TOTAL EMISSIONS
         dataEmiss = dataEmiss1+dataEmiss2+dataEmiss3+dataEmiss4
         prefix='Total'
-        splitnetCDFfiles(dataEmiss,centerX,xX,yY,xv,yv,lat,lon,year,prefix,outPath,fileId)
+        splitnetCDFfiles(dataEmiss,centerX,xX,yY,xv,yv,lat,lon,year,prefix,outPath,fileId,roadDensPrefix)
         print('Your files are ready in: ' + outPath)
     return roadX, dataEmiss

@@ -40,7 +40,7 @@ shapely.speedups.enable()
 
 def roadEmiss(outPath,bravesPath,years,IBGE_CODES,roadDensPrefix):
     print('===================STARTING roadEmiss_v1.py=======================')
-    factor = 1000000 # converting to tons/year
+    factor = 1 # 
     for year in years:
         for IBGE_CODE in IBGE_CODES:
             # Opening road density file
