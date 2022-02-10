@@ -87,7 +87,7 @@ import pandas as pd
 #------------------------------Setting folders---------------------------------
 
 # Path to functions and BRAVESdatabase_main.py
-rootPath = "/media/leohoinaski/HDD/BRAVES_database"
+rootPath = os.path.abspath(os.getcwd())
 
 # Defining folder path with openstreetmaps folder
 dirPath = rootPath + "/Shapefiles"
@@ -102,20 +102,20 @@ bravesPath = rootPath +"/BRAVESoutputs"
 folderSpec = rootPath +'/ChemicalSpec'
 
 # Road file name - use gis_osm for states other than SC
-roadFileName = 'SC_ROADS.shp' # for SC 
+#roadFileName = 'SC_ROADS.shp' # for SC 
 #roadFileName='roadFl.shp'
-#roadFileName = 'gis_osm_roads_free_1.shp'
+roadFileName = 'gis_osm_roads_free_1.shp'
 
 #-------------------------Setting grid resolution------------------------------
 
 # Users can change the domain and resolution here.
-lati =-30 #lati = int(round(bound.miny)) # Initial latitude (lower-left)
+lati =-40 #lati = int(round(bound.miny)) # Initial latitude (lower-left)
 
-latf = -24 #latf = int(round(bound.maxy)) # Final latitude (upper-right)
+latf = 10 #latf = int(round(bound.maxy)) # Final latitude (upper-right)
 
-loni = -54 #loni = int(round(bound.minx)) # Initial longitude (lower-left)
+loni = -80 #loni = int(round(bound.minx)) # Initial longitude (lower-left)
 
-lonf = -47 #lonf = int(round(bound.maxx)) # Final longitude (upper-right)
+lonf = -30 #lonf = int(round(bound.maxx)) # Final longitude (upper-right)
 
 deltaX = 0.05 # Grid resolution/spacing in x direction
 
@@ -123,12 +123,16 @@ deltaY = 0.05 # Grig resolution/spacing in y direction
 
 #---------------------------Vehicular emissions--------------------------------
 
-IBGE_CODES = [42] # include the IBGE code from the states to be considered
+IBGE_CODES = [11,12,13,14,15,16,17,
+              21,22,23,24,25,26,27,28,29,
+              31,32,33,34,35,
+              41,42,43,
+              50,51,52,53] # include the IBGE code from the states to be considered
 
 
 #---------------------------- Time window--------------------------------------
 
-years=[2019]
+years=[2013,2014,2015,2016,2017,2018,2019]
 
 months = [1] # Set the month of your simulation
 
@@ -138,7 +142,7 @@ days = [1,2] # Set the day of your simulation
 #-------------------Controls and Outputs definition----------------------------
 
 # Run or not road density calculation.
-runOrnotRoadDens = 0 #0 for no and 1 for yes
+runOrnotRoadDens = 1 #0 for no and 1 for yes
 
 runOrnotRoadEmiss = 1 # 0 for no and 1 for yes
 
@@ -155,7 +159,7 @@ runOrnotCMAQemiss = 0 # 0 for no and 1 for yes
 files = ['BRAVESdatabaseAnnual_SC_ComLight_2013.nc'] # Define the files to disaggregate
 
 
-fileId = 'SC' # Code to identify your output files
+fileId = 'BR' # Code to identify your output files
 
 roadDensPrefix = str(deltaX)+'x'+str(deltaY) # grid definition identification
 
