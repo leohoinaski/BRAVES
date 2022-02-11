@@ -187,6 +187,10 @@ def roadDensity (dirPath,outPath,IBGE_CODES,lati,latf,loni,lonf,
     citySHP = gpd.read_file(dirPath+"/citySHP.shp")
     citySHP.columns = ['NM_MUNICIP','CD_GEOCMU','YEAR',
                          'UF','geometry']
+    
+    # Opening state shapefile
+    brSHP = gpd.read_file(dirPath+"/Brasil.shp")
+
 
     #==========================START PROCESSING==================================
     #Open shapefile with Brazilian states
@@ -245,8 +249,22 @@ def roadDensity (dirPath,outPath,IBGE_CODES,lati,latf,loni,lonf,
         
         
         print('State number = '+str(IBGE_CODES[pp]))
+        ufSHP = brSHP[brSHP['COD_UF']==IBGE_CODES[pp]]
+        #ufSHP = brSHP[brSHP['COD_UF']==21]
+        ufSHP = ufSHP.dissolve(by='UF')
+        ufSHP.crs = "EPSG:4326"
+        ufSHP = ufSHP.buffer(0.2, resolution=10)
+        print('Cliping roads into State number ' + str(pp) + ' - ' + brSHP[brSHP['COD_UF']==IBGE_CODES[pp]]['UF'].to_numpy()[0])
+        #Cliping roads inside city
+        try:
+            roads = gpd.clip(roads['geometry'], ufSHP)
+        except:
+            roads = gpd.clip(roads, ufSHP)
+        
+        
         shpSC = citySHP[citySHP.iloc[:,3]==IBGE_CODES[pp]]
         scALL = shpSC.dissolve(by='UF')
+        scALL.crs = "EPSG:4326"
         scBuffer = scALL.buffer(0.2, resolution=10)
         scBuffer.crs = "EPSG:4326"
         scBuffer.reset_index(drop=True, inplace=True)
@@ -289,10 +307,17 @@ def roadDensity (dirPath,outPath,IBGE_CODES,lati,latf,loni,lonf,
         #---------------------- Loop over each city
         print('Start processing')
         cpus = mp.cpu_count()
+        #cpus = 4
         cityChunks = np.array_split(shpSC, cpus)
         pool = mp.Pool(processes=cpus)  
         chunk_processes = [pool.apply_async(roadDensCity, 
                                             args=(chunk,roads,polUsed,indXUsed)) for chunk in cityChunks]        
+        
+        #new section
+        pool.close()
+        pool.join()    
+        #end new section
+        
         roadDensChunks = [chunk.get() for chunk in chunk_processes]
         #gridLength=roadDensCity (shpSC,roads,polUsed,indXUsed)
         gridLength= baseGrid
@@ -305,7 +330,7 @@ def roadDensity (dirPath,outPath,IBGE_CODES,lati,latf,loni,lonf,
             
         
         gridLength.to_csv(outPath+'/roadDensity_'+roadDensPrefix+'UF_'+str(IBGE_CODES[pp])+'.csv')
-        return gridLength
+    return gridLength
 
 
 

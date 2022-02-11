@@ -123,12 +123,16 @@ deltaY = 0.05 # Grig resolution/spacing in y direction
 
 #---------------------------Vehicular emissions--------------------------------
 
-IBGE_CODES = [11,12,13,14,15,16,17,
-              21,22,23,24,25,26,27,28,29,
+# IBGE_CODES = [11,12,13,14,15,16,17,
+#               21,22,23,24,25,26,27,28,29,
+#               31,32,33,34,35,
+#               41,42,43,
+#               50,51,52,53] # include the IBGE code from the states to be considered
+
+IBGE_CODES = [21,22,23,24,25,26,27,28,29,
               31,32,33,34,35,
               41,42,43,
-              50,51,52,53] # include the IBGE code from the states to be considered
-
+              50,51,52,53] 
 
 #---------------------------- Time window--------------------------------------
 
@@ -166,6 +170,7 @@ roadDensPrefix = str(deltaX)+'x'+str(deltaY) # grid definition identification
 
 #%%============================PROCESSING========================================
 
+print('=================== BRAVES database v1 =======================')
 # cd to the main folder
 os.chdir(rootPath)
 
