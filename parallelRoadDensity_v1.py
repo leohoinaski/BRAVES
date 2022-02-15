@@ -51,6 +51,9 @@ from shapely.geometry import Polygon, LineString
 import numpy as np
 import warnings; warnings.filterwarnings('ignore', 'GeoSeries.notna', UserWarning)
 import multiprocessing as mp
+from warnings import simplefilter
+simplefilter(action="ignore", category=pd.errors.PerformanceWarning)
+import shapely.wkt
 
 #%%
 def roadDensCity (shpSC,roads,polUsed,indXUsed): # kk in range(0,shpSC.shape[0]):
@@ -176,7 +179,9 @@ def roadDensCity (shpSC,roads,polUsed,indXUsed): # kk in range(0,shpSC.shape[0])
         gridLength['index'] = indXUsed
         gridLength['geometry'] = polUsed
         gridLength[shpSC.iloc[kk,1]] = rdensity
-    
+        
+        del rdensity,roadLenght,sumCel,roadClip,roadCity,roadCityNEW,\
+            roadLine,roadLine2
     return gridLength 
 #%%
 
@@ -189,7 +194,7 @@ def roadDensity (dirPath,outPath,IBGE_CODES,lati,latf,loni,lonf,
                          'UF','geometry']
     
     # Opening state shapefile
-    brSHP = gpd.read_file(dirPath+"/Brasil.shp")
+    #brSHP = gpd.read_file(dirPath+"/Brasil.shp")
 
 
     #==========================START PROCESSING==================================
@@ -231,36 +236,45 @@ def roadDensity (dirPath,outPath,IBGE_CODES,lati,latf,loni,lonf,
         if IBGE_CODES[pp]==11 or IBGE_CODES[pp]==12 or IBGE_CODES[pp]==13 or \
             IBGE_CODES[pp]==14 or IBGE_CODES[pp]==15 or IBGE_CODES[pp]==16 or \
                 IBGE_CODES[pp]==17:
-            roads = gpd.read_file(dirPath+"/norte-latest-free.shp/gis_osm_roads_free_1.shp")
+            #roads = gpd.read_file(dirPath+"/norte-latest-free.shp/gis_osm_roads_free_1.shp")
+            folder = dirPath+'/norte-latest-free.shp'
         elif IBGE_CODES[pp]==21 or IBGE_CODES[pp]==22 or IBGE_CODES[pp]==23 or \
             IBGE_CODES[pp]==24 or IBGE_CODES[pp]==25 or IBGE_CODES[pp]==26 or \
                 IBGE_CODES[pp]==27 or IBGE_CODES[pp]==28 or IBGE_CODES[pp]==29:
-            roads = gpd.read_file(dirPath+"/nordeste-latest-free.shp/gis_osm_roads_free_1.shp")
+            #roads = gpd.read_file(dirPath+"/nordeste-latest-free.shp/gis_osm_roads_free_1.shp")
+            folder = dirPath+'/nordeste-latest-free.shp'
         elif IBGE_CODES[pp]==31 or IBGE_CODES[pp]==32 or IBGE_CODES[pp]==33 or \
             IBGE_CODES[pp]==34 or IBGE_CODES[pp]==35:
-            roads = gpd.read_file(dirPath+"/sudeste-latest-free.shp/gis_osm_roads_free_1.shp")
+            #roads = gpd.read_file(dirPath+"/sudeste-latest-free.shp/gis_osm_roads_free_1.shp")
+            folder = dirPath+'/sudeste-latest-free.shp'
         elif IBGE_CODES[pp]==42:
-            roads = gpd.read_file(dirPath+"/sul-latest-free.shp/"+roadFileName)
+            #roads = gpd.read_file(dirPath+"/sul-latest-free.shp/"+roadFileName)
+            folder = dirPath+'/sul-latest-free.shp'
         elif IBGE_CODES[pp]==41 or IBGE_CODES[pp]==43:
-                roads = gpd.read_file(dirPath+"/sul-latest-free.shp/gis_osm_roads_free_1.shp")
+            #roads = gpd.read_file(dirPath+"/sul-latest-free.shp/gis_osm_roads_free_1.shp")
+            folder = dirPath+'/sul-latest-free.shp'
         elif IBGE_CODES[pp]==50 or IBGE_CODES[pp]==51 or IBGE_CODES[pp]==52 or \
             IBGE_CODES[pp]==53:
-            roads = gpd.read_file(dirPath+"/centro-oeste-latest-free.shp/gis_osm_roads_free_1.shp")                 
-        
+            #roads = gpd.read_file(dirPath+"/centro-oeste-latest-free.shp/gis_osm_roads_free_1.shp")
+            folder = dirPath+'/centro-oeste-latest-free.shp'                 
+    
         
         print('State number = '+str(IBGE_CODES[pp]))
-        ufSHP = brSHP[brSHP['COD_UF']==IBGE_CODES[pp]]
+        #ufSHP = brSHP[brSHP['COD_UF']==IBGE_CODES[pp]]
         #ufSHP = brSHP[brSHP['COD_UF']==21]
-        ufSHP = ufSHP.dissolve(by='UF')
-        ufSHP.crs = "EPSG:4326"
-        ufSHP = ufSHP.buffer(0.2, resolution=10)
-        print('Cliping roads into State number ' + str(pp) + ' - ' + brSHP[brSHP['COD_UF']==IBGE_CODES[pp]]['UF'].to_numpy()[0])
+        #ufSHP = ufSHP.dissolve(by='UF')
+        #ufSHP.crs = "EPSG:4326"
+        #ufSHP = ufSHP.buffer(0.2, resolution=10)
+        #print('Cliping roads into State number ' + str(pp) + ' - ' + brSHP[brSHP['COD_UF']==IBGE_CODES[pp]]['UF'].to_numpy()[0])
         #Cliping roads inside city
-        try:
-            roads = gpd.clip(roads['geometry'], ufSHP)
-        except:
-            roads = gpd.clip(roads, ufSHP)
-        
+        #try:
+        #    roads = gpd.clip(roads['geometry'], ufSHP)
+        #except:
+        #    roads = gpd.clip(roads, ufSHP)
+        roads = pd.read_csv(folder+'/roads_'+str(int(IBGE_CODES[pp]))+'.csv')
+        roads['geometry'] = roads['geometry'].map(shapely.wkt.loads)
+        roads = gpd.GeoDataFrame(roads, crs="EPSG:4326", geometry=roads['geometry'])
+
         
         shpSC = citySHP[citySHP.iloc[:,3]==IBGE_CODES[pp]]
         scALL = shpSC.dissolve(by='UF')
@@ -297,6 +311,7 @@ def roadDensity (dirPath,outPath,IBGE_CODES,lati,latf,loni,lonf,
         polAr = np.array(polygons) 
         polUsed = polAr[arr]
         indXUsed = indX[arr]
+        del polAr,arr,valL,scALL,scBuffer,boundSC
         
         
         # ====================== Calculating road density =========================== 
@@ -306,7 +321,7 @@ def roadDensity (dirPath,outPath,IBGE_CODES,lati,latf,loni,lonf,
         
         #---------------------- Loop over each city
         print('Start processing')
-        cpus = mp.cpu_count()
+        cpus = mp.cpu_count()-2
         #cpus = 4
         cityChunks = np.array_split(shpSC, cpus)
         pool = mp.Pool(processes=cpus)  
@@ -315,8 +330,10 @@ def roadDensity (dirPath,outPath,IBGE_CODES,lati,latf,loni,lonf,
         
         #new section
         pool.close()
-        pool.join()    
+        pool.join()  
+        pool.terminate()
         #end new section
+        del roads,polUsed,indXUsed
         
         roadDensChunks = [chunk.get() for chunk in chunk_processes]
         #gridLength=roadDensCity (shpSC,roads,polUsed,indXUsed)
