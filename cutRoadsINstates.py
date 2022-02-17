@@ -40,9 +40,7 @@ for pp in range (0,np.size(IBGE_CODES)):
     ufSHP = ufSHP.dissolve(by='UF')
     ufSHP.crs = "EPSG:4326"
     ufSHP = ufSHP.buffer(0.2, resolution=10)
-    print('Cliping roads into State number ' + str(pp) + ' - ' + brSHP[brSHP['COD_UF']==IBGE_CODES[pp]]['UF'].to_numpy()[0])
-    #Cliping roads inside city
-    print('Selecting states')
+
     print('Opening roads shapefile')
     if IBGE_CODES[pp]==11 or IBGE_CODES[pp]==12 or IBGE_CODES[pp]==13 or \
         IBGE_CODES[pp]==14 or IBGE_CODES[pp]==15 or IBGE_CODES[pp]==16 or \
@@ -74,7 +72,8 @@ for pp in range (0,np.size(IBGE_CODES)):
           ((roads['maxspeed']>80) & (roads['maxspeed']<160)) | 
           (roads['ref'].isnull()==False))]
     
-    
+    print('Cliping roads into State number ' + str(IBGE_CODES[pp]) + ' - ' + brSHP[brSHP['COD_UF']==IBGE_CODES[pp]]['UF'].to_numpy()[0])
+
     try:
         roadsUF = gpd.clip(roads['geometry'], ufSHP)
         highwaysUF = gpd.clip(highways['geometry'], ufSHP)
@@ -100,13 +99,10 @@ for pp in range (0,np.size(IBGE_CODES)):
     valL=[]
     
     
-    print('Selecting cells into state')
+    print('Cliping roads into cities')
+
     for kk in range(0,shpSC.shape[0]):       
-        roadCity =[]
-        cc=1
-        latitudes = []
-        longitudes = []
-        mlsTest =[]
+
         print('City number = ' + str(kk) + ' of ' + str(shpSC.shape[0]) +
               '  -'+ shpSC.iloc[kk,0])
         #Cliping roads inside city
@@ -117,8 +113,8 @@ for pp in range (0,np.size(IBGE_CODES)):
             roadCity = gpd.clip(roadsUF, shpSC.iloc[kk,4])
             highwaysCity = gpd.clip(highwaysUF, shpSC.iloc[kk,4])
             
-        roadCity.to_csv(folder+'/roadCity_'+shpSC['CD_GEOCMU'].values[0]+'.csv')
-        highwaysCity.to_csv(folder+'/highwaysCity_'+shpSC['CD_GEOCMU'].values[0]+'.csv')
+        roadCity.to_csv(folder+'/roadCity_'+shpSC['CD_GEOCMU'].values[kk]+'.csv')
+        highwaysCity.to_csv(folder+'/highwaysCity_'+shpSC['CD_GEOCMU'].values[kk]+'.csv')
         
     roadsUF.to_csv(folder+'/roadsUF_'+str(int(IBGE_CODES[pp]))+'.csv')
     highwaysUF.to_csv(folder+'/highwaysUF_'+str(int(IBGE_CODES[pp]))+'.csv')

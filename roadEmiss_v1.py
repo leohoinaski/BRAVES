@@ -124,7 +124,8 @@ def roadEmiss(outPath,bravesPath,years,IBGE_CODES,roadDensPrefix):
                 sumCity = df.sum()
                 for jj in range(0, df_emissYearState.shape[1]): 
                     emiss = pd.DataFrame()
-                    for ii in range(1,df.shape[1]):
+                    res = [i for i, val in enumerate(df.columns=='geometry') if val]
+                    for ii in range(res[0]+1,df.shape[1]):
                         dfec= df_emissYearState[(int(df.columns[ii]) == df_emissYearState.index)]       
                         emiss[str(df.columns[ii])] = (df.iloc[:,ii]/sumCity[(str(df.columns[ii]) == sumCity.index)].to_numpy())*dfec.iloc[0,jj]/factor
                     sumPOL = emiss.sum(axis=1)

@@ -123,16 +123,13 @@ deltaY = 0.05 # Grig resolution/spacing in y direction
 
 #---------------------------Vehicular emissions--------------------------------
 
-# IBGE_CODES = [11,12,13,14,15,16,17,
-#               21,22,23,24,25,26,27,28,29,
-#               31,32,33,35,
-#               41,42,43,
-#               50,51,52,53] # include the IBGE code from the states to be considered
-
-IBGE_CODES = [29,
+IBGE_CODES = [11,12,13,14,15,16,17,
+              21,22,23,24,25,26,27,28,29,
               31,32,33,35,
               41,42,43,
-              50,51,52,53] 
+              50,51,52,53] # include the IBGE code from the states to be considered
+
+#IBGE_CODES = [53] 
 
 #---------------------------- Time window--------------------------------------
 
@@ -146,7 +143,7 @@ days = [1,2] # Set the day of your simulation
 #-------------------Controls and Outputs definition----------------------------
 
 # Run or not road density calculation.
-runOrnotRoadDens = 1 #0 for no and 1 for yes
+runOrnotRoadDens = 0 #0 for no and 1 for yes
 
 runOrnotRoadEmiss = 1 # 0 for no and 1 for yes
 
