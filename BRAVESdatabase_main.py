@@ -107,15 +107,14 @@ folderSpec = rootPath +'/ChemicalSpec'
 roadFileName = 'gis_osm_roads_free_1.shp'
 
 #-------------------------Setting grid resolution------------------------------
-
 # Users can change the domain and resolution here.
-lati =-40 #lati = int(round(bound.miny)) # Initial latitude (lower-left)
+lati =-40 #(Brazil) #lati = int(round(bound.miny)) # Initial latitud>
 
-latf = 10 #latf = int(round(bound.maxy)) # Final latitude (upper-right)
+latf = 10 #(Brazil) #latf = int(round(bound.maxy)) # Final latitude (>
 
-loni = -80 #loni = int(round(bound.minx)) # Initial longitude (lower-left)
+loni = -80 #(Brazil) #loni = int(round(bound.minx)) # Initial longit>
 
-lonf = -30 #lonf = int(round(bound.maxx)) # Final longitude (upper-right)
+lonf = -30 #(Brazil) #lonf = int(round(bound.maxx)) # Final longitu>
 
 deltaX = 0.05 # Grid resolution/spacing in x direction
 
@@ -127,9 +126,15 @@ IBGE_CODES = [11,12,13,14,15,16,17,
               21,22,23,24,25,26,27,28,29,
               31,32,33,35,
               41,42,43,
-              50,51,52,53] # include the IBGE code from the states to be considered
+              50,51,52,53] # include the IBGE code from the states to be consid>
 
-#IBGE_CODES = [53] 
+#IBGE_CODES = [21,22,23,24,25,26,27,28,29] 
+            # Northeast - (lati = -20 / latf = -2 / loni = -52 / lonf = -32)
+
+# IBGE_CODES =  11 RO   12 ACRE  13 AM   14 RR   15 PA   16 AP   17 TO   21 MA
+#               22 PI   23 CE    24 RN   25 PB   26 PE   27 AL   28 SE   29 BA
+#               31 MG   32 ES    33 RJ   35 SP   41 PR   42 SC   43 RS   50 MS
+#               51 MT   52 GO    53 DF
 
 #---------------------------- Time window--------------------------------------
 
@@ -142,26 +147,45 @@ days = [1,2] # Set the day of your simulation
 
 #-------------------Controls and Outputs definition----------------------------
 
-# Run or not road density calculation.
+# Run or not road density calculation. If you choose this option, the 
+# roadDensity calculation will start. This might take long time if you set 
+# a large domain or small detalX/Y
 runOrnotRoadDens = 0 #0 for no and 1 for yes
 
-runOrnotRoadEmiss = 1 # 0 for no and 1 for yes
 
+# This option will set the type of source you want to run 
+runOrnotRoadEmiss = 1 # 0 for no and 1 for yes
+typeEmiss = 'non-exaustMP_no_resusp' #'TOTAL'/ 'Exhaust' / 'non-exaust' / 'non-exaustMP' / 
+             #'non-exaustMP_no_resusp'
+             
+             
+# This option will merge the emissions if you have more than one state
 runOrnotMergeRoadEmiss = 1 # 0 for no and 1 for yes
 
+
+
+# This option will create annual netCDF files
 runOrnotBRAVES2netCDF = 1 # 0 for no and 1 for yes
 
-# Create disaggregated files - temporal, spatial, and one specie
+
+# This option Create disaggregated files - temporal, spatial, and one specie
+# You should define the year and specie to create your files
 runOrnotTempFiles = 0 # 0 for no and 1 for yes
+yearsTempFiles=[2013] # Years to run the temporal files
 specs = ['SO2']  # Identification of the specie 
 
-# Create CMAQ emission inputs - temporal, spatial, and all species
+
+# This option create CMAQ emission inputs - temporal, spatial, and all species
+# You should define the annual file to creat the CMAQ inputs
 runOrnotCMAQemiss = 0 # 0 for no and 1 for yes
 files = ['BRAVESdatabaseAnnual_SC_ComLight_2013.nc'] # Define the files to disaggregate
 
 
-fileId = 'BR' # Code to identify your output files
+# This is the identification of your outputs
+fileId = 'BR' + '_' + typeEmiss # Code to identify your output files
 
+
+# THis is your grid identification 
 roadDensPrefix = str(deltaX)+'x'+str(deltaY) # grid definition identification
 
 
@@ -182,20 +206,20 @@ if runOrnotRoadDens==1:
 
 # Calling roadEmiss function
 if runOrnotRoadEmiss==1:
-    roadEmiss(outPath,bravesPath,years,IBGE_CODES,roadDensPrefix)
+    roadEmiss(outPath,bravesPath,years,IBGE_CODES,roadDensPrefix,typeEmiss)
 
 # Calling mergeRoadEmiss function 
 if runOrnotMergeRoadEmiss==1:
-    mergeRoadEmiss(outPath,years,IBGE_CODES,roadDensPrefix)
+    mergeRoadEmiss(outPath,years,IBGE_CODES,roadDensPrefix,typeEmiss)
 
 # Calling BRAVES2netCDF
 if runOrnotBRAVES2netCDF==1:
-    BRAVES2netCDF(outPath,folderSpec,outPath,years,fileId,roadDensPrefix)
+    BRAVES2netCDF(outPath,folderSpec,outPath,years,fileId,roadDensPrefix,typeEmiss)
 
 # Creating input files for CMAQ
 if runOrnotCMAQemiss==1:
     for file in files:
-        for year in years:
+        for year in yearsTempFiles:
             for month in months:
                 for day in days:
                     dataTempo=None
@@ -209,7 +233,7 @@ if runOrnotCMAQemiss==1:
 if runOrnotTempFiles==1:
     for spec in specs:
         for file in files:
-            for year in years:
+            for year in yearsTempFiles:
                 for month in months:
                     for day in days:
                         file_path = 'CMAQ_speciesMW.csv'

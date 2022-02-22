@@ -57,7 +57,8 @@ import shapely.wkt
 import os
 
 #%%
-def roadDensCity (shpSC,roads,polUsed,indXUsed): # kk in range(0,shpSC.shape[0]):
+def roadDensCity (shpSC,roads,polUsed,indXUsed): 
+    # kk in range(0,shpSC.shape[0]):
     # Seting initial values
     gridLength = gpd.GeoDataFrame()
     for kk in range(0,shpSC.shape[0]):       
@@ -69,7 +70,7 @@ def roadDensCity (shpSC,roads,polUsed,indXUsed): # kk in range(0,shpSC.shape[0])
         
         if shpSC.shape[0]==1:
             roadCity = roads.copy()
-            print('Roads inside city already cliped')
+            print('You have already cliped')
             
         else:
             print('City number = ' + str(kk) + ' of ' + str(shpSC.shape[0]) +
@@ -87,6 +88,7 @@ def roadDensCity (shpSC,roads,polUsed,indXUsed): # kk in range(0,shpSC.shape[0])
             #print('City with roads')
             if shpSC.shape[0]>1:
                 roadCity = gpd.GeoDataFrame({'geometry':roadCity})
+                roadCity=roadCity.reset_index()  
                 # Reset index of geodataframe
             else:
                 roadCity=roadCity.reset_index()    
@@ -96,12 +98,13 @@ def roadDensCity (shpSC,roads,polUsed,indXUsed): # kk in range(0,shpSC.shape[0])
             for rr in range(0,roadCity.shape[0]):
                 roadLenght = []
                 #polygons = []
+                
                 mlsTest = roadCity['geometry'][rr].wkt
                 mlsTest = mlsTest.split('(')
                 #print('Extracting coordinates')
                 # Check if geometry is multilinestring               
                 if mlsTest[0] == 'MULTILINESTRING ' or mlsTest[0] == 'MULTILINESTRING' :
-                    #roadCity = roadCity.drop(rr)
+                    #roadCity = roadCity.drop(r
                     #print('Multilinestring detected')
                     # Replacing multiline for linestring
                     for lin in range(2,len(mlsTest)):
@@ -190,9 +193,18 @@ def roadDensCity (shpSC,roads,polUsed,indXUsed): # kk in range(0,shpSC.shape[0])
         gridLength['index'] = indXUsed
         gridLength['geometry'] = polUsed
         gridLength[shpSC.iloc[kk,1]] = rdensity
-        
-        del rdensity,roadLenght,sumCel,roadClip,roadCity,roadCityNEW,\
+        try: 
+            del rdensity,roadLenght,sumCel,roadClip,roadCity,roadCityNEW,\
             roadLine,roadLine2
+        except:
+            rdensity=[]
+            roadLenght=[]
+            sumCel=[]
+            roadClip=[]
+            roadCity=[]
+            roadCityNEW=[]
+            roadLine=[]
+            roadLine2=[]
     return gridLength 
 
 
@@ -371,8 +383,13 @@ def roadDensity (dirPath,outPath,IBGE_CODES,lati,latf,loni,lonf,
                                
             #gpd.GeoDataFrame(pd.concat(roadDensChunks,axis=1), crs=shpSC.crs)
             del roadDensChunks, chunk_processes   
-            
-        del roads,polUsed,indXUsed 
+        try:   
+            del roads,polUsed,indXUsed 
+        except:
+            roads=[]
+            polUsed=[]
+            indXUsed=[]
+                
         gridLength.to_csv(outPath+'/roadDensity_'+roadDensPrefix+'UF_'+str(IBGE_CODES[pp])+'.csv')
     return gridLength
 

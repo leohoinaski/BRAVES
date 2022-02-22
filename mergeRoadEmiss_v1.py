@@ -39,7 +39,7 @@ shapely.speedups.enable()
 
 # ================================PROCESSING===================================
 
-def mergeRoadEmiss(outPath,years,IBGE_CODES,roadDensPrefix):
+def mergeRoadEmiss(outPath,years,IBGE_CODES,roadDensPrefix,typeEmiss):
     print('===================STARTING mergeRoadEmiss_v1.py=======================')
     
     basefile = outPath + '/baseGrid_'+roadDensPrefix+'.csv'
@@ -47,8 +47,8 @@ def mergeRoadEmiss(outPath,years,IBGE_CODES,roadDensPrefix):
     base = base.set_index('geometry')
     base = base.drop(base.columns[0], axis=1)
     
-    names = ['BySource_Light_','BySource_ComLight_','BySource_Heavy_',
-             'BySource_Motorcycle_']
+    names = ['BySource_Light_'+typeEmiss+'_','BySource_ComLight_'+typeEmiss+'_',
+             'BySource_Heavy_'+typeEmiss+'_','BySource_Motorcycle_'+typeEmiss+'_']
     
     for name in names:
         

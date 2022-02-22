@@ -37,8 +37,68 @@ from shapely import wkt
 import shapely.speedups
 shapely.speedups.enable()
 
+#%%
+def zeroEmiss (emiss,typeEmiss):
+    if typeEmiss =='Exhaust':
+        emiss['Refuel_EmissNMHC']=0
+        emiss['break_tier_EmissMP10']=0
+        emiss['wear_EmissMP10']=0
+        emiss['Resus_EmissMP10']=0
+        emiss['Evap_D_EmissNMHC']=0
+        emiss['Evap_H_EmissNMHC']=0
+        emiss['Evap_R_EmissNMHC']=0      
+    if typeEmiss =='non-exaust': 
+        emiss['Exh_EmissCO']=0
+        emiss['Exh_EmissHC']=0
+        emiss['Exh_EmissNMHC']=0
+        emiss['Exh_EmissCH4']=0
+        emiss['Exh_EmissNOx']=0
+        emiss['Exh_EmissRCHO']=0
+        emiss['Exh_EmissMP2.5']=0
+        emiss['Exh_EmissCO2']=0
+        emiss['Exh_EmissN2O']=0
+        emiss['Exh_EmissSO2']=0
+        emiss['Exh_EmissCO2eq']=0
+    if typeEmiss =='non-exaustMP': 
+        emiss['Exh_EmissCO']=0
+        emiss['Exh_EmissHC']=0
+        emiss['Exh_EmissNMHC']=0
+        emiss['Exh_EmissCH4']=0
+        emiss['Exh_EmissNOx']=0
+        emiss['Exh_EmissRCHO']=0
+        emiss['Exh_EmissMP2.5']=0
+        emiss['Exh_EmissCO2']=0
+        emiss['Exh_EmissN2O']=0
+        emiss['Exh_EmissSO2']=0
+        emiss['Refuel_EmissNMHC']=0
+        emiss['Exh_EmissCO2eq']=0
+        emiss['Evap_D_EmissNMHC']=0
+        emiss['Evap_H_EmissNMHC']=0
+        emiss['Evap_R_EmissNMHC']=0
+    if typeEmiss =='non-exaustMP_no_resusp': 
+        #print ('typeEmiss = non-exaustMP_no_resusp')
+        emiss['Exh_EmissCO']=0
+        emiss['Exh_EmissHC']=0
+        emiss['Exh_EmissNMHC']=0
+        emiss['Exh_EmissCH4']=0
+        emiss['Exh_EmissNOx']=0
+        emiss['Exh_EmissRCHO']=0
+        emiss['Exh_EmissMP2.5']=0
+        emiss['Exh_EmissCO2']=0
+        emiss['Exh_EmissN2O']=0
+        emiss['Exh_EmissSO2']=0
+        emiss['Refuel_EmissNMHC']=0
+        emiss['Exh_EmissCO2eq']=0
+        emiss['Evap_D_EmissNMHC']=0
+        emiss['Evap_H_EmissNMHC']=0
+        emiss['Evap_R_EmissNMHC']=0
+        emiss['Resus_EmissMP10']=0 
+    if typeEmiss =='TOTAL': 
+        emiss =  emiss.copy()
+    return emiss
 
-def roadEmiss(outPath,bravesPath,years,IBGE_CODES,roadDensPrefix):
+#%%
+def roadEmiss(outPath,bravesPath,years,IBGE_CODES,roadDensPrefix,typeEmiss):
     print('===================STARTING roadEmiss_v1.py=======================')
     factor = 1 # 
     for year in years:
@@ -48,14 +108,18 @@ def roadEmiss(outPath,bravesPath,years,IBGE_CODES,roadDensPrefix):
             df = pd.read_csv(file)
             #df.set_index(df['index'])
             df = df.drop(df.columns[0], axis=1)
+            df.columns = df.columns.str.replace(' ', '')
             df['geometry'] = df['geometry'].apply(wkt.loads)
             roadE = gpd.GeoDataFrame({'geometry':df['geometry']})
             roadE['index'] = df.index.values
-    
-            
+        
             # OPEN EMISSION DATA
-            df_emiss2 = pd.read_csv(bravesPath+"/EmissCityBRAVES_LightDuty_"+str(int(year))+".txt",skipinitialspace=True)
-            # Selecting year 
+            df_emiss2 = pd.read_csv(bravesPath+"/EmissCityBRAVES_LightDuty_"+str(int(year))+".txt",skipinitialspace=True)          
+            df_emiss2.columns = df_emiss2.columns.str.replace(' ', '')
+            
+            # Selecting emission type
+            df_emiss2 = zeroEmiss (df_emiss2,typeEmiss)   
+           # Selecting year 
             df_emissYear2 = df_emiss2[df_emiss2.iloc[:,0]==year]
             # Selecting state - IBGE code
             df_emissYearState2 = df_emissYear2[df_emissYear2.iloc[:,1]==IBGE_CODE]
@@ -71,6 +135,9 @@ def roadEmiss(outPath,bravesPath,years,IBGE_CODES,roadDensPrefix):
             # ================Commercial-ligh vehicles
             # Reading emissions data 
             df_emiss = pd.read_csv(bravesPath+"/EmissCityBRAVES_CommercialLight_"+str(int(year))+".txt",skipinitialspace=True)
+            df_emiss.columns = df_emiss.columns.str.replace(' ', '')
+            # Selecting emission type
+            df_emiss = zeroEmiss (df_emiss,typeEmiss)
             # Selecting year 
             df_emissYear = df_emiss[df_emiss.iloc[:,0]==year]
             # Selecting state - IBGE code
@@ -87,6 +154,9 @@ def roadEmiss(outPath,bravesPath,years,IBGE_CODES,roadDensPrefix):
             # ================motorcicles vehicles
             # Reading emissions data 
             df_emiss3 = pd.read_csv(bravesPath+"/EmissCityBRAVES_Motorcycle_"+str(int(year))+".txt",skipinitialspace=True)
+            df_emiss3.columns = df_emiss3.columns.str.replace(' ', '')
+            # Selecting emission type
+            df_emiss3 = zeroEmiss (df_emiss3,typeEmiss)
             # Selecting year 
             df_emissYear3 = df_emiss3[df_emiss3.iloc[:,0]==year]
             # Selecting state - IBGE code
@@ -104,6 +174,9 @@ def roadEmiss(outPath,bravesPath,years,IBGE_CODES,roadDensPrefix):
             # ================heavy vehicles
             # Reading emissions data 
             df_emiss4 = pd.read_csv(bravesPath+"/EmissCityBRAVES_HeavyDuty_"+str(int(year))+".txt",skipinitialspace=True)
+            df_emiss4.columns = df_emiss4.columns.str.replace(' ', '')
+            # Selecting emission type
+            df_emiss4 = zeroEmiss (df_emiss4,typeEmiss)
             # Selecting year 
             df_emissYear4 = df_emiss4[df_emiss4.iloc[:,0]==year]
             # Selecting state - IBGE code
@@ -133,10 +206,10 @@ def roadEmiss(outPath,bravesPath,years,IBGE_CODES,roadDensPrefix):
                 roadE2.to_csv(outPath+'/'+ name +'_' + str(year)+ '_UF_'+str(IBGE_CODE)+'.csv')
                 return roadE2
         
-            roadEmissBySource(df_emissYearState,df,'roadEmiss_BySource_ComLight',factor)
-            roadEmissBySource(df_emissYearState2,df,'roadEmiss_BySource_Light',factor)
-            roadEmissBySource(df_emissYearState4,df,'roadEmiss_BySource_Heavy',factor)
-            roadEmissBySource(df_emissYearState3,df,'roadEmiss_BySource_Motorcycle',factor)
+            roadEmissBySource(df_emissYearState,df,'roadEmiss_BySource_ComLight_'+typeEmiss,factor)
+            roadEmissBySource(df_emissYearState2,df,'roadEmiss_BySource_Light_'+typeEmiss,factor)
+            roadEmissBySource(df_emissYearState4,df,'roadEmiss_BySource_Heavy_'+typeEmiss,factor)
+            roadEmissBySource(df_emissYearState3,df,'roadEmiss_BySource_Motorcycle_'+typeEmiss,factor)
     
 
     return roadE       
