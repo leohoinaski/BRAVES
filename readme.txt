@@ -59,5 +59,7 @@ REQUIRED DATA:
 
 
 	See https://stackoverflow.com/questions/64038673/could-not-build-wheels-for-which-use-pep-517-and-cannot-be-installed-directly
+	sudo apt-get install libproj-dev proj-data proj-bin  
+	sudo apt-get install libgeos-dev  
 
 
