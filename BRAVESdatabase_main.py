@@ -61,7 +61,7 @@ Outputs:
     
     
 External functions:
-    roadDensity_v1, roadEmiss_v1, mergeRoadEmiss_v1, BRAVES2netCDF_v1,
+    parallelRoadDensity_v2, roadEmiss_v1, mergeRoadEmiss_v1, BRAVES2netCDF_v1,
     BRAVES_temporalDisag, createNETCDFtemporalfromNC, createNETCDFtemporalBySpecies
     
 
@@ -72,7 +72,7 @@ Author: Leonardo Hoinaski - leonardo.hoinaski@ufsc.br
 -------------------------------------------------------------------------------
 """
 #from roadDensity_v1 import roadDensity
-from parallelRoadDensity_v1 import roadDensity
+from roadDensity_v2 import roadDensity
 from roadEmiss_v1 import roadEmiss
 from mergeRoadEmiss_v1 import mergeRoadEmiss
 from BRAVES2netCDF_v1 import BRAVES2netCDF
@@ -108,7 +108,7 @@ roadFileName = 'gis_osm_roads_free_1.shp'
 
 #-------------------------Setting grid resolution------------------------------
 # Users can change the domain and resolution here.
-lati =-40 #(Brazil) #lati = int(round(bound.miny)) # Initial latitud>
+lati = -40 #(Brazil) #lati = int(round(bound.miny)) # Initial latitud>
 
 latf = 10 #(Brazil) #latf = int(round(bound.maxy)) # Final latitude (>
 
@@ -128,9 +128,15 @@ IBGE_CODES = [11,12,13,14,15,16,17,
               41,42,43,
               50,51,52,53] # include the IBGE code from the states to be consid>
 
-#IBGE_CODES = [21,22,23,24,25,26,27,28,29] 
+# IBGE_CODES = [11] 
+            # RO - (lati = -14 / latf = -6 / loni = -68 / lonf = -58)
+            # AC - (lati = -12 / latf = -6 / loni = -76 / lonf = -64)
+            # North - (lati = -16 / latf = 8 / loni = -76 / lonf = -44)
             # Northeast - (lati = -20 / latf = -2 / loni = -52 / lonf = -32)
-
+            # MidWest - (lati = -26 / latf = -6 / loni = -64 / lonf = -42)
+            # SouthEast - (lati = -28 / latf = -12 / loni = -56 / lonf = -38)
+            # South - (lati = -36 / latf = -20 / loni = -60 / lonf = -46)          
+            
 # IBGE_CODES =  11 RO   12 ACRE  13 AM   14 RR   15 PA   16 AP   17 TO   21 MA
 #               22 PI   23 CE    24 RN   25 PB   26 PE   27 AL   28 SE   29 BA
 #               31 MG   32 ES    33 RJ   35 SP   41 PR   42 SC   43 RS   50 MS
@@ -155,7 +161,7 @@ runOrnotRoadDens = 0 #0 for no and 1 for yes
 
 # This option will set the type of source you want to run 
 runOrnotRoadEmiss = 1 # 0 for no and 1 for yes
-typeEmiss = 'non-exaustMP_no_resusp' #'TOTAL'/ 'Exhaust' / 'non-exaust' / 'non-exaustMP' / 
+typeEmiss = 'non-exaustMP' #'TOTAL'/ 'Exhaust' / 'non-exaust' / 'non-exaustMP' / 
              #'non-exaustMP_no_resusp'
              
              
