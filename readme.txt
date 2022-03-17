@@ -65,6 +65,9 @@ UBUNTU REQUIREMENTS
 	sudo apt-get install libgeos-dev  
 	sudo apt-get install libhdf5-dev
 	sudo apt-get install libgdal-dev
+	sudo apt install build-essential 
+	sudo apt-get install python3-dev
+
 
 
 
