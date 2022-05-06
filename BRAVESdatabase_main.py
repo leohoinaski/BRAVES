@@ -72,7 +72,7 @@ Author: Leonardo Hoinaski - leonardo.hoinaski@ufsc.br
 -------------------------------------------------------------------------------
 """
 #from roadDensity_v1 import roadDensity
-from roadDensity_v2 import roadDensity
+from parallelRoadDensity_v2 import roadDensity
 from roadEmiss_v1 import roadEmiss
 from mergeRoadEmiss_v1 import mergeRoadEmiss
 from BRAVES2netCDF_v1 import BRAVES2netCDF
@@ -108,17 +108,18 @@ roadFileName = 'gis_osm_roads_free_1.shp'
 
 #-------------------------Setting grid resolution------------------------------
 # Users can change the domain and resolution here.
-lati = -40 #(Brazil) #lati = int(round(bound.miny)) # Initial latitud>
+lati = -26 #(Brazil) #lati = int(round(bound.miny)) # Initial latitud>
 
-latf = 10 #(Brazil) #latf = int(round(bound.maxy)) # Final latitude (>
+latf = -6 #(Brazil) #latf = int(round(bound.maxy)) # Final latitude (>
 
-loni = -80 #(Brazil) #loni = int(round(bound.minx)) # Initial longit>
+loni = -64 #(Brazil) #loni = int(round(bound.minx)) # Initial longit>
 
-lonf = -30 #(Brazil) #lonf = int(round(bound.maxx)) # Final longitu>
+lonf = -42 #(Brazil) #lonf = int(round(bound.maxx)) # Final longitu>
 
 deltaX = 0.05 # Grid resolution/spacing in x direction
 
 deltaY = 0.05 # Grig resolution/spacing in y direction
+
 
 #---------------------------Vehicular emissions--------------------------------
 
@@ -128,7 +129,7 @@ IBGE_CODES = [11,12,13,14,15,16,17,
               41,42,43,
               50,51,52,53] # include the IBGE code from the states to be consid>
 
-# IBGE_CODES = [11] 
+#IBGE_CODES = [31,32,33,35] 
             # RO - (lati = -14 / latf = -6 / loni = -68 / lonf = -58)
             # AC - (lati = -12 / latf = -6 / loni = -76 / lonf = -64)
             # North - (lati = -16 / latf = 8 / loni = -76 / lonf = -44)
@@ -156,12 +157,12 @@ days = [1,2] # Set the day of your simulation
 # Run or not road density calculation. If you choose this option, the 
 # roadDensity calculation will start. This might take long time if you set 
 # a large domain or small detalX/Y
-runOrnotRoadDens = 0 #0 for no and 1 for yes
+runOrnotRoadDens = 1 #0 for no and 1 for yes
 
 
 # This option will set the type of source you want to run 
 runOrnotRoadEmiss = 1 # 0 for no and 1 for yes
-typeEmiss = 'non-exaustMP' #'TOTAL'/ 'Exhaust' / 'non-exaust' / 'non-exaustMP' / 
+typeEmiss = 'TOTAL' #'TOTAL'/ 'Exhaust' / 'non-exaust' / 'non-exaustMP' / 
              #'non-exaustMP_no_resusp'
              
              
@@ -192,8 +193,8 @@ fileId = 'BR' + '_' + typeEmiss # Code to identify your output files
 
 
 # THis is your grid identification 
-roadDensPrefix = str(deltaX)+'x'+str(deltaY) # grid definition identification
-
+roadDensPrefix = fileId+str(deltaX)+'x'+str(deltaY) # grid definition identification
+#roadDensPrefix = str(deltaX)+'x'+str(deltaY) # grid definition identification
 
 #%%============================PROCESSING========================================
 

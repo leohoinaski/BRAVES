@@ -97,6 +97,21 @@ def zeroEmiss (emiss,typeEmiss):
         emiss =  emiss.copy()
     return emiss
 
+def roadEmissBySource(df_emissYearState,df,name,factor,outPath,year,IBGE_CODE):
+    roadE = gpd.GeoDataFrame({'geometry':df['geometry']})
+    roadE['index'] = df.index.values 
+    sumCity = df.sum()
+    for jj in range(0, df_emissYearState.shape[1]): 
+        emiss = pd.DataFrame()
+        res = [i for i, val in enumerate(df.columns=='geometry') if val]
+        for ii in range(res[0]+1,df.shape[1]):
+            dfec= df_emissYearState[(int(df.columns[ii]) == df_emissYearState.index)]       
+            emiss[str(df.columns[ii])] = (df.iloc[:,ii]/sumCity[(str(df.columns[ii]) == sumCity.index)].to_numpy())*dfec.iloc[0,jj]/factor
+        sumPOL = emiss.sum(axis=1)
+        roadE[df_emissYearState.columns[jj]] = sumPOL                 
+    roadE.to_csv(outPath+'/'+ name +'_' + str(year)+ '_UF_'+str(IBGE_CODE)+'.csv')
+    return roadE
+
 #%%
 def roadEmiss(outPath,bravesPath,years,IBGE_CODES,roadDensPrefix,typeEmiss):
     print('===================STARTING roadEmiss_v1.py=======================')
@@ -141,15 +156,15 @@ def roadEmiss(outPath,bravesPath,years,IBGE_CODES,roadDensPrefix,typeEmiss):
             # Selecting year 
             df_emissYear = df_emiss[df_emiss.iloc[:,0]==year]
             # Selecting state - IBGE code
-            df_emissYearState = df_emissYear[df_emissYear.iloc[:,1]==IBGE_CODE]
+            df_emissYearState1 = df_emissYear[df_emissYear.iloc[:,1]==IBGE_CODE]
             # Renaming the IBGE code column name 
-            df_emissYearState= df_emissYearState.rename(columns = {df_emissYearState.iloc[:,2].name:'IBGEcode'})
+            df_emissYearState1= df_emissYearState1.rename(columns = {df_emissYearState1.iloc[:,2].name:'IBGEcode'})
             # Set IBGEcode as index 
-            df_emissYearState = df_emissYearState.set_index(df_emissYearState.iloc[:,2].name)
+            df_emissYearState1 = df_emissYearState1.set_index(df_emissYearState1.iloc[:,2].name)
             # Converting index from object to integer
-            df_emissYearState.index.astype(int)
-            df_emissYearState=df_emissYearState.sort_index(axis = 0) 
-            df_emissYearState = df_emissYearState.replace("NaN ", 0)
+            df_emissYearState1.index.astype(int)
+            df_emissYearState1=df_emissYearState1.sort_index(axis = 0) 
+            df_emissYearState1 = df_emissYearState1.replace("NaN ", 0)
             
             # ================motorcicles vehicles
             # Reading emissions data 
@@ -191,25 +206,16 @@ def roadEmiss(outPath,bravesPath,years,IBGE_CODES,roadDensPrefix,typeEmiss):
             df_emissYearState4 = df_emissYearState4.replace(" " , "")
             df_emissYearState4 = df_emissYearState4.replace("NaN ", 0)
             
-            def roadEmissBySource(df_emissYearState,df,name,factor):
-                roadE2 = gpd.GeoDataFrame({'geometry':df['geometry']})
-                roadE2['index'] = df.index.values 
-                sumCity = df.sum()
-                for jj in range(0, df_emissYearState.shape[1]): 
-                    emiss = pd.DataFrame()
-                    res = [i for i, val in enumerate(df.columns=='geometry') if val]
-                    for ii in range(res[0]+1,df.shape[1]):
-                        dfec= df_emissYearState[(int(df.columns[ii]) == df_emissYearState.index)]       
-                        emiss[str(df.columns[ii])] = (df.iloc[:,ii]/sumCity[(str(df.columns[ii]) == sumCity.index)].to_numpy())*dfec.iloc[0,jj]/factor
-                    sumPOL = emiss.sum(axis=1)
-                    roadE2[df_emissYearState.columns[jj]] = sumPOL                 
-                roadE2.to_csv(outPath+'/'+ name +'_' + str(year)+ '_UF_'+str(IBGE_CODE)+'.csv')
-                return roadE2
+
         
-            roadEmissBySource(df_emissYearState,df,'roadEmiss_BySource_ComLight_'+typeEmiss,factor)
-            roadEmissBySource(df_emissYearState2,df,'roadEmiss_BySource_Light_'+typeEmiss,factor)
-            roadEmissBySource(df_emissYearState4,df,'roadEmiss_BySource_Heavy_'+typeEmiss,factor)
-            roadEmissBySource(df_emissYearState3,df,'roadEmiss_BySource_Motorcycle_'+typeEmiss,factor)
+            roadE1 = roadEmissBySource(df_emissYearState1,df,
+                              'roadEmiss_BySource_ComLight_'+typeEmiss,factor,outPath,year,IBGE_CODE)
+            roadE2 = roadEmissBySource(df_emissYearState2,df,
+                              'roadEmiss_BySource_Light_'+typeEmiss,factor,outPath,year,IBGE_CODE)
+            roadE4 = roadEmissBySource(df_emissYearState4,df,
+                              'roadEmiss_BySource_Heavy_'+typeEmiss,factor,outPath,year,IBGE_CODE)
+            roadE3 = roadEmissBySource(df_emissYearState3,df,
+                              'roadEmiss_BySource_Motorcycle_'+typeEmiss,factor,outPath,year,IBGE_CODE)
     
 
     return roadE       

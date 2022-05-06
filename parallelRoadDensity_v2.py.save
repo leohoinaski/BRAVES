@@ -1,4 +1,3 @@
-
 # -*- coding: utf-8 -*-
 """
 ---------------------------------------------------------------------------------
@@ -241,8 +240,8 @@ def roadDensity (dirPath,outPath,IBGE_CODES,lati,latf,loni,lonf,
     # -------------------------- Domain borders ----------------------------------
     # Grind covering entire country 
     print('Setting domain borders')
-    x = np.arange(loni, lonf+2*deltaX, deltaX)
-    y = np.arange(lati, latf+2*deltaY, deltaY)
+    x = np.linspace(loni, lonf, int((lonf-loni)/deltaX))
+    y = np.linspace(lati, latf, int((latf-lati)/deltaY))
 
     #Loop over each cel in x direction
     polygons=[]
@@ -391,12 +390,10 @@ def roadDensity (dirPath,outPath,IBGE_CODES,lati,latf,loni,lonf,
             #gridLength=roadDensCity (shpSC,roads,polUsed,indXUsed)
             gridLength= baseGrid.copy()
             for gg in range(0,len(roadDensChunks)):
-                if roadDensChunks[gg].shape[0]>0:
-                   try:    
-                      ggdf= roadDensChunks[gg].set_index('index')
-                      gridLength = pd.merge(gridLength, ggdf, on="geometry")
-                   except:
-                      print('No roadDensChunks inside')            
+                
+ggdf= roadDensChunks[gg].set_index('index')
+                gridLength = pd.merge(gridLength, ggdf, on="geometry")
+                               
             #gpd.GeoDataFrame(pd.concat(roadDensChunks,axis=1), crs=shpSC.crs)
             del roadDensChunks, chunk_processes   
         try:   
