@@ -58,6 +58,17 @@ REQUIRED DATA:
 	pip install -r requirements.txt
 
 
+UBUNTU LIBS
+
+	See https://stackoverflow.com/questions/64038673/could-not-build-wheels-for-which-use-pep-517-and-cannot-be-installed-directly
+	pip install --upgrade pip setuptools wheel
+	sudo apt-get install libproj-dev proj-data proj-bin  
+	sudo apt-get install libgeos-dev  
+	sudo apt-get install libhdf5-dev
+	sudo apt-get install libgdal-dev
+	sudo apt install build-essential 
+	sudo apt-get install python3-dev
+
 
 
 
