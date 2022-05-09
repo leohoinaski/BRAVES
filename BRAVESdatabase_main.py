@@ -108,18 +108,20 @@ roadFileName = 'gis_osm_roads_free_1.shp'
 
 #-------------------------Setting grid resolution------------------------------
 # Users can change the domain and resolution here.
-lati = -26 #(Brazil) #lati = int(round(bound.miny)) # Initial latitud>
+lati = -40 #(Brazil) #lati = int(round(bound.miny)) # Initial latitud>
 
-latf = -6 #(Brazil) #latf = int(round(bound.maxy)) # Final latitude (>
+latf = -10 #(Brazil) #latf = int(round(bound.maxy)) # Final latitude (>
 
-loni = -64 #(Brazil) #loni = int(round(bound.minx)) # Initial longit>
+loni = -80 #(Brazil) #loni = int(round(bound.minx)) # Initial longit>
 
-lonf = -42 #(Brazil) #lonf = int(round(bound.maxx)) # Final longitu>
+lonf = -30 #(Brazil) #lonf = int(round(bound.maxx)) # Final longitu>
 
 deltaX = 0.05 # Grid resolution/spacing in x direction
 
 deltaY = 0.05 # Grig resolution/spacing in y direction
 
+# This is the identification of your outputs
+fileId = 'BR_' # Code to identify your output files
 
 #---------------------------Vehicular emissions--------------------------------
 
@@ -129,7 +131,9 @@ IBGE_CODES = [11,12,13,14,15,16,17,
               41,42,43,
               50,51,52,53] # include the IBGE code from the states to be consid>
 
-#IBGE_CODES = [31,32,33,35] 
+IBGE_CODES = [31,32,33,35,
+              41,42,43,
+              50,51,52,53] 
             # RO - (lati = -14 / latf = -6 / loni = -68 / lonf = -58)
             # AC - (lati = -12 / latf = -6 / loni = -76 / lonf = -64)
             # North - (lati = -16 / latf = 8 / loni = -76 / lonf = -44)
@@ -188,9 +192,6 @@ runOrnotCMAQemiss = 0 # 0 for no and 1 for yes
 files = ['BRAVESdatabaseAnnual_SC_ComLight_2013.nc'] # Define the files to disaggregate
 
 
-# This is the identification of your outputs
-fileId = 'BR' + '_' + typeEmiss # Code to identify your output files
-
 
 # THis is your grid identification 
 roadDensPrefix = fileId+str(deltaX)+'x'+str(deltaY) # grid definition identification
@@ -221,7 +222,7 @@ if runOrnotMergeRoadEmiss==1:
 
 # Calling BRAVES2netCDF
 if runOrnotBRAVES2netCDF==1:
-    BRAVES2netCDF(outPath,folderSpec,outPath,years,fileId,roadDensPrefix,typeEmiss)
+    BRAVES2netCDF(outPath,folderSpec,outPath,years,fileId+typeEmiss,roadDensPrefix,typeEmiss)
 
 # Creating input files for CMAQ
 if runOrnotCMAQemiss==1:
@@ -232,7 +233,7 @@ if runOrnotCMAQemiss==1:
                     dataTempo=None
                     dataTempo,xv,yv,lat,lon,center,disvec,prefix=BRAVES_temporalDisag(rootPath,outPath,file,fileId,month,day,deltaX,deltaY)
                     for jj in np.unique(disvec.day):       
-                        name = 'BRAVESdatabase2CMAQ_'+fileId+'_'+prefix+'_'+str(year)+'_'+str(month)+'_'+str(jj)+'.nc'
+                        name = 'BRAVESdatabase2CMAQ_'+roadDensPrefix+typeEmiss+'_'+str(year)+'_'+str(month)+'_'+str(jj)+'.nc'
                         dayT = np.where(disvec.day==jj)
                         createNETCDFtemporalfromNC(outPath,name,dataTempo,xv,yv,lat,lon,center,disvec,month)
 
@@ -249,7 +250,7 @@ if runOrnotTempFiles==1:
                         dataTempo=None
                         dataTempo,xv,yv,lat,lon,center,disvec,prefix=BRAVES_temporalDisag(rootPath,outPath,file,fileId,month,day)
                         for jj in np.unique(disvec.day):       
-                            name = 'BRAVESdatabaseTempEmiss_'+fileId+'_'+prefix+'_'+str(year)+'_'+str(month)+'_'+str(jj)+'.nc'
+                            name = 'BRAVESdatabaseTempEmiss_'+roadDensPrefix+typeEmiss+'_'+str(year)+'_'+str(month)+'_'+str(jj)+'.nc'
                             dayT = np.where(disvec.day==jj)
                             createNETCDFtemporalBySpecies(outPath,name,
                                                           dataTempo[:,specIdx,:,:].reshape((dataTempo.shape[0],1,dataTempo.shape[2],dataTempo.shape[3])),

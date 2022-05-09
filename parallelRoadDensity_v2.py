@@ -62,7 +62,7 @@ import shapely.wkt
 def roadDensCity (shpSC,folder,polUsed,indXUsed): 
     # kk in range(0,shpSC.shape[0]):
     # Seting initial values
-    print('Start serial processing - number of cities small than 2')
+    #print('Start serial processing - number of cities small than 2')
     
     gridLength = gpd.GeoDataFrame()
     for kk in range(0,shpSC.shape[0]): 

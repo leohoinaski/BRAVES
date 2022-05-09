@@ -59,7 +59,8 @@ def mergeRoadEmiss(outPath,years,IBGE_CODES,roadDensPrefix,typeEmiss):
                 IBGE_CODE = int(IBGE_CODE)
                 # Opening road density file
                 #df = pd.read_csv('/home/leohoinaski/Desktop/smartPlatform/roadLength_UF_'+str(IBGE_CODE)+'.csv')        
-                file = outPath + '/roadEmiss_'+name+str(year)+'_UF_'+str(int(IBGE_CODE))+'.csv'
+                file = outPath + '/roadEmiss_'+name+'_'+typeEmiss+'_'+\
+                    roadDensPrefix +'_' + str(year)+ '_UF_'+str(IBGE_CODE)+'.csv'
                 df = pd.read_csv(file)
                 df = df.set_index('geometry')
                 df = df.drop(df.columns[0], axis=1)
@@ -77,7 +78,8 @@ def mergeRoadEmiss(outPath,years,IBGE_CODES,roadDensPrefix,typeEmiss):
             brEmiss['geometry'] =  brEmiss.index 
             brEmiss['geometry'] = brEmiss['geometry'].apply(wkt.loads) 
             brEmiss = gpd.GeoDataFrame(brEmiss, geometry='geometry')        
-            brEmiss.to_csv(outPath+'/BrRoadEmiss_'+name+str(year)+'.csv')
+            brEmiss.to_csv(outPath+'/mergeRoadEmiss_'+name+'_'+typeEmiss+'_'+\
+                roadDensPrefix +'_' + str(year)+'.csv')
         
 
 

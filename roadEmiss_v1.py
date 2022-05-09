@@ -209,13 +209,13 @@ def roadEmiss(outPath,bravesPath,years,IBGE_CODES,roadDensPrefix,typeEmiss):
 
         
             roadE1 = roadEmissBySource(df_emissYearState1,df,
-                              'roadEmiss_BySource_ComLight_'+typeEmiss,factor,outPath,year,IBGE_CODE)
+                              'roadEmiss_BySource_ComLight_'+typeEmiss+'_'+roadDensPrefix,factor,outPath,year,IBGE_CODE)
             roadE2 = roadEmissBySource(df_emissYearState2,df,
-                              'roadEmiss_BySource_Light_'+typeEmiss,factor,outPath,year,IBGE_CODE)
+                              'roadEmiss_BySource_Light_'+typeEmiss+'_'+roadDensPrefix,factor,outPath,year,IBGE_CODE)
             roadE4 = roadEmissBySource(df_emissYearState4,df,
-                              'roadEmiss_BySource_Heavy_'+typeEmiss,factor,outPath,year,IBGE_CODE)
+                              'roadEmiss_BySource_Heavy_'+typeEmiss+'_'+roadDensPrefix,factor,outPath,year,IBGE_CODE)
             roadE3 = roadEmissBySource(df_emissYearState3,df,
-                              'roadEmiss_BySource_Motorcycle_'+typeEmiss,factor,outPath,year,IBGE_CODE)
+                              'roadEmiss_BySource_Motorcycle_'+typeEmiss+'_'+roadDensPrefix,factor,outPath,year,IBGE_CODE)
     
 
     return roadE       

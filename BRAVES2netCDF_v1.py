@@ -134,14 +134,23 @@ def BRAVES2netCDF (folder,folderSpec,outPath,years,fileId,roadDensPrefix,typeEmi
     conver = 1    
     for year in years:
         file_path = [filename for filename in os.listdir(folder) if 
-                     filename.startswith("BrRoadEmiss_BySource_Light_"+typeEmiss+'_'+str(year)+'.csv')]
+                     filename.startswith("mergeRoadEmiss_BySource_Light_"+typeEmiss+'_'+\
+                         roadDensPrefix +'_' + str(year)+'.csv')]
         print(file_path)
         df = pd.read_csv(folder+'/'+file_path[0])
         roadE = gpd.GeoDataFrame(df) 
         roadE['geometry'] = roadE['geometry'].apply(wkt.loads) 
-        roadE.crs = "EPSG:4326"     
+        roadE.to_crs("EPSG:4326")     
         roadE=roadE.reset_index(drop=True)
         
+        geod = roadE.crs.get_geod()
+        area=[]
+        for re in roadE.geometry:
+            a = abs(geod.geometry_area_perimeter(re)[0])
+            area.append(a)
+        area = np.array(area)/(1000*1000)
+        
+
         
         # Extracting coords
         arrX = []
@@ -175,7 +184,8 @@ def BRAVES2netCDF (folder,folderSpec,outPath,years,fileId,roadDensPrefix,typeEmi
         
         #Commercial light
         file_path = [filename for filename in os.listdir(folder) if
-                     filename.startswith("BrRoadEmiss_BySource_ComLight_"+typeEmiss+'_'+str(year)+".csv")]
+                     filename.startswith("mergeRoadEmiss_BySource_ComLight_"+typeEmiss+'_'+\
+                         roadDensPrefix +'_' + str(year)+'.csv')]
         df = pd.read_csv(folder+'/'+file_path[0])
         roadX = gpd.GeoDataFrame(df) 
         roadX['geometry'] = roadX['geometry'].apply(wkt.loads) 
@@ -190,7 +200,8 @@ def BRAVES2netCDF (folder,folderSpec,outPath,years,fileId,roadDensPrefix,typeEmi
         
         # Light
         file_path = [filename for filename in os.listdir(folder) if 
-                     filename.startswith("BrRoadEmiss_BySource_Light_"+typeEmiss+'_'+str(year)+".csv")]
+                     filename.startswith("mergeRoadEmiss_BySource_Light_"+typeEmiss+'_'+\
+                         roadDensPrefix +'_' + str(year)+'.csv')]
         df = pd.read_csv(folder+'/'+file_path[0])
         roadX = gpd.GeoDataFrame(df) 
         roadX['geometry'] = roadX['geometry'].apply(wkt.loads) 
@@ -205,7 +216,8 @@ def BRAVES2netCDF (folder,folderSpec,outPath,years,fileId,roadDensPrefix,typeEmi
         
         # Motorcycles
         file_path = [filename for filename in os.listdir(folder) if 
-                     filename.startswith("BrRoadEmiss_BySource_Motorcycle_"+typeEmiss+'_'+str(year)+".csv")]
+                     filename.startswith("mergeRoadEmiss_BySource_Motorcycle_"+typeEmiss+'_'+\
+                         roadDensPrefix +'_' + str(year)+'.csv')]
         df = pd.read_csv(folder+'/'+file_path[0])
         roadX = gpd.GeoDataFrame(df) 
         roadX['geometry'] = roadX['geometry'].apply(wkt.loads) 
@@ -220,7 +232,8 @@ def BRAVES2netCDF (folder,folderSpec,outPath,years,fileId,roadDensPrefix,typeEmi
         
         # Heavy
         file_path = [filename for filename in os.listdir(folder) if 
-                     filename.startswith("BrRoadEmiss_BySource_Heavy_"+typeEmiss+'_'+str(year)+".csv")]
+                     filename.startswith("mergeRoadEmiss_BySource_Heavy_"+typeEmiss+'_'+\
+                         roadDensPrefix +'_' + str(year)+'.csv')]
         df = pd.read_csv(folder+'/'+file_path[0])
         roadX = gpd.GeoDataFrame(df) 
         roadX['geometry'] = roadX['geometry'].apply(wkt.loads) 
