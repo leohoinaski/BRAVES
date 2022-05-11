@@ -56,34 +56,60 @@ import multiprocessing as mp
 from warnings import simplefilter
 simplefilter(action="ignore", category=pd.errors.PerformanceWarning)
 import shapely.wkt
-#import os
+import os
 
 #%%
-def roadDensCity (shpSC,folder,polUsed,indXUsed): 
+def roadDensCity (shpSC,folder,polUsed,indXUsed,IBGEcod): 
     # kk in range(0,shpSC.shape[0]):
     # Seting initial values
     #print('Start serial processing - number of cities small than 2')
     
     gridLength = gpd.GeoDataFrame()
     for kk in range(0,shpSC.shape[0]): 
-        roads = pd.read_csv(folder+'/roadCity_'+shpSC['CD_GEOCMU'].values[kk]+'.csv')
-        roads = roads.drop(roads.columns[0], axis=1)
-        roads['geometry'] = roads['geometry'].map(shapely.wkt.loads)
-        roads = gpd.GeoDataFrame(roads, crs="EPSG:4326", geometry=roads['geometry'])
         roadCity =[]
         cc=1
         latitudes = []
         longitudes = []
         mlsTest =[]
         
-        if shpSC.shape[0]==1:
+        print('City number = ' + str(kk) + ' of ' + str(shpSC.shape[0]) +
+              '  -'+ shpSC.iloc[kk,0])
+        
+        file_path = [filename for filename in os.listdir(folder) if 
+                     filename.startswith(folder+'/roadCity_'+shpSC['CD_GEOCMU'].values[kk]+'.csv')]
+        if len(file_path)>0: 
+            print('You have the roadCity file for this city')
+            roads = pd.read_csv(folder+'/roadCity_'+shpSC['CD_GEOCMU'].values[kk]+'.csv')
+            roads = roads.drop(roads.columns[0], axis=1)
+            roads['geometry'] = roads['geometry'].map(shapely.wkt.loads)
+            roads = gpd.GeoDataFrame(roads, crs="EPSG:4326", geometry=roads['geometry'])
             roadCity = roads.copy()
-            print('You have already cliped')
-            
+
         else:
-            print('City number = ' + str(kk) + ' of ' + str(shpSC.shape[0]) +
-                  '  -'+ shpSC.iloc[kk,0])
-            #Cliping roads inside city
+            
+            if os.path.isfile(folder+'/roadsUF_'+str(int(IBGEcod))+'.csv'):
+                print('Using cliped roads in states')
+                roads = pd.read_csv(folder+'/roadsUF_'+str(int(IBGEcod))+'.csv')
+                roads = roads.drop(roads.columns[0], axis=1)
+                roads['geometry'] = roads['geometry'].map(shapely.wkt.loads)
+                roads = gpd.GeoDataFrame(roads, crs="EPSG:4326", geometry=roads['geometry'])
+            
+            else:
+                # Opening state shapefile
+                print('Using roads in region - it might take a bit longer')
+                shpFolder = os.path.normpath(folder +os.sep+os.pardir)
+                brSHP = gpd.read_file(shpFolder+"/Brasil.shp")
+                roads = gpd.read_file(folder+"/gis_osm_roads_free_1.shp")           
+                ufSHP = brSHP[brSHP['COD_UF']==IBGEcod]
+                ufSHP = ufSHP.dissolve(by='UF')
+                ufSHP.crs = "EPSG:4326"
+                ufSHP = ufSHP.buffer(0.2, resolution=10)
+                print('Cliping roads into State ' + str(IBGEcod))
+                #Cliping roads inside city
+                try:
+                    roads = gpd.clip(roads['geometry'], ufSHP)
+                except:
+                    roads = gpd.clip(roads, ufSHP)
             print('Cliping roads inside city')
             try:
                 roadCity = gpd.clip(roads['geometry'], shpSC.iloc[kk,4])
@@ -291,31 +317,7 @@ def roadDensity (dirPath,outPath,IBGE_CODES,lati,latf,loni,lonf,
         
         print('State number = '+str(IBGE_CODES[pp]))
         
-        # if os.path.isfile(folder+'/roadsUF_'+str(int(IBGE_CODES[pp]))+'.csv'):
-        #     print('Using cliped roads in states')
-        #     roads = pd.read_csv(folder+'/roadsUF_'+str(int(IBGE_CODES[pp]))+'.csv')
-        #     roads = roads.drop(roads.columns[0], axis=1)
-        #     roads['geometry'] = roads['geometry'].map(shapely.wkt.loads)
-        #     roads = gpd.GeoDataFrame(roads, crs="EPSG:4326", geometry=roads['geometry'])
-        
-        # else:
-        #     # Opening state shapefile
-        #     print('Using roads in region - it might take a bit longer')
-        #     brSHP = gpd.read_file(dirPath+"/Brasil.shp")
-        #     roads = gpd.read_file(folder+"/gis_osm_roads_free_1.shp")           
-        #     ufSHP = brSHP[brSHP['COD_UF']==IBGE_CODES[pp]]
-        #     ufSHP = brSHP[brSHP['COD_UF']==21]
-        #     ufSHP = ufSHP.dissolve(by='UF')
-        #     ufSHP.crs = "EPSG:4326"
-        #     ufSHP = ufSHP.buffer(0.2, resolution=10)
-        #     print('Cliping roads into State number ' + str(pp) + ' - ' + brSHP[brSHP['COD_UF']==IBGE_CODES[pp]]['UF'].to_numpy()[0])
-        #     #Cliping roads inside city
-        #     try:
-        #         roads = gpd.clip(roads['geometry'], ufSHP)
-        #     except:
-        #         roads = gpd.clip(roads, ufSHP)
-
-      
+     
         shpSC = citySHP[citySHP.iloc[:,3]==IBGE_CODES[pp]]
         scALL = shpSC.dissolve(by='UF')
         scALL.crs = "EPSG:4326"
@@ -370,7 +372,7 @@ def roadDensity (dirPath,outPath,IBGE_CODES,lati,latf,loni,lonf,
         #---------------------- Loop over each city
         if shpSC.shape[0] < 2:
 
-            gridLength = roadDensCity (shpSC,folder,polUsed,indXUsed)
+            gridLength = roadDensCity (shpSC,folder,polUsed,indXUsed,IBGE_CODES[pp])
             
         else:
         
@@ -380,7 +382,7 @@ def roadDensity (dirPath,outPath,IBGE_CODES,lati,latf,loni,lonf,
             cityChunks = np.array_split(shpSC, cpus)
             pool = mp.Pool(processes=cpus)  
             chunk_processes = [pool.apply_async(roadDensCity, 
-                                                args=(chunk,folder,polUsed,indXUsed)) for chunk in cityChunks]                    
+                                                args=(chunk,folder,polUsed,indXUsed,IBGE_CODES[pp])) for chunk in cityChunks]                    
             #new section
             pool.close()
             pool.join()  

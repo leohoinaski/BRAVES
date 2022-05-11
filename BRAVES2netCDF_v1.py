@@ -140,15 +140,15 @@ def BRAVES2netCDF (folder,folderSpec,outPath,years,fileId,roadDensPrefix,typeEmi
         df = pd.read_csv(folder+'/'+file_path[0])
         roadE = gpd.GeoDataFrame(df) 
         roadE['geometry'] = roadE['geometry'].apply(wkt.loads) 
-        roadE.to_crs("EPSG:4326")     
+        roadE.crs = "EPSG:4326"     
         roadE=roadE.reset_index(drop=True)
         
-        geod = roadE.crs.get_geod()
-        area=[]
-        for re in roadE.geometry:
-            a = abs(geod.geometry_area_perimeter(re)[0])
-            area.append(a)
-        area = np.array(area)/(1000*1000)
+        # geod = roadE.crs.get_geod()
+        # area=[]
+        # for re in roadE.geometry:
+        #     a = abs(geod.geometry_area_perimeter(re)[0])
+        #     area.append(a)
+        # area = np.array(area)/(1000*1000)
         
 
         

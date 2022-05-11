@@ -134,6 +134,9 @@ IBGE_CODES = [11,12,13,14,15,16,17,
 IBGE_CODES = [31,32,33,35,
               41,42,43,
               50,51,52,53] 
+
+IBGE_CODES = [31]
+
             # RO - (lati = -14 / latf = -6 / loni = -68 / lonf = -58)
             # AC - (lati = -12 / latf = -6 / loni = -76 / lonf = -64)
             # North - (lati = -16 / latf = 8 / loni = -76 / lonf = -44)
@@ -150,6 +153,7 @@ IBGE_CODES = [31,32,33,35,
 #---------------------------- Time window--------------------------------------
 
 years=[2013,2014,2015,2016,2017,2018,2019]
+years=[2013]
 
 months = [1] # Set the month of your simulation
 
