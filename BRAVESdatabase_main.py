@@ -174,7 +174,7 @@ days = [1,2] # Set the day of your simulation
 # Run or not road density calculation. If you choose this option, the 
 # roadDensity calculation will start. This might take long time if you set 
 # a large domain or small detalX/Y
-runOrnotRoadDens = 1 #0 for no and 1 for yes
+runOrnotRoadDens = 0 #0 for no and 1 for yes
 
 
 # This option will set the type of source you want to run 
