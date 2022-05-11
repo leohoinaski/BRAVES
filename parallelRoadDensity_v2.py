@@ -74,11 +74,13 @@ def roadDensCity (shpSC,folder,polUsed,indXUsed,IBGEcod):
         
         print('City number = ' + str(kk) + ' of ' + str(shpSC.shape[0]) +
               '  -'+ shpSC.iloc[kk,0])
+        print(folder+'/roadCity_'+shpSC['CD_GEOCMU'].values[kk]+'.csv')
         
         file_path = [filename for filename in os.listdir(folder) if 
-                     filename.startswith(folder+'/roadCity_'+shpSC['CD_GEOCMU'].values[kk]+'.csv')]
+                     filename.startswith('roadCity_'+shpSC['CD_GEOCMU'].values[kk])]
+        print(file_path)
         if len(file_path)>0: 
-            print('You have the roadCity file for this city')
+            print('You have the roadCity file for this city = ' + file_path[0])
             roads = pd.read_csv(folder+'/roadCity_'+shpSC['CD_GEOCMU'].values[kk]+'.csv')
             roads = roads.drop(roads.columns[0], axis=1)
             roads['geometry'] = roads['geometry'].map(shapely.wkt.loads)
@@ -259,7 +261,8 @@ def roadDensity (dirPath,outPath,IBGE_CODES,lati,latf,loni,lonf,
     print('===================STARTING roadDensity_v2.py=======================')
     print('')
     print('Author: Leonardo Hoinaski')
-    print('Last update: 25/02/2022')
+    print('')
+    print('====================================================================')
     print(' ')
     print(' ')
     print('Opening shapefiles ')

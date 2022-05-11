@@ -36,10 +36,20 @@ Inputs:
     years: Base-year for your simulation
     
     roadFileName = 'SC_ROADS.shp' # Only for Santa Catarina State = ID=42
+    
+    typeEmiss = 'TOTAL' = Total emissions/sum of emissions types
+                'Exhaust' = Only exhaust emissions
+                'non-exaust' = Only non-exhaust emissions
+                'non-exaustMP' = Only Particulate Matter non-exhaust emissions
+                'non-exaustMP_no_resusp'= Only Particulate Matter non-exhaust emissions 
+                                          excluding road resuspension 
+                 
         
     fileId = identification of your output files
     
     file = file to apply the temporal disaggregation
+    
+    
     
     
 Outputs:
@@ -63,9 +73,25 @@ Outputs:
 External functions:
     parallelRoadDensity_v2, roadEmiss_v1, mergeRoadEmiss_v1, BRAVES2netCDF_v1,
     BRAVES_temporalDisag, createNETCDFtemporalfromNC, createNETCDFtemporalBySpecies
-    
 
-Last update = 30/09/2021
+
+Domain suggestions:
+    BR - (lati = -36 / latf = 8 / loni = -76/ lonf = -38)
+    RO - (lati = -14 / latf = -6 / loni = -68 / lonf = -58)
+    AC - (lati = -12 / latf = -6 / loni = -76 / lonf = -64)
+    North - (lati = -16 / latf = 8 / loni = -76 / lonf = -44)
+    Northeast - (lati = -20 / latf = -2 / loni = -52 / lonf = -32)
+    MidWest - (lati = -26 / latf = -6 / loni = -64 / lonf = -42)
+    SouthEast - (lati = -28 / latf = -12 / loni = -56 / lonf = -38)
+    South - (lati = -36 / latf = -20 / loni = -60 / lonf = -46)          
+
+
+IBGE code description:                
+    IBGE_CODES =  11 RO   12 ACRE  13 AM   14 RR   15 PA   16 AP   17 TO   21 MA
+                  22 PI   23 CE    24 RN   25 PB   26 PE   27 AL   28 SE   29 BA
+                  31 MG   32 ES    33 RJ   35 SP   41 PR   42 SC   43 RS   50 MS
+                  51 MT   52 GO    53 DF    
+
 
 Author: Leonardo Hoinaski - leonardo.hoinaski@ufsc.br
 
@@ -108,13 +134,13 @@ roadFileName = 'gis_osm_roads_free_1.shp'
 
 #-------------------------Setting grid resolution------------------------------
 # Users can change the domain and resolution here.
-lati = -40 #(Brazil) #lati = int(round(bound.miny)) # Initial latitud>
+lati = -36 #(Brazil) #lati = int(round(bound.miny)) # Initial latitud>
 
-latf = -10 #(Brazil) #latf = int(round(bound.maxy)) # Final latitude (>
+latf = 8 #(Brazil) #latf = int(round(bound.maxy)) # Final latitude (>
 
-loni = -80 #(Brazil) #loni = int(round(bound.minx)) # Initial longit>
+loni = -76 #(Brazil) #loni = int(round(bound.minx)) # Initial longit>
 
-lonf = -30 #(Brazil) #lonf = int(round(bound.maxx)) # Final longitu>
+lonf = -38 #(Brazil) #lonf = int(round(bound.maxx)) # Final longitu>
 
 deltaX = 0.05 # Grid resolution/spacing in x direction
 
@@ -131,29 +157,12 @@ IBGE_CODES = [11,12,13,14,15,16,17,
               41,42,43,
               50,51,52,53] # include the IBGE code from the states to be consid>
 
-IBGE_CODES = [31,32,33,35,
-              41,42,43,
-              50,51,52,53] 
+IBGE_CODES = [11] 
 
-IBGE_CODES = [31]
-
-            # RO - (lati = -14 / latf = -6 / loni = -68 / lonf = -58)
-            # AC - (lati = -12 / latf = -6 / loni = -76 / lonf = -64)
-            # North - (lati = -16 / latf = 8 / loni = -76 / lonf = -44)
-            # Northeast - (lati = -20 / latf = -2 / loni = -52 / lonf = -32)
-            # MidWest - (lati = -26 / latf = -6 / loni = -64 / lonf = -42)
-            # SouthEast - (lati = -28 / latf = -12 / loni = -56 / lonf = -38)
-            # South - (lati = -36 / latf = -20 / loni = -60 / lonf = -46)          
-            
-# IBGE_CODES =  11 RO   12 ACRE  13 AM   14 RR   15 PA   16 AP   17 TO   21 MA
-#               22 PI   23 CE    24 RN   25 PB   26 PE   27 AL   28 SE   29 BA
-#               31 MG   32 ES    33 RJ   35 SP   41 PR   42 SC   43 RS   50 MS
-#               51 MT   52 GO    53 DF
 
 #---------------------------- Time window--------------------------------------
 
 years=[2013,2014,2015,2016,2017,2018,2019]
-years=[2013]
 
 months = [1] # Set the month of your simulation
 
@@ -170,13 +179,20 @@ runOrnotRoadDens = 1 #0 for no and 1 for yes
 
 # This option will set the type of source you want to run 
 runOrnotRoadEmiss = 1 # 0 for no and 1 for yes
-typeEmiss = 'TOTAL' #'TOTAL'/ 'Exhaust' / 'non-exaust' / 'non-exaustMP' / 
-             #'non-exaustMP_no_resusp'
+
+# Type of emission to run
+typeEmiss = 'TOTAL' 
+
+#'TOTAL' = Total emissions/sum of emissions types
+#'Exhaust' = Only exhaust emissions
+#'non-exaust' = Only non-exhaust emissions
+#'non-exaustMP' = Only Particulate Matter non-exhaust emissions
+#'non-exaustMP_no_resusp'= Only Particulate Matter non-exhaust emissions 
+#                          excluding road resuspension 
              
              
 # This option will merge the emissions if you have more than one state
 runOrnotMergeRoadEmiss = 1 # 0 for no and 1 for yes
-
 
 
 # This option will create annual netCDF files
@@ -203,7 +219,7 @@ roadDensPrefix = fileId+str(deltaX)+'x'+str(deltaY) # grid definition identifica
 
 #%%============================PROCESSING========================================
 
-print('=================== BRAVES database v1 =======================')
+print('====================== BRAVES database v1 ==========================')
 # cd to the main folder
 os.chdir(rootPath)
 

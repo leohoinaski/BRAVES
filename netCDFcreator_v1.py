@@ -43,7 +43,7 @@ import datetime
 
 
 #%% Creating a dataset
-def createNETCDFtemporal(folder,name,data,xv,yv,lat,lon,center,dates,month):
+def createNETCDFtemporal(folder,name,data,xX,yY,lat,lon,center,dates,month):
     print('===================STARTING netCDFcreator_v1.py=======================')
     cdate = datetime.datetime.now()
     cdateStr = int(str(cdate.year)+str(cdate.timetuple().tm_yday))
@@ -76,12 +76,12 @@ def createNETCDFtemporal(folder,name,data,xv,yv,lat,lon,center,dates,month):
     f2.STIME= 0
     f2.TSTEP= 10000
     f2.NTHIK= 1
-    f2.NCOLS= np.size(xv,1)-1
-    print('NCOLS=' +str(np.size(xv,1)-1))
-    f2.NROWS= np.size(yv,0)-1
-    print('NROWS=' +str(np.size(yv,0)-1))
+    f2.NCOLS= np.size(xX,1)
+    print('NCOLS=' +str(np.size(xX,1)))
+    f2.NROWS= np.size(yY,0)
+    print('NROWS=' +str(np.size(yY,0)))
     f2.NLAYS= 1
-    f2.NVARS= 62 #dataEmiss.shape[1]
+    f2.NVARS= 65 #dataEmiss.shape[1]
     f2.GDTYP= 1
     f2.P_ALP= -10
     f2.P_BET= 0
@@ -90,14 +90,14 @@ def createNETCDFtemporal(folder,name,data,xv,yv,lat,lon,center,dates,month):
     print('XCENT='+ str( center.x.mean()))
     f2.YCENT= center.y.mean()
     print('YCENT='+ str( center.y.mean()))
-    f2.XORIG= xv.min()
-    print('XORIG = ' + str(xv.min())) 
-    f2.YORIG= yv.min()
-    print('YORIG = ' + str(yv.min())) 
-    f2.XCELL= xv[0,1] - xv[0,0]
-    print('XCELL = '+str(xv[0,1] - xv[0,0]) )
-    f2.YCELL= yv[1,0] - yv[0,0]
-    print('YCELL = '+str(yv[1,0] - yv[0,0]) )
+    f2.XORIG= xX.min() - (xX[0,1] - xX[0,0])
+    print('XORIG = ' + str(xX.min() - (xX[0,1] - xX[0,0]))) 
+    f2.YORIG= yY.min() - (yY[0,1] - yY[0,0])
+    print('YORIG = ' + str(yY.min() - (yY[0,1] - yY[0,0]))) 
+    f2.XCELL= xX[0,1] - xX[0,0]
+    print('XCELL = '+str(xX[0,1] - xX[0,0]))
+    f2.YCELL= yY[1,0] - yY[0,0]
+    print('YCELL = '+str(yY[1,0] - yY[0,0]) )
     f2.VGTYP= -1
     f2.VGTOP= 0.0
     f2.VGLVLS= [0,0]
@@ -119,7 +119,7 @@ def createNETCDFtemporal(folder,name,data,xv,yv,lat,lon,center,dates,month):
     PNO3            POC             PRPA            PSI\n\
     PSO4            PTI             SO2             SOAALK\n\
     SULF            TERP            TOL             UNK\n\
-    UNR             VOC_INV         XYLMN'       
+    UNR             VOC_INV         XYLMN           PMFINE '        
     f2.VAR_LIST=strVAR
     f2.FILEDESC= 'BRAVES database vehicular emissions'
     f2.HISTORY ='' 
@@ -129,12 +129,14 @@ def createNETCDFtemporal(folder,name,data,xv,yv,lat,lon,center,dates,month):
     f2.createDimension('TSTEP', dates.shape[0])
     f2.createDimension('DATE-TIME', 2)
     f2.createDimension('LAY', 1)
-    f2.createDimension('VAR', 62)
+    f2.createDimension('VAR', 65)
     f2.createDimension('ROW', len(lat)-1)
     f2.createDimension('COL', len(lon)-1)
     
     # Building variables
     TFLAG = f2.createVariable('TFLAG', 'i4', ('TSTEP', 'VAR', 'DATE-TIME'))
+    LON = f2.createVariable('Longitute', 'f4', ( 'ROW','COL'))
+    LAT = f2.createVariable('Latitude', 'f4', ( 'ROW','COL'))
     #TFLAG = f2.createVariable('TFLAG', 'i4', ('TSTEP'))
     ACET = f2.createVariable('ACET', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
     ACROLEIN = f2.createVariable('ACROLEIN', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
@@ -198,11 +200,14 @@ def createNETCDFtemporal(folder,name,data,xv,yv,lat,lon,center,dates,month):
     UNR = f2.createVariable('UNR', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
     VOC_INV = f2.createVariable('VOC_INV', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
     XYLMN = f2.createVariable('XYLMN', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
-    
+    PMFINE = f2.createVariable('PMFINE', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
+
     
     # Passing data into variables
     TFLAG[:,:,:] = tflag
     #TFLAG[:] = dates.index
+    LAT[:,:,] =  yY
+    LON[:,:,] = xX
     print(str(ACET.shape) + str(data.shape))
     ACET[:,:,:,:] =  data[:,0,:,:]
     ACROLEIN[:,:,:,:] = data[:,1,:,:]
@@ -266,7 +271,7 @@ def createNETCDFtemporal(folder,name,data,xv,yv,lat,lon,center,dates,month):
     UNR[:,:,:,:] = data[:,59,:,:]
     VOC_INV[:,:,:,:] = data[:,60,:,:]
     XYLMN[:,:,:,:] = data[:,61,:,:]
-    
+    PMFINE[:,:,:,:] = data[:,62,:,:]
     
     
     #Add local attributes to variable instances
@@ -333,12 +338,15 @@ def createNETCDFtemporal(folder,name,data,xv,yv,lat,lon,center,dates,month):
     UNR.units = 'moles/year ' 
     VOC_INV.units = 'g/year ' 
     XYLMN.units = 'moles/year '
+    PMFINE.units = 'g/year '
+    LON.units = 'degrees '
+    LAT.units = 'degrees '
     
     f2.close()
     print('Your BRAVESdatabase netCDF file is ready!')
     
     #%% Creating a dataset
-def createNETCDFtemporalfromNC(folder,name,data,xv,yv,lat,lon,center,dates,month):
+def createNETCDFtemporalfromNC(folder,name,data,xX,yY,lat,lon,center,dates,month):
     print('===================STARTING netCDFcreator_v1.py=======================')
     cdate = datetime.datetime.now()
     cdateStr = int(str(cdate.year)+str(cdate.timetuple().tm_yday))
@@ -371,31 +379,31 @@ def createNETCDFtemporalfromNC(folder,name,data,xv,yv,lat,lon,center,dates,month
     f2.STIME= 0
     f2.TSTEP= 10000
     f2.NTHIK= 1
-    f2.NCOLS= np.size(xv,1)
-    f2.NROWS= np.size(yv,0)
+    f2.NCOLS= np.size(xX,1)
+    print('NCOLS=' +str(np.size(xX,1)))
+    f2.NROWS= np.size(yY,0)
+    print('NROWS=' +str(np.size(yY,0)))
     f2.NLAYS= 1
-    f2.NVARS= 62 #dataEmiss.shape[1]
+    f2.NVARS= 65 #dataEmiss.shape[1]
     f2.GDTYP= 1
     f2.P_ALP= -10
     f2.P_BET= 0
     f2.P_GAM= center.x.mean()
     f2.XCENT= center.x.mean()
+    print('XCENT='+ str( center.x.mean()))
     f2.YCENT= center.y.mean()
-    f2.XORIG= xv.min()
-    f2.YORIG= yv.min()
-    f2.XCELL= xv[0,1] - xv[0,0]
-    f2.YCELL= yv[1,0] - yv[0,0]
+    print('YCENT='+ str( center.y.mean()))
+    f2.XORIG= xX.min() - (xX[0,1] - xX[0,0])
+    print('XORIG = ' + str(xX.min() - (xX[0,1] - xX[0,0]))) 
+    f2.YORIG= yY.min() - (yY[0,1] - yY[0,0])
+    print('YORIG = ' + str(yY.min() - (yY[0,1] - yY[0,0]))) 
+    f2.XCELL= xX[0,1] - xX[0,0]
+    print('XCELL = '+str(xX[0,1] - xX[0,0]))
+    f2.YCELL= yY[1,0] - yY[0,0]
+    print('YCELL = '+str(yY[1,0] - yY[0,0]) )
     f2.VGTYP= -1
     f2.VGTOP= 0.0
     f2.VGLVLS= [0,0]
-    print('NCOLS=' +str(np.size(xv,1)))   
-    print('NROWS=' +str(np.size(yv,0)))   
-    print('XCENT='+ str( center.x.mean()))
-    print('YCENT='+ str( center.y.mean()))
-    print('XORIG = ' + str(xv.min())) 
-    print('YORIG = ' + str(yv.min())) 
-    print('XCELL = '+str(xv[0,1] - xv[0,0]) )
-    print('YCELL = '+str(yv[1,0] - yv[0,0]) )
     
     f2.GDNAM= 'SE53BENCH'       
     f2.UPNAM= 'M3WNDW'   
@@ -414,7 +422,8 @@ def createNETCDFtemporalfromNC(folder,name,data,xv,yv,lat,lon,center,dates,month
     PNO3            POC             PRPA            PSI\n\
     PSO4            PTI             SO2             SOAALK\n\
     SULF            TERP            TOL             UNK\n\
-    UNR             VOC_INV         XYLMN'       
+    UNR             VOC_INV                         XYLMN PMFINE'
+       
     f2.VAR_LIST=strVAR
     f2.FILEDESC= 'BRAVES database vehicular emissions'
     f2.HISTORY ='' 
@@ -424,12 +433,14 @@ def createNETCDFtemporalfromNC(folder,name,data,xv,yv,lat,lon,center,dates,month
     f2.createDimension('TSTEP', dates.shape[0])
     f2.createDimension('DATE-TIME', 2)
     f2.createDimension('LAY', 1)
-    f2.createDimension('VAR', 62)
+    f2.createDimension('VAR', 65)
     f2.createDimension('ROW', len(lon))
     f2.createDimension('COL', len(lat))
     
     # Building variables
     TFLAG = f2.createVariable('TFLAG', 'i4', ('TSTEP', 'VAR', 'DATE-TIME'))
+    LON = f2.createVariable('Longitute', 'f4', ( 'ROW','COL'))
+    LAT = f2.createVariable('Latitude', 'f4', ( 'ROW','COL'))
     #TFLAG = f2.createVariable('TFLAG', 'i4', ('TSTEP'))
     ACET = f2.createVariable('ACET', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
     ACROLEIN = f2.createVariable('ACROLEIN', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
@@ -493,10 +504,12 @@ def createNETCDFtemporalfromNC(folder,name,data,xv,yv,lat,lon,center,dates,month
     UNR = f2.createVariable('UNR', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
     VOC_INV = f2.createVariable('VOC_INV', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
     XYLMN = f2.createVariable('XYLMN', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
-    
+    PMFINE = f2.createVariable('PMFINE', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
     
     # Passing data into variables
     TFLAG[:,:,:] = tflag
+    LAT[:,:,] =  yY
+    LON[:,:,] = xX    
     #TFLAG[:] = dates.index
     print(str(ACET.shape) + str(data.shape))
     ACET[:,:,:,:] =  data[:,0,:,:]
@@ -561,7 +574,7 @@ def createNETCDFtemporalfromNC(folder,name,data,xv,yv,lat,lon,center,dates,month
     UNR[:,:,:,:] = data[:,59,:,:]
     VOC_INV[:,:,:,:] = data[:,60,:,:]
     XYLMN[:,:,:,:] = data[:,61,:,:]
-    
+    PMFINE[:,:,:,:] = data[:,62,:,:]
     
     
     #Add local attributes to variable instances
@@ -628,12 +641,15 @@ def createNETCDFtemporalfromNC(folder,name,data,xv,yv,lat,lon,center,dates,month
     UNR.units = 'moles/s ' 
     VOC_INV.units = 'g/s ' 
     XYLMN.units = 'moles/s '
-    
+    PMFINE.units = 'g/s '
+    LON.units = 'degrees '
+    LAT.units = 'degrees '
+   
     f2.close()
     print('Your BRAVESdatabase netCDF file is ready!')
 
 #%%
-def createNETCDFtemporalBySpecies(folder,name,data,xv,yv,lat,lon,center,dates,specie):
+def createNETCDFtemporalBySpecies(folder,name,data,xX,yY,lat,lon,center,dates,specie):
     cdate = datetime.datetime.now()
     cdateStr = int(str(cdate.year)+str(cdate.timetuple().tm_yday))
     ctime = int(str(cdate.hour)+str(cdate.minute)+str(cdate.second))
@@ -658,31 +674,30 @@ def createNETCDFtemporalBySpecies(folder,name,data,xv,yv,lat,lon,center,dates,sp
     f2.STIME= 0
     f2.TSTEP= 10000
     f2.NTHIK= 1
-    f2.NCOLS= np.size(xv,1)
-    f2.NROWS= np.size(yv,0)
+    print('NCOLS=' +str(np.size(xX,1)))
+    f2.NROWS= np.size(yY,0)
+    print('NROWS=' +str(np.size(yY,0)))
     f2.NLAYS= 1
-    f2.NVARS= data.shape[1]
+    f2.NVARS= 1 #dataEmiss.shape[1]
     f2.GDTYP= 1
     f2.P_ALP= -10
     f2.P_BET= 0
-    f2.P_GAM= center.x.mean()-(xv[0,1] - xv[0,0])
-    f2.XCENT= center.x.mean()-(xv[0,1] - xv[0,0])
-    f2.YCENT= center.y.mean()-(yv[1,0] - yv[0,0])
-    f2.XORIG= xv.min()
-    f2.YORIG= yv.min()
-    f2.XCELL= xv[0,1] - xv[0,0]
-    f2.YCELL= yv[1,0] - yv[0,0]
+    f2.P_GAM= center.x.mean()
+    f2.XCENT= center.x.mean()
+    print('XCENT='+ str( center.x.mean()))
+    f2.YCENT= center.y.mean()
+    print('YCENT='+ str( center.y.mean()))
+    f2.XORIG= xX.min() - (xX[0,1] - xX[0,0])
+    print('XORIG = ' + str(xX.min() - (xX[0,1] - xX[0,0]))) 
+    f2.YORIG= yY.min() - (yY[0,1] - yY[0,0])
+    print('YORIG = ' + str(yY.min() - (yY[0,1] - yY[0,0]))) 
+    f2.XCELL= xX[0,1] - xX[0,0]
+    print('XCELL = '+str(xX[0,1] - xX[0,0]))
+    f2.YCELL= yY[1,0] - yY[0,0]
+    print('YCELL = '+str(yY[1,0] - yY[0,0]) )
     f2.VGTYP= -1
     f2.VGTOP= 0.0
     f2.VGLVLS= [0,0]
-    print('NCOLS=' +str(np.size(xv,1)))   
-    print('NROWS=' +str(np.size(yv,0)))   
-    print('XCENT='+ str( center.x.mean()))
-    print('YCENT='+ str( center.y.mean()))
-    print('XORIG = ' + str(xv.min())) 
-    print('YORIG = ' + str(yv.min())) 
-    print('XCELL = '+str(xv[0,1] - xv[0,0]) )
-    print('YCELL = '+str(yv[1,0] - yv[0,0]) )
     
     f2.GDNAM= 'SE53BENCH'       
     f2.UPNAM= 'M3WNDW'   
@@ -705,6 +720,13 @@ def createNETCDFtemporalBySpecies(folder,name,data,xv,yv,lat,lon,center,dates,sp
     #TFLAG = f2.createVariable('TFLAG', 'i4', ('TSTEP'))
     TFLAG[:,:,:] = tflag
     TFLAG.units = '<YYYYDDD,HHMMSS>'
+    
+    LON = f2.createVariable('Longitute', 'f4', ( 'ROW','COL'))
+    LAT = f2.createVariable('Latitude', 'f4', ( 'ROW','COL'))  
+    LAT[:,:,] =  yY
+    LON[:,:,] = xX
+    LAT.units = 'degrees '
+    LON.units = 'degrees '
     
     if specie=='ACET':
         ACET = f2.createVariable('ACET', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
