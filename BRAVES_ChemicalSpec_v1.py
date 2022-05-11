@@ -83,6 +83,7 @@ def ChemicalSpeciationLight(roadX,dfSpc,smm,conver):
     dataEmissX['SO2'] = roadX['Exh_EmissSO2']*conver/np.array(smm[smm.iloc[:,0]=='SO2'].MM)
     dataEmissX['VOC_INV'] = roadX['Exh_EmissNMHC']*conver + roadX['Evap_D_EmissNMHC']*conver +\
         roadX['Refuel_EmissNMHC']*conver + roadX['Evap_H_EmissNMHC']*conver + roadX['Evap_R_EmissNMHC']*conver
+    dataEmissX['PMFINE'] = roadX['Exh_EmissMP2.5']*conver
     return dataEmissX
 
 def ChemicalSpeciationHeavy(roadX,dfSpc,smm,conver):  

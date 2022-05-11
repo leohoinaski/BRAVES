@@ -43,7 +43,7 @@ import datetime
 
 
 #%% Creating a dataset
-def createNETCDFtemporal(folder,name,data,xX,yY,lat,lon,center,dates,month):
+def createNETCDFtemporal(folder,name,data,xX,yY,lat,lon,center,dates,month,area):
     print('===================STARTING netCDFcreator_v1.py=======================')
     cdate = datetime.datetime.now()
     cdateStr = int(str(cdate.year)+str(cdate.timetuple().tm_yday))
@@ -56,17 +56,20 @@ def createNETCDFtemporal(folder,name,data,xX,yY,lat,lon,center,dates,month):
     #datesString = dates.index.strftime('%Y-%m-%d %H:%M:%S')
     #datesUsed= np.array([np.array(dates['TSTEP'].astype(str)),datesString]).transpose()
     #datesString= np.repeat(datesUsed[:, :, np.newaxis], data.shape[1], axis=2)
-    tflag = np.empty([dates.shape[0],62,2],dtype='i4')
+    tflag = np.empty([dates.shape[0],data.shape[1],2],dtype='i4')
     for ii in range(0,dates.shape[0]):
         tflag[ii,:,0]=int(dates['year'][0]*1000 + dates.index[ii].timetuple().tm_yday)
         tflag[ii,:,1]=int(str(dates['hour'][ii])+'0000')
     
     sdate =  dates['year'][0]*1000 + dates.index[0].timetuple().tm_yday            
 
+    # Reshape area array
+    area1 = area.reshape((np.size(xX,1),np.size(yY,0))).transpose()
+
     f2 = nc4.Dataset(folder+'/'+name,'w', format='NETCDF4_CLASSIC') #'w' stands for write    
     #Add global attributes
-    f2.IOAPI_VERSION ='$Id: @(#) ioapi library version 3.1 $'
-    f2.EXEC_ID = '???????????????'
+    #f2.IOAPI_VERSION ='$Id: @(#) ioapi library version 3.1 $'
+    #f2.EXEC_ID = '???????????????'
     f2.FTYPE =  1
     f2.CDATE= cdateStr
     f2.CTIME= ctime
@@ -76,34 +79,34 @@ def createNETCDFtemporal(folder,name,data,xX,yY,lat,lon,center,dates,month):
     f2.STIME= 0
     f2.TSTEP= 10000
     f2.NTHIK= 1
-    f2.NCOLS= np.size(xX,1)
-    print('NCOLS=' +str(np.size(xX,1)))
-    f2.NROWS= np.size(yY,0)
-    print('NROWS=' +str(np.size(yY,0)))
+    f2.NCOLS= data.shape[3]
+    print('NCOLS=' +str(data.shape[3]))
+    f2.NROWS= data.shape[2]
+    print('NROWS=' +str(data.shape[2]))
     f2.NLAYS= 1
-    f2.NVARS= 65 #dataEmiss.shape[1]
+    f2.NVARS= data.shape[1]
     f2.GDTYP= 1
     f2.P_ALP= -10
     f2.P_BET= 0
-    f2.P_GAM= center.x.mean()
-    f2.XCENT= center.x.mean()
-    print('XCENT='+ str( center.x.mean()))
-    f2.YCENT= center.y.mean()
-    print('YCENT='+ str( center.y.mean()))
-    f2.XORIG= xX.min() - (xX[0,1] - xX[0,0])
-    print('XORIG = ' + str(xX.min() - (xX[0,1] - xX[0,0]))) 
-    f2.YORIG= yY.min() - (yY[0,1] - yY[0,0])
-    print('YORIG = ' + str(yY.min() - (yY[0,1] - yY[0,0]))) 
-    f2.XCELL= xX[0,1] - xX[0,0]
-    print('XCELL = '+str(xX[0,1] - xX[0,0]))
-    f2.YCELL= yY[1,0] - yY[0,0]
-    print('YCELL = '+str(yY[1,0] - yY[0,0]) )
+    f2.P_GAM= round(xX.mean(),5)
+    f2.XCENT= round(xX.mean(),5)
+    print('XCENT='+ str(round(xX.mean(),5)))
+    f2.YCENT= round(yY.mean(),5)
+    print('YCENT='+ str(round(yY.mean(),5)))
+    f2.XORIG= np.round((xX.min() - (xX[0,1] - xX[0,0])/2),4)
+    print('XORIG = ' + str(np.round((xX.min() - (xX[0,1] - xX[0,0])/2),4))) 
+    f2.YORIG= np.round((yY.min() - (yY[1,0] - yY[0,0])/2),4)
+    print('YORIG = ' + str(np.round((yY.min() - (yY[1,0] - yY[0,0])/2),4))) 
+    f2.XCELL= round((xX[0,1] - xX[0,0]), 4)
+    print('XCELL = '+str(round(xX[0,1] - xX[0,0],4)))
+    f2.YCELL= round((yY[1,0] - yY[0,0]), 4)
+    print('YCELL = '+str(round(yY[1,0] - yY[0,0],4)))
     f2.VGTYP= -1
     f2.VGTOP= 0.0
     f2.VGLVLS= [0,0]
     
-    f2.GDNAM= 'SE53BENCH'       
-    f2.UPNAM= 'M3WNDW'   
+    #f2.GDNAM= 'SE53BENCH'       
+    #f2.UPNAM= 'M3WNDW'   
     strVAR = ' ACET            ACROLEIN        ALD2           \n\
     ALD2_PRIMARY    ALDX            BENZ            BUTADIENE13\n\
     CH4             CH4_INV         CL2             CO\n\
@@ -119,7 +122,7 @@ def createNETCDFtemporal(folder,name,data,xX,yY,lat,lon,center,dates,month):
     PNO3            POC             PRPA            PSI\n\
     PSO4            PTI             SO2             SOAALK\n\
     SULF            TERP            TOL             UNK\n\
-    UNR             VOC_INV         XYLMN           PMFINE '        
+    UNR             VOC_INV         XYLMN           PMFINE'        
     f2.VAR_LIST=strVAR
     f2.FILEDESC= 'BRAVES database vehicular emissions'
     f2.HISTORY ='' 
@@ -129,14 +132,15 @@ def createNETCDFtemporal(folder,name,data,xX,yY,lat,lon,center,dates,month):
     f2.createDimension('TSTEP', dates.shape[0])
     f2.createDimension('DATE-TIME', 2)
     f2.createDimension('LAY', 1)
-    f2.createDimension('VAR', 65)
-    f2.createDimension('ROW', len(lat)-1)
-    f2.createDimension('COL', len(lon)-1)
+    f2.createDimension('VAR', data.shape[1])
+    f2.createDimension('ROW', np.size(yY,0))
+    f2.createDimension('COL', np.size(xX,1))
     
     # Building variables
     TFLAG = f2.createVariable('TFLAG', 'i4', ('TSTEP', 'VAR', 'DATE-TIME'))
     LON = f2.createVariable('Longitute', 'f4', ( 'ROW','COL'))
     LAT = f2.createVariable('Latitude', 'f4', ( 'ROW','COL'))
+    AREA = f2.createVariable('AREA', 'f4', ( 'ROW','COL'))
     #TFLAG = f2.createVariable('TFLAG', 'i4', ('TSTEP'))
     ACET = f2.createVariable('ACET', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
     ACROLEIN = f2.createVariable('ACROLEIN', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
@@ -206,8 +210,12 @@ def createNETCDFtemporal(folder,name,data,xX,yY,lat,lon,center,dates,month):
     # Passing data into variables
     TFLAG[:,:,:] = tflag
     #TFLAG[:] = dates.index
-    LAT[:,:,] =  yY
-    LON[:,:,] = xX
+    print(yY.shape)
+    print(xX.shape)
+    LAT[:,:] =  yY
+    LON[:,:] = xX
+    print(area1.shape)
+    AREA[:,:] = area1
     print(str(ACET.shape) + str(data.shape))
     ACET[:,:,:,:] =  data[:,0,:,:]
     ACROLEIN[:,:,:,:] = data[:,1,:,:]
@@ -341,6 +349,7 @@ def createNETCDFtemporal(folder,name,data,xX,yY,lat,lon,center,dates,month):
     PMFINE.units = 'g/year '
     LON.units = 'degrees '
     LAT.units = 'degrees '
+    AREA.units = 'km2 '
     
     f2.close()
     print('Your BRAVESdatabase netCDF file is ready!')
@@ -359,7 +368,7 @@ def createNETCDFtemporalfromNC(folder,name,data,xX,yY,lat,lon,center,dates,month
     #datesString = dates.index.strftime('%Y-%m-%d %H:%M:%S')
     #datesUsed= np.array([np.array(dates['TSTEP'].astype(str)),datesString]).transpose()
     #datesString= np.repeat(datesUsed[:, :, np.newaxis], data.shape[1], axis=2)
-    tflag = np.empty([dates.shape[0],62,2],dtype='i4')
+    tflag = np.empty([dates.shape[0],data.shape[1],2],dtype='i4')
     for ii in range(0,dates.shape[0]):
         tflag[ii,:,0]=int(dates['year'][0]*1000 + dates.index[ii].timetuple().tm_yday)
         tflag[ii,:,1]=int(str(dates['hour'][ii])+'0000')
@@ -384,7 +393,7 @@ def createNETCDFtemporalfromNC(folder,name,data,xX,yY,lat,lon,center,dates,month
     f2.NROWS= np.size(yY,0)
     print('NROWS=' +str(np.size(yY,0)))
     f2.NLAYS= 1
-    f2.NVARS= 65 #dataEmiss.shape[1]
+    f2.NVARS= data.shape[1]
     f2.GDTYP= 1
     f2.P_ALP= -10
     f2.P_BET= 0
@@ -422,7 +431,7 @@ def createNETCDFtemporalfromNC(folder,name,data,xX,yY,lat,lon,center,dates,month
     PNO3            POC             PRPA            PSI\n\
     PSO4            PTI             SO2             SOAALK\n\
     SULF            TERP            TOL             UNK\n\
-    UNR             VOC_INV                         XYLMN PMFINE'
+    UNR             VOC_INV         XYLMN           PMFINE'
        
     f2.VAR_LIST=strVAR
     f2.FILEDESC= 'BRAVES database vehicular emissions'
@@ -433,7 +442,7 @@ def createNETCDFtemporalfromNC(folder,name,data,xX,yY,lat,lon,center,dates,month
     f2.createDimension('TSTEP', dates.shape[0])
     f2.createDimension('DATE-TIME', 2)
     f2.createDimension('LAY', 1)
-    f2.createDimension('VAR', 65)
+    f2.createDimension('VAR', data.shape[1])
     f2.createDimension('ROW', len(lon))
     f2.createDimension('COL', len(lat))
     
@@ -644,6 +653,7 @@ def createNETCDFtemporalfromNC(folder,name,data,xX,yY,lat,lon,center,dates,month
     PMFINE.units = 'g/s '
     LON.units = 'degrees '
     LAT.units = 'degrees '
+    AREA.units = 'km2 '
    
     f2.close()
     print('Your BRAVESdatabase netCDF file is ready!')

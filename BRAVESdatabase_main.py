@@ -157,12 +157,14 @@ IBGE_CODES = [11,12,13,14,15,16,17,
               41,42,43,
               50,51,52,53] # include the IBGE code from the states to be consid>
 
-IBGE_CODES = [11] 
+#IBGE_CODES = [11] 
 
 
 #---------------------------- Time window--------------------------------------
 
 years=[2013,2014,2015,2016,2017,2018,2019]
+
+#years = [2013]
 
 months = [1] # Set the month of your simulation
 
@@ -178,7 +180,7 @@ runOrnotRoadDens = 0 #0 for no and 1 for yes
 
 
 # This option will set the type of source you want to run 
-runOrnotRoadEmiss = 1 # 0 for no and 1 for yes
+runOrnotRoadEmiss = 0 # 0 for no and 1 for yes
 
 # Type of emission to run
 typeEmiss = 'TOTAL' 
@@ -192,7 +194,7 @@ typeEmiss = 'TOTAL'
              
              
 # This option will merge the emissions if you have more than one state
-runOrnotMergeRoadEmiss = 1 # 0 for no and 1 for yes
+runOrnotMergeRoadEmiss = 0 # 0 for no and 1 for yes
 
 
 # This option will create annual netCDF files

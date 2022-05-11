@@ -29,4 +29,4 @@ def baseAreaCalulator(outPath,roadDensPrefix):
     area = np.array(area)/(1000*1000) # area in km2
     return area
 
-area = baseAreaCalulator(outPath,roadDensPrefix)
+#area = baseAreaCalulator(outPath,roadDensPrefix)
