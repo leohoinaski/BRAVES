@@ -123,7 +123,11 @@ def roadDensCity (shpSC,folder,polUsed,indXUsed,IBGEcod):
         if roadCity.shape[0]>0 and roadCity[roadCity!=None].shape[0] >0 and roadCity.empty==False:
             #print('City with roads')
             if shpSC.shape[0]>1:
-                roadCity = gpd.GeoDataFrame({'geometry':roadCity})
+                try:
+                    roadCity = gpd.GeoDataFrame({'geometry':roadCity['geometry']})
+                except:
+                    roadCity = gpd.GeoDataFrame({'geometry':roadCity})
+                    
                 roadCity=roadCity.reset_index()  
                 # Reset index of geodataframe
             else:
@@ -391,7 +395,8 @@ def roadDensity (dirPath,outPath,IBGE_CODES,lati,latf,loni,lonf,
             pool.join()  
             pool.terminate()
             #end new section
-            #del polUsed,indXUsed            
+            #del polUsed,indXUsed    
+            chunk_processes
             roadDensChunks = [chunk.get() for chunk in chunk_processes]
             #gridLength=roadDensCity (shpSC,roads,polUsed,indXUsed)
             gridLength= baseGrid.copy()
@@ -403,13 +408,13 @@ def roadDensity (dirPath,outPath,IBGE_CODES,lati,latf,loni,lonf,
                    except:
                       print('No roadDensChunks inside')            
             #gpd.GeoDataFrame(pd.concat(roadDensChunks,axis=1), crs=shpSC.crs)
-            del roadDensChunks, chunk_processes   
-        try:   
-            del polUsed,indXUsed 
-        except:
-            roads=[]
-            polUsed=[]
-            indXUsed=[]
+        #     del roadDensChunks, chunk_processes   
+        # try:   
+        #     del polUsed,indXUsed 
+        # except:
+        #     roads=[]
+        #     polUsed=[]
+        #     indXUsed=[]
                 
         gridLength.to_csv(outPath+'/roadDensity_'+roadDensPrefix+'UF_'+str(IBGE_CODES[pp])+'.csv')
     return gridLength
