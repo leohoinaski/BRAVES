@@ -391,7 +391,7 @@ def roadDensity (dirPath,outPath,IBGE_CODES,lati,latf,loni,lonf,
             pool.join()  
             pool.terminate()
             #end new section
-            del polUsed,indXUsed            
+            #del polUsed,indXUsed            
             roadDensChunks = [chunk.get() for chunk in chunk_processes]
             #gridLength=roadDensCity (shpSC,roads,polUsed,indXUsed)
             gridLength= baseGrid.copy()
