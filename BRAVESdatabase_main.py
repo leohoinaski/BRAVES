@@ -253,11 +253,11 @@ if runOrnotCMAQemiss==1:
             for month in months:
                 for day in days:
                     dataTempo=None
-                    dataTempo,xv,yv,lat,lon,center,disvec,prefix=BRAVES_temporalDisag(rootPath,outPath,file,fileId,month,day,deltaX,deltaY)
+                    dataTempo,xX,yY,disvec,prefix,area = BRAVES_temporalDisag(rootPath,outPath,file,fileId,month,day,deltaX,deltaY)
                     for jj in np.unique(disvec.day):       
                         name = 'BRAVESdatabase2CMAQ_'+roadDensPrefix+typeEmiss+'_'+str(year)+'_'+str(month)+'_'+str(jj)+'.nc'
                         dayT = np.where(disvec.day==jj)
-                        createNETCDFtemporalfromNC(outPath,name,dataTempo,xv,yv,lat,lon,center,disvec,month)
+                        createNETCDFtemporalfromNC(outPath,name,dataTempo,xX,yY,disvec,area)
 
 # Creating temporal files for one specie
 if runOrnotTempFiles==1:
@@ -270,10 +270,10 @@ if runOrnotTempFiles==1:
                         smm = pd.read_csv(folderSpec+'/'+file_path)
                         specIdx=smm[smm.ID==spec].index.to_numpy()[0]
                         dataTempo=None
-                        dataTempo,xv,yv,lat,lon,center,disvec,prefix=BRAVES_temporalDisag(rootPath,outPath,file,fileId,month,day)
+                        dataTempo,xX,yY,disvec,prefix,area=BRAVES_temporalDisag(rootPath,outPath,file,fileId,month,day)
                         for jj in np.unique(disvec.day):       
                             name = 'BRAVESdatabaseTempEmiss_'+roadDensPrefix+typeEmiss+'_'+str(year)+'_'+str(month)+'_'+str(jj)+'.nc'
                             dayT = np.where(disvec.day==jj)
                             createNETCDFtemporalBySpecies(outPath,name,
                                                           dataTempo[:,specIdx,:,:].reshape((dataTempo.shape[0],1,dataTempo.shape[2],dataTempo.shape[3])),
-                                                          xv,yv,lat,lon,center,disvec,spec)
+                                                          xX,yY,disvec,spec,area)

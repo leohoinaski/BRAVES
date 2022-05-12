@@ -149,21 +149,25 @@ def BRAVES_temporalDisag(rootPath,outPath,file,fileId,month,day,dx,dy):
         dataloop = ds[dataVar[ii]][:]
         dataNC =np.concatenate((dataloop,dataNC), axis=1)
     
-    # Informações das grades 
-    xi = ds.getncattr('XORIG')
-    yi = ds.getncattr('YORIG')
-    dx = ds.getncattr('XCELL')
-    dy = ds.getncattr('YCELL')
+    # # Informações das grades 
+    # xi = ds.getncattr('XORIG')
+    # yi = ds.getncattr('YORIG')
+    # dx = ds.getncattr('XCELL')
+    # dy = ds.getncattr('YCELL')
     
-    center = {'x': [float(ds.XCENT)],'y': [float(ds.YCENT)] }
-    center = pd.DataFrame(center)
+    # center = {'x': [float(ds.XCENT)],'y': [float(ds.YCENT)] }
+    # center = pd.DataFrame(center)
 
-    lat = np.linspace(yi, yi+(dy*(dataNC.shape[3])), dataNC.shape[3])
-    lon = np.linspace(xi, xi+(dx*(dataNC.shape[2])), dataNC.shape[2])
-    xv, yv = np.meshgrid(lon, lat)
+    # lat = np.linspace(yi, yi+(dy*(dataNC.shape[3])), dataNC.shape[3])
+    # lon = np.linspace(xi, xi+(dx*(dataNC.shape[2])), dataNC.shape[2])
+    # xv, yv = np.meshgrid(lon, lat)
+    
+    xX = ds['LON'][:]
+    yY = ds['LAT'][:]
+    area = ds['AREA'][:]
     
     # Calling local2UTC
-    lc2utc, tag = local2UTC(xv,yv)
+    lc2utc, tag = local2UTC(xX,yY)
     
     # Calling temporalDisagVehicular
     dataTempo,datePfct,disvec = temporalDisagVehicular(dataNC,year,month,day,
@@ -172,4 +176,4 @@ def BRAVES_temporalDisag(rootPath,outPath,file,fileId,month,day,dx,dy):
     
 
     
-    return dataTempo,xv,yv,lat,lon,center,disvec,prefix
+    return dataTempo,xX,yY,disvec,prefix,area

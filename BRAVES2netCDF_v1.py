@@ -60,7 +60,7 @@ from shapely import wkt
 import numpy as np
 from shapely.geometry import MultiLineString
 from shapely.ops import polygonize
-from netCDFcreator_v1 import createNETCDFtemporal
+from netCDFcreator_v1 import createNETCDFannual
 #from BRAVES_temporalDisag import temporalDisagVehicular
 from BRAVES_ChemicalSpec_v1 import ChemicalSpeciationLight, ChemicalSpeciationHeavy
 import datetime
@@ -102,7 +102,7 @@ def populatingGridMat(dataMat,center,xX,yY):
 
 
 #%% Creating netCDF file
-def splitnetCDFfiles(dataEmiss,centerX,xX,yY,xv,yv,lat,lon,year,prefix,outPath,
+def splitnetCDFfiles(dataEmiss,centerX,xX,yY,year,prefix,outPath,
                      fileId,roadDensPrefix,area):
     month = 1
     print('Spliting netCDF files')
@@ -125,8 +125,7 @@ def splitnetCDFfiles(dataEmiss,centerX,xX,yY,xv,yv,lat,lon,year,prefix,outPath,
     
     name = 'BRAVESdatabaseAnnual_'+fileId+'_'+prefix+'_'+roadDensPrefix+'_'+str(year)+'.nc'
     dataTempo = populatingGridMat(dataMat[:,:,:],centerX,xX,yY)
-    createNETCDFtemporal(outPath,name,dataTempo,xX,yY,lat,lon,centerX,disvec,
-                         month,area)
+    createNETCDFannual(outPath,name,dataTempo,xX,yY,disvec,area)
     print(name +' is ready')
     
     return dataTempo
@@ -212,7 +211,7 @@ def BRAVES2netCDF (folder,folderSpec,outPath,years,fileId,roadDensPrefix,typeEmi
         centerX.to_crs("EPSG:4326")
         dataEmiss1 = ChemicalSpeciationLight(roadX,dfSpc,smm,conver)
         prefix = 'ComLight'
-        splitnetCDFfiles(dataEmiss1,centerX,xX,yY,xv,yv,lat,lon,year,prefix,
+        splitnetCDFfiles(dataEmiss1,centerX,xX,yY,year,prefix,
                          outPath,fileId,roadDensPrefix,area)
         
         # Light
@@ -229,7 +228,7 @@ def BRAVES2netCDF (folder,folderSpec,outPath,years,fileId,roadDensPrefix,typeEmi
         centerX.to_crs("EPSG:4326")
         dataEmiss2 = ChemicalSpeciationLight(roadX,dfSpc,smm,conver)
         prefix = 'Light'
-        splitnetCDFfiles(dataEmiss2,centerX,xX,yY,xv,yv,lat,lon,year,prefix,
+        splitnetCDFfiles(dataEmiss2,centerX,xX,yY,year,prefix,
                          outPath,fileId,roadDensPrefix,area)
         
         # Motorcycles
@@ -246,7 +245,7 @@ def BRAVES2netCDF (folder,folderSpec,outPath,years,fileId,roadDensPrefix,typeEmi
         centerX.to_crs("EPSG:4326")
         dataEmiss3 = ChemicalSpeciationLight(roadX,dfSpc,smm,conver)
         prefix = 'Motorcycles'
-        splitnetCDFfiles(dataEmiss3,centerX,xX,yY,xv,yv,lat,lon,year,prefix,
+        splitnetCDFfiles(dataEmiss3,centerX,xX,yY,year,prefix,
                          outPath,fileId,roadDensPrefix,area)
         
         # Heavy
@@ -263,14 +262,14 @@ def BRAVES2netCDF (folder,folderSpec,outPath,years,fileId,roadDensPrefix,typeEmi
         centerX.to_crs("EPSG:4326")
         dataEmiss4 = ChemicalSpeciationHeavy(roadX,dfSpc,smm,conver)
         prefix = 'Heavy'
-        splitnetCDFfiles(dataEmiss4,centerX,xX,yY,xv,yv,lat,lon,year,prefix,
+        splitnetCDFfiles(dataEmiss4,centerX,xX,yY,year,prefix,
                          outPath,fileId,roadDensPrefix,area)
         
         
         #TOTAL EMISSIONS
         dataEmiss = dataEmiss1+dataEmiss2+dataEmiss3+dataEmiss4
         prefix='Total'
-        splitnetCDFfiles(dataEmiss,centerX,xX,yY,xv,yv,lat,lon,year,prefix,
+        splitnetCDFfiles(dataEmiss,centerX,xX,yY,year,prefix,
                          outPath,fileId,roadDensPrefix,area)
         print('Your files are ready in: ' + outPath)
     return roadX, dataEmiss
