@@ -176,11 +176,11 @@ days = [1,2] # Set the day of your simulation
 # Run or not road density calculation. If you choose this option, the 
 # roadDensity calculation will start. This might take long time if you set 
 # a large domain or small detalX/Y
-runOrnotRoadDens = 0 #0 for no and 1 for yes
+runOrnotRoadDens = 1 #0 for no and 1 for yes
 
 
 # This option will set the type of source you want to run 
-runOrnotRoadEmiss = 0 # 0 for no and 1 for yes
+runOrnotRoadEmiss = 1 # 0 for no and 1 for yes
 
 # Type of emission to run
 typeEmiss = 'TOTAL' 
@@ -194,7 +194,7 @@ typeEmiss = 'TOTAL'
              
              
 # This option will merge the emissions if you have more than one state
-runOrnotMergeRoadEmiss = 0 # 0 for no and 1 for yes
+runOrnotMergeRoadEmiss = 1 # 0 for no and 1 for yes
 
 
 # This option will create annual netCDF files
