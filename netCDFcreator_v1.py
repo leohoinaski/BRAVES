@@ -43,7 +43,7 @@ import datetime
 
 
 #%% Creating a dataset
-def createNETCDFannual(folder,name,data,xX,yY,dates,area):
+def createNETCDFannual(folder,name,data,xX,yY,dates,area,ltz):
     print('===================STARTING netCDFcreator_v1.py=======================')
     cdate = datetime.datetime.now()
     cdateStr = int(str(cdate.year)+str(cdate.timetuple().tm_yday))
@@ -65,7 +65,8 @@ def createNETCDFannual(folder,name,data,xX,yY,dates,area):
 
     # Reshape area array
     area1 = area.reshape((np.size(xX,1),np.size(yY,0))).transpose()
-
+    ltz = ltz.reshape((np.size(xX,1),np.size(yY,0))).transpose()
+    
     f2 = nc4.Dataset(folder+'/'+name,'w', format='NETCDF4_CLASSIC') #'w' stands for write    
     #Add global attributes
     #f2.IOAPI_VERSION ='$Id: @(#) ioapi library version 3.1 $'
@@ -141,6 +142,7 @@ def createNETCDFannual(folder,name,data,xX,yY,dates,area):
     LON = f2.createVariable('Longitute', 'f4', ( 'ROW','COL'))
     LAT = f2.createVariable('Latitude', 'f4', ( 'ROW','COL'))
     AREA = f2.createVariable('AREA', 'f4', ( 'ROW','COL'))
+    LTZ = f2.createVariable('LTZ', 'f4', ( 'ROW','COL'))
     #TFLAG = f2.createVariable('TFLAG', 'i4', ('TSTEP'))
     ACET = f2.createVariable('ACET', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
     ACROLEIN = f2.createVariable('ACROLEIN', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
@@ -216,6 +218,7 @@ def createNETCDFannual(folder,name,data,xX,yY,dates,area):
     LON[:,:] = xX
     print(area1.shape)
     AREA[:,:] = area1
+    LTZ[:,:] = ltz
     print(str(ACET.shape) + str(data.shape))
     ACET[:,:,:,:] =  data[:,0,:,:]
     ACROLEIN[:,:,:,:] = data[:,1,:,:]
@@ -350,6 +353,7 @@ def createNETCDFannual(folder,name,data,xX,yY,dates,area):
     LON.units = 'degrees '
     LAT.units = 'degrees '
     AREA.units = 'km2 '
+    LTZ.units = 'hours '
     
     f2.close()
     print('Your BRAVESdatabase netCDF file is ready!')

@@ -103,7 +103,7 @@ from roadEmiss_v1 import roadEmiss
 from mergeRoadEmiss_v1 import mergeRoadEmiss
 from BRAVES2netCDF_v1 import BRAVES2netCDF
 from BRAVES_temporalDisag_v1 import BRAVES_temporalDisag
-from netCDFcreator_v1 import createNETCDFtemporalfromNC,createNETCDFtemporalBySpecies
+from netCDFcreator_v1 import createNETCDFtemporalfromNC,createNETCDFtemporalBySpecies,createNETCDFtemporalfromNCforWRFCHEM
 import os
 import numpy as np
 import pandas as pd
@@ -140,11 +140,11 @@ latf = 8 #(Brazil) #latf = int(round(bound.maxy)) # Final latitude (>
 
 loni = -76 #(Brazil) #loni = int(round(bound.minx)) # Initial longit>
 
-lonf = -38 #(Brazil) #lonf = int(round(bound.maxx)) # Final longitu>
+lonf = -32 #(Brazil) #lonf = int(round(bound.maxx)) # Final longitu>
 
-deltaX = 0.05 # Grid resolution/spacing in x direction
+deltaX = 1 # Grid resolution/spacing in x direction
 
-deltaY = 0.05 # Grig resolution/spacing in y direction
+deltaY = 1 # Grig resolution/spacing in y direction
 
 # This is the identification of your outputs
 fileId = 'BR_' # Code to identify your output files
@@ -157,14 +157,14 @@ IBGE_CODES = [11,12,13,14,15,16,17,
               41,42,43,
               50,51,52,53] # include the IBGE code from the states to be consid>
 
-#IBGE_CODES = [11] 
+IBGE_CODES = [11] 
 
 
 #---------------------------- Time window--------------------------------------
 
 years=[2013,2014,2015,2016,2017,2018,2019]
 
-#years = [2013]
+years = [2013]
 
 months = [1] # Set the month of your simulation
 
@@ -176,11 +176,11 @@ days = [1,2] # Set the day of your simulation
 # Run or not road density calculation. If you choose this option, the 
 # roadDensity calculation will start. This might take long time if you set 
 # a large domain or small detalX/Y
-runOrnotRoadDens = 1 #0 for no and 1 for yes
+runOrnotRoadDens = 0 #0 for no and 1 for yes
 
 
 # This option will set the type of source you want to run 
-runOrnotRoadEmiss = 1 # 0 for no and 1 for yes
+runOrnotRoadEmiss = 0 # 0 for no and 1 for yes
 
 # Type of emission to run
 typeEmiss = 'TOTAL' 
@@ -194,12 +194,14 @@ typeEmiss = 'TOTAL'
              
              
 # This option will merge the emissions if you have more than one state
-runOrnotMergeRoadEmiss = 1 # 0 for no and 1 for yes
+runOrnotMergeRoadEmiss = 0 # 0 for no and 1 for yes
 
 
 # This option will create annual netCDF files
-runOrnotBRAVES2netCDF = 1 # 0 for no and 1 for yes
+runOrnotBRAVES2netCDF = 0 # 0 for no and 1 for yes
 
+# If you want temporal disagregated files... 
+files = ['BRAVESdatabaseAnnual_BR_TOTAL_Total_BR_1x1_2013.nc'] # Define the files to disaggregate
 
 # This option Create disaggregated files - temporal, spatial, and one specie
 # You should define the year and specie to create your files
@@ -211,9 +213,10 @@ specs = ['SO2']  # Identification of the specie
 # This option create CMAQ emission inputs - temporal, spatial, and all species
 # You should define the annual file to creat the CMAQ inputs
 runOrnotCMAQemiss = 0 # 0 for no and 1 for yes
-files = ['BRAVESdatabaseAnnual_SC_ComLight_2013.nc'] # Define the files to disaggregate
 
-
+# This option create WRFCHEM emission inputs - temporal, spatial, and all species
+# You should define the annual file to creat the WRFCHEM inputs
+runOrnotWRFCHEMemiss=1
 
 # THis is your grid identification 
 roadDensPrefix = fileId+str(deltaX)+'x'+str(deltaY) # grid definition identification
@@ -253,7 +256,7 @@ if runOrnotCMAQemiss==1:
             for month in months:
                 for day in days:
                     dataTempo=None
-                    dataTempo,xX,yY,disvec,prefix,area = BRAVES_temporalDisag(rootPath,outPath,file,fileId,month,day,deltaX,deltaY)
+                    dataTempo,xX,yY,disvec,prefix,area = BRAVES_temporalDisag(rootPath,outPath,file,fileId,month,day)
                     for jj in np.unique(disvec.day):       
                         name = 'BRAVESdatabase2CMAQ_'+roadDensPrefix+typeEmiss+'_'+str(year)+'_'+str(month)+'_'+str(jj)+'.nc'
                         dayT = np.where(disvec.day==jj)
@@ -277,3 +280,16 @@ if runOrnotTempFiles==1:
                             createNETCDFtemporalBySpecies(outPath,name,
                                                           dataTempo[:,specIdx,:,:].reshape((dataTempo.shape[0],1,dataTempo.shape[2],dataTempo.shape[3])),
                                                           xX,yY,disvec,spec,area)
+
+if runOrnotWRFCHEMemiss==1:
+    for file in files:
+        for year in yearsTempFiles:
+            for month in months:
+                for day in days:
+                    dataTempo=None
+                    dataTempo,xX,yY,disvec,prefix,area = BRAVES_temporalDisag(rootPath,outPath,file,fileId,month,day)
+                    for jj in np.unique(disvec.day):       
+                        name = 'BRAVESdatabase2WRFCHEM_'+roadDensPrefix+typeEmiss+'_'+str(year)+'_'+str(month)+'_'+str(jj)+'.nc'
+                        dayT = np.where(disvec.day==jj)                       
+                        createNETCDFtemporalfromNCforWRFCHEM(outPath,name,dataTempo,xX,yY,disvec,area)
+    

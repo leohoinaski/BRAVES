@@ -57,6 +57,7 @@ from warnings import simplefilter
 simplefilter(action="ignore", category=pd.errors.PerformanceWarning)
 import shapely.wkt
 import os
+from timezonefinder import TimezoneFinder
 
 #%%
 def roadDensCity (shpSC,folder,polUsed,indXUsed,IBGEcod): 
@@ -276,9 +277,11 @@ def roadDensity (dirPath,outPath,IBGE_CODES,lati,latf,loni,lonf,
     print('Setting domain borders')
     x = np.arange(loni, lonf+2*deltaX, deltaX)
     y = np.arange(lati, latf+2*deltaY, deltaY)
-
+    test_naive = pd.date_range('2019-01-01', '2019-04-07', freq='4H')
+    tf = TimezoneFinder(in_memory=True)
     #Loop over each cel in x direction
     polygons=[]
+    ltc =[]
     for ii in range(1,x.shape[0]):
         #Loop over each cel in y direction
         for jj in range(1,y.shape[0]):
@@ -287,10 +290,13 @@ def roadDensity (dirPath,outPath,IBGE_CODES,lati,latf,loni,lonf,
             lon_point_list = [x[ii-1], x[ii-1], x[ii], x[ii]]
             cel = Polygon(zip(lon_point_list, lat_point_list))
             polygons.append(cel)
+            local_time_zone = tf.timezone_at(lng=x[ii], lat=y[jj])
+            ltc.append(float(test_naive.tz_localize(local_time_zone).strftime('%Z')[-1]))
 
     baseGrid = gpd.GeoDataFrame({'geometry':polygons})
+    baseGrid['LTZ'] = ltc
     baseGrid.to_csv(outPath+'/baseGrid_'+roadDensPrefix+'.csv')
-
+    del baseGrid['LTZ']
 
     #========================== Selecting cities ==========================
     #for IBGE_CODE in IBGE_CODES:
