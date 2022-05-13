@@ -139,8 +139,8 @@ def createNETCDFannual(folder,name,data,xX,yY,dates,area,ltz):
     
     # Building variables
     TFLAG = f2.createVariable('TFLAG', 'i4', ('TSTEP', 'VAR', 'DATE-TIME'))
-    LON = f2.createVariable('Longitute', 'f4', ( 'ROW','COL'))
-    LAT = f2.createVariable('Latitude', 'f4', ( 'ROW','COL'))
+    LON = f2.createVariable('LON', 'f4', ( 'ROW','COL'))
+    LAT = f2.createVariable('LAT', 'f4', ( 'ROW','COL'))
     AREA = f2.createVariable('AREA', 'f4', ( 'ROW','COL'))
     LTZ = f2.createVariable('LTZ', 'f4', ( 'ROW','COL'))
     #TFLAG = f2.createVariable('TFLAG', 'i4', ('TSTEP'))
@@ -446,8 +446,8 @@ def createNETCDFtemporalfromNC(folder,name,data,xX,yY,dates,area):
     
     # Building variables
     TFLAG = f2.createVariable('TFLAG', 'i4', ('TSTEP', 'VAR', 'DATE-TIME'))
-    LON = f2.createVariable('Longitute', 'f4', ( 'ROW','COL'))
-    LAT = f2.createVariable('Latitude', 'f4', ( 'ROW','COL'))
+    LON = f2.createVariable('LON', 'f4', ( 'ROW','COL'))
+    LAT = f2.createVariable('LAT', 'f4', ( 'ROW','COL'))
     AREA = f2.createVariable('AREA', 'f4', ( 'ROW','COL'))
     #TFLAG = f2.createVariable('TFLAG', 'i4', ('TSTEP'))
     ACET = f2.createVariable('ACET', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
@@ -736,8 +736,8 @@ def createNETCDFtemporalBySpecies(folder,name,data,xX,yY,dates,specie,area):
     TFLAG[:,:,:] = tflag
     TFLAG.units = '<YYYYDDD,HHMMSS>'
     
-    LON = f2.createVariable('Longitute', 'f4', ( 'ROW','COL'))
-    LAT = f2.createVariable('Latitude', 'f4', ( 'ROW','COL'))  
+    LON = f2.createVariable('LON', 'f4', ( 'ROW','COL'))
+    LAT = f2.createVariable('LAT', 'f4', ( 'ROW','COL'))  
     AREA = f2.createVariable('AREA', 'f4', ( 'ROW','COL'))
     LAT[:,:,] =  yY
     LON[:,:,] = xX
@@ -1094,8 +1094,8 @@ def createNETCDFtemporalfromNCforWRFCHEM(folder,name,data,xX,yY,dates,area):
     
     # Building variables
     TFLAG = f2.createVariable('TFLAG', 'i4', ('TSTEP', 'VAR', 'DATE-TIME'))
-    LON = f2.createVariable('Longitute', 'f4', ( 'ROW','COL'))
-    LAT = f2.createVariable('Latitude', 'f4', ( 'ROW','COL'))
+    LON = f2.createVariable('LON', 'f4', ( 'ROW','COL'))
+    LAT = f2.createVariable('LAT', 'f4', ( 'ROW','COL'))
     AREA = f2.createVariable('AREA', 'f4', ( 'ROW','COL'))
     #TFLAG = f2.createVariable('TFLAG', 'i4', ('TSTEP'))
     ACET = f2.createVariable('ACET', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
