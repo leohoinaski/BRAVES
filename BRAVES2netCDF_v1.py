@@ -84,10 +84,10 @@ def gridding(lon,lat):
     grids['Y'] = grids.geometry.centroid.y       
     xX = np.array(grids['X']).reshape((lon.shape[0]-1,lat.shape[0]-1)).transpose()
     yY = np.array(grids['Y']).reshape((lon.shape[0]-1,lat.shape[0]-1)).transpose()
-    xv = np.round(xv, 4)
-    yv = np.round(yv, 4)
-    xX = np.round(xX, 4)
-    yY = np.round(yY, 4)
+    xv = np.round(xv, 6)
+    yv = np.round(yv, 6)
+    xX = np.round(xX, 6)
+    yY = np.round(yY, 6)
     return grids,xv,yv,xX,yY
 
 

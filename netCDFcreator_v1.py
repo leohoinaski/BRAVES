@@ -90,19 +90,19 @@ def createNETCDFannual(folder,name,data,xX,yY,dates,area,ltz):
     f2.GDTYP= 1
     f2.P_ALP= -10
     f2.P_BET= 0
-    f2.P_GAM= round(xX.mean(),5)
-    f2.XCENT= round(xX.mean(),5)
-    print('XCENT='+ str(round(xX.mean(),5)))
-    f2.YCENT= round(yY.mean(),5)
-    print('YCENT='+ str(round(yY.mean(),5)))
-    f2.XORIG= np.round((xX.min() - (xX[0,1] - xX[0,0])/2),4)
-    print('XORIG = ' + str(np.round((xX.min() - (xX[0,1] - xX[0,0])/2),4))) 
+    f2.P_GAM= round(xX.mean(),6)
+    f2.XCENT= round(xX.mean(),6)
+    print('XCENT='+ str(round(xX.mean(),6)))
+    f2.YCENT= round(yY.mean(),6)
+    print('YCENT='+ str(round(yY.mean(),6)))
+    f2.XORIG= np.round((xX.min() - (xX[0,1] - xX[0,0])/2),6)
+    print('XORIG = ' + str(np.round((xX.min() - (xX[0,1] - xX[0,0])/2),6))) 
     f2.YORIG= np.round((yY.min() - (yY[1,0] - yY[0,0])/2),4)
-    print('YORIG = ' + str(np.round((yY.min() - (yY[1,0] - yY[0,0])/2),4))) 
-    f2.XCELL= round((xX[0,1] - xX[0,0]), 4)
-    print('XCELL = '+str(round(xX[0,1] - xX[0,0],4)))
-    f2.YCELL= round((yY[1,0] - yY[0,0]), 4)
-    print('YCELL = '+str(round(yY[1,0] - yY[0,0],4)))
+    print('YORIG = ' + str(np.round((yY.min() - (yY[1,0] - yY[0,0])/2),6))) 
+    f2.XCELL= round((xX[0,1] - xX[0,0]), 6)
+    print('XCELL = '+str(round(xX[0,1] - xX[0,0],6)))
+    f2.YCELL= round((yY[1,0] - yY[0,0]), 6)
+    print('YCELL = '+str(round(yY[1,0] - yY[0,0],6)))
     f2.VGTYP= -1
     f2.VGTOP= 0.0
     f2.VGLVLS= [0,0]
@@ -357,7 +357,7 @@ def createNETCDFannual(folder,name,data,xX,yY,dates,area,ltz):
     LTZ.units = 'hours '
     
     f2.close()
-    print('Your BRAVESdatabase netCDF file is ready!')
+    print('Your annual BRAVESdatabase netCDF file is ready!')
     
     #%% Creating a dataset
 def createNETCDFtemporalfromNC(folder,name,data,xX,yY,dates,area):
@@ -397,19 +397,19 @@ def createNETCDFtemporalfromNC(folder,name,data,xX,yY,dates,area):
     f2.GDTYP= 1
     f2.P_ALP= -10
     f2.P_BET= 0
-    f2.P_GAM= round(xX.mean(),5)
-    f2.XCENT= round(xX.mean(),5)
-    print('XCENT='+ str(round(xX.mean(),5)))
-    f2.YCENT= round(yY.mean(),5)
-    print('YCENT='+ str(round(yY.mean(),5)))
-    f2.XORIG= np.round((xX.min() - (xX[0,1] - xX[0,0])/2),4)
-    print('XORIG = ' + str(np.round((xX.min() - (xX[0,1] - xX[0,0])/2),4))) 
-    f2.YORIG= np.round((yY.min() - (yY[1,0] - yY[0,0])/2),4)
-    print('YORIG = ' + str(np.round((yY.min() - (yY[1,0] - yY[0,0])/2),4))) 
-    f2.XCELL= round((xX[0,1] - xX[0,0]), 4)
-    print('XCELL = '+str(round(xX[0,1] - xX[0,0],4)))
-    f2.YCELL= round((yY[1,0] - yY[0,0]), 4)
-    print('YCELL = '+str(round(yY[1,0] - yY[0,0],4)))
+    f2.P_GAM= round(xX.mean(),6)
+    f2.XCENT= round(xX.mean(),6)
+    print('XCENT='+ str(round(xX.mean(),6)))
+    f2.YCENT= round(yY.mean(),6)
+    print('YCENT='+ str(round(yY.mean(),6)))
+    f2.XORIG= np.round((xX.min() - (xX[0,1] - xX[0,0])/2),6)
+    print('XORIG = ' + str(np.round((xX.min() - (xX[0,1] - xX[0,0])/2),6))) 
+    f2.YORIG= np.round((yY.min() - (yY[1,0] - yY[0,0])/2),6)
+    print('YORIG = ' + str(np.round((yY.min() - (yY[1,0] - yY[0,0])/2),6))) 
+    f2.XCELL= round((xX[0,1] - xX[0,0]), 6)
+    print('XCELL = '+str(round(xX[0,1] - xX[0,0],6)))
+    f2.YCELL= round((yY[1,0] - yY[0,0]), 6)
+    print('YCELL = '+str(round(yY[1,0] - yY[0,0],6)))
     f2.VGTYP= -1
     f2.VGTOP= 0.0
     f2.VGLVLS= [0,0]
@@ -661,7 +661,7 @@ def createNETCDFtemporalfromNC(folder,name,data,xX,yY,dates,area):
     AREA.units = 'km2 '
    
     f2.close()
-    print('Your BRAVESdatabase netCDF file is ready!')
+    print('Your BRAVESdatabase netCDF file is ready for CMAQ!')
 
 #%%
 def createNETCDFtemporalBySpecies(folder,name,data,xX,yY,dates,specie,area):
@@ -698,19 +698,19 @@ def createNETCDFtemporalBySpecies(folder,name,data,xX,yY,dates,specie,area):
     f2.GDTYP= 1
     f2.P_ALP= -10
     f2.P_BET= 0
-    f2.P_GAM= round(xX.mean(),5)
-    f2.XCENT= round(xX.mean(),5)
-    print('XCENT='+ str(round(xX.mean(),5)))
-    f2.YCENT= round(yY.mean(),5)
-    print('YCENT='+ str(round(yY.mean(),5)))
-    f2.XORIG= np.round((xX.min() - (xX[0,1] - xX[0,0])/2),4)
-    print('XORIG = ' + str(np.round((xX.min() - (xX[0,1] - xX[0,0])/2),4))) 
-    f2.YORIG= np.round((yY.min() - (yY[1,0] - yY[0,0])/2),4)
-    print('YORIG = ' + str(np.round((yY.min() - (yY[1,0] - yY[0,0])/2),4))) 
-    f2.XCELL= round((xX[0,1] - xX[0,0]), 4)
-    print('XCELL = '+str(round(xX[0,1] - xX[0,0],4)))
-    f2.YCELL= round((yY[1,0] - yY[0,0]), 4)
-    print('YCELL = '+str(round(yY[1,0] - yY[0,0],4)))
+    f2.P_GAM= round(xX.mean(),6)
+    f2.XCENT= round(xX.mean(),6)
+    print('XCENT='+ str(round(xX.mean(),6)))
+    f2.YCENT= round(yY.mean(),6)
+    print('YCENT='+ str(round(yY.mean(),6)))
+    f2.XORIG= np.round((xX.min() - (xX[0,1] - xX[0,0])/2),6)
+    print('XORIG = ' + str(np.round((xX.min() - (xX[0,1] - xX[0,0])/2),6))) 
+    f2.YORIG= np.round((yY.min() - (yY[1,0] - yY[0,0])/2),6)
+    print('YORIG = ' + str(np.round((yY.min() - (yY[1,0] - yY[0,0])/2),6))) 
+    f2.XCELL= round((xX[0,1] - xX[0,0]), 6)
+    print('XCELL = '+str(round(xX[0,1] - xX[0,0],6)))
+    f2.YCELL= round((yY[1,0] - yY[0,0]), 6)
+    print('YCELL = '+str(round(yY[1,0] - yY[0,0],6)))
     f2.VGTYP= -1
     f2.VGTOP= 0.0
     f2.VGLVLS= [0,0]
@@ -1003,16 +1003,17 @@ def createNETCDFtemporalBySpecies(folder,name,data,xX,yY,dates,specie,area):
         
     
     f2.close()
+    print('Your BRAVESdatabase netCDF file is ready!')
 
 
     #%% Creating a dataset
-def createNETCDFtemporalfromNCforWRFCHEM(rootPath,folder,name,dataTempo,xX,yY,dates,area):
+def createNETCDFtemporalfromNCforWRFCHEM(rootPath,folder,name,data,xX,yY,dates,area):
     print('===================STARTING netCDFcreator_v1.py=======================')
     cdate = datetime.datetime.now()
     cdateStr = int(str(cdate.year)+str(cdate.timetuple().tm_yday))
     ctime = int(str(cdate.hour)+str(cdate.minute)+str(cdate.second))
 
-    tflag = np.empty([dates.shape[0],dataTempo.shape[1],2],dtype='i4')
+    tflag = np.empty([dates.shape[0],data.shape[1],2],dtype='i4')
     for ii in range(0,dates.shape[0]):
         tflag[ii,:,0]=int(dates['year'][0]*1000 + dates.index[ii].timetuple().tm_yday)
         tflag[ii,:,1]=int(str(dates['hour'][ii])+'0000')
@@ -1024,12 +1025,12 @@ def createNETCDFtemporalfromNCforWRFCHEM(rootPath,folder,name,dataTempo,xX,yY,da
     print('Converting to emission density in ug/h.km2')
     convPath = rootPath + '/ChemicalSpec/WRFCHEM_speciesConv.csv'
     conv = pd.read_csv(convPath)
-    data = np.zeros([dataTempo.shape[0],dataTempo.shape[1],
-                          dataTempo.shape[2],dataTempo.shape[3]])
+    # data = np.zeros([dataTempo.shape[0],dataTempo.shape[1],
+    #                       dataTempo.shape[2],dataTempo.shape[3]])
 
-    for ii in range(0,dataTempo.shape[1]):
+    for ii in range(0,data.shape[1]):
         print(str(ii))
-        data[:,ii,:,:] = (dataTempo[:,ii,:,:]/area)*conv['CONV'][ii]
+        data[:,ii,:,:] = (data[:,ii,:,:]/area)*conv['CONV'][ii]
         
     
     f2 = nc4.Dataset(folder+'/'+name,'w', format='NETCDF4_CLASSIC') #'w' stands for write    
@@ -1054,19 +1055,19 @@ def createNETCDFtemporalfromNCforWRFCHEM(rootPath,folder,name,dataTempo,xX,yY,da
     f2.GDTYP= 1
     f2.P_ALP= -10
     f2.P_BET= 0
-    f2.P_GAM= round(xX.mean(),5)
-    f2.XCENT= round(xX.mean(),5)
-    print('XCENT='+ str(round(xX.mean(),5)))
-    f2.YCENT= round(yY.mean(),5)
-    print('YCENT='+ str(round(yY.mean(),5)))
-    f2.XORIG= np.round((xX.min() - (xX[0,1] - xX[0,0])/2),4)
-    print('XORIG = ' + str(np.round((xX.min() - (xX[0,1] - xX[0,0])/2),4))) 
-    f2.YORIG= np.round((yY.min() - (yY[1,0] - yY[0,0])/2),4)
-    print('YORIG = ' + str(np.round((yY.min() - (yY[1,0] - yY[0,0])/2),4))) 
-    f2.XCELL= round((xX[0,1] - xX[0,0]), 4)
-    print('XCELL = '+str(round(xX[0,1] - xX[0,0],4)))
-    f2.YCELL= round((yY[1,0] - yY[0,0]), 4)
-    print('YCELL = '+str(round(yY[1,0] - yY[0,0],4)))
+    f2.P_GAM= round(xX.mean(),6)
+    f2.XCENT= round(xX.mean(),6)
+    print('XCENT='+ str(round(xX.mean(),6)))
+    f2.YCENT= round(yY.mean(),6)
+    print('YCENT='+ str(round(yY.mean(),6)))
+    f2.XORIG= np.round((xX.min() - (xX[0,1] - xX[0,0])/2),6)
+    print('XORIG = ' + str(np.round((xX.min() - (xX[0,1] - xX[0,0])/2),6))) 
+    f2.YORIG= np.round((yY.min() - (yY[1,0] - yY[0,0])/2),6)
+    print('YORIG = ' + str(np.round((yY.min() - (yY[1,0] - yY[0,0])/2),6))) 
+    f2.XCELL= round((xX[0,1] - xX[0,0]), 6)
+    print('XCELL = '+str(round(xX[0,1] - xX[0,0],6)))
+    f2.YCELL= round((yY[1,0] - yY[0,0]), 6)
+    print('YCELL = '+str(round(yY[1,0] - yY[0,0],6)))
     f2.VGTYP= -1
     f2.VGTOP= 0.0
     f2.VGLVLS= [0,0]
@@ -1318,4 +1319,4 @@ def createNETCDFtemporalfromNCforWRFCHEM(rootPath,folder,name,dataTempo,xX,yY,da
     AREA.units = 'km2 '
    
     f2.close()
-    print('Your BRAVESdatabase netCDF file is ready!')
+    print('Your BRAVESdatabase netCDF file is ready for WRFCHEM!')

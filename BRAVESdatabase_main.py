@@ -98,7 +98,7 @@ Author: Leonardo Hoinaski - leonardo.hoinaski@ufsc.br
 -------------------------------------------------------------------------------
 """
 #from roadDensity_v1 import roadDensity
-from parallelRoadDensity_v2 import roadDensity
+from parallelRoadDensity_v2 import roadDensity,roadDensityMCIP
 from roadEmiss_v1 import roadEmiss
 from mergeRoadEmiss_v1 import mergeRoadEmiss
 from BRAVES2netCDF_v1 import BRAVES2netCDF
@@ -132,8 +132,11 @@ folderSpec = rootPath +'/ChemicalSpec'
 #roadFileName='roadFl.shp'
 roadFileName = 'gis_osm_roads_free_1.shp'
 
-#-------------------------Setting grid resolution------------------------------
-# Users can change the domain and resolution here.
+#----------------------------User-define grid----------------------------------
+# userGrid -> 0 for user-defined / 1 for mcip based grid 
+userGrid = 1
+
+# If userGrid  = 0 - Users can change the domain and resolution here.
 lati = -36 #(Brazil) #lati = int(round(bound.miny)) # Initial latitud>
 
 latf = 8 #(Brazil) #latf = int(round(bound.maxy)) # Final latitude (>
@@ -146,9 +149,13 @@ deltaX = 0.05 # Grid resolution/spacing in x direction
 
 deltaY = 0.05 # Grig resolution/spacing in y direction
 
-# This is the identification of your outputs
-fileId = 'BR_' # Code to identify your output files
 
+# If userGrid = 1, define the path to mcip grid - GRIDDOT2D file
+mcipPath = '/media/leohoinaski/HDD/GRIDDOT2D_SC.nc'
+
+
+# This is the identification of your outputs
+fileId = 'SC_' # Code to identify your output files 
 #---------------------------Vehicular emissions--------------------------------
 
 IBGE_CODES = [11,12,13,14,15,16,17,
@@ -157,7 +164,7 @@ IBGE_CODES = [11,12,13,14,15,16,17,
               41,42,43,
               50,51,52,53] # include the IBGE code from the states to be consid>
 
-#IBGE_CODES = [11] 
+IBGE_CODES = [41,42,43] 
 
 
 #---------------------------- Time window--------------------------------------
@@ -176,11 +183,11 @@ days = [1,2] # Set the day of your simulation
 # Run or not road density calculation. If you choose this option, the 
 # roadDensity calculation will start. This might take long time if you set 
 # a large domain or small detalX/Y
-runOrnotRoadDens = 0 #0 for no and 1 for yes
+runOrnotRoadDens = 1 #0 for no and 1 for yes
 
 
 # This option will set the type of source you want to run 
-runOrnotRoadEmiss = 0 # 0 for no and 1 for yes
+runOrnotRoadEmiss = 1 # 0 for no and 1 for yes
 
 # Type of emission to run
 typeEmiss = 'TOTAL' 
@@ -190,15 +197,14 @@ typeEmiss = 'TOTAL'
 #'non-exaust' = Only non-exhaust emissions
 #'non-exaustMP' = Only Particulate Matter non-exhaust emissions
 #'non-exaustMP_no_resusp'= Only Particulate Matter non-exhaust emissions 
-#                          excluding road resuspension 
-             
+#                          excluding road resuspension            
              
 # This option will merge the emissions if you have more than one state
-runOrnotMergeRoadEmiss = 0 # 0 for no and 1 for yes
+runOrnotMergeRoadEmiss = 1 # 0 for no and 1 for yes
 
 
 # This option will create annual netCDF files
-runOrnotBRAVES2netCDF = 0 # 0 for no and 1 for yes
+runOrnotBRAVES2netCDF = 1 # 0 for no and 1 for yes
 
 # If you want temporal disagregated files... 
 files = ['BRAVESdatabaseAnnual_BR_TOTAL_Total_BR_0.05x0.05_2013.nc'] # Define the files to disaggregate
@@ -216,7 +222,7 @@ runOrnotCMAQemiss = 0 # 0 for no and 1 for yes
 
 # This option create WRFCHEM emission inputs - temporal, spatial, and all species
 # You should define the annual file to creat the WRFCHEM inputs
-runOrnotWRFCHEMemiss=1
+runOrnotWRFCHEMemiss=0
 
 # THis is your grid identification 
 roadDensPrefix = fileId+str(deltaX)+'x'+str(deltaY) # grid definition identification
@@ -234,8 +240,12 @@ if os.path.isdir(outPath)==0:
 
 # Calling roadDensity function
 if runOrnotRoadDens==1:
-    roadDensity(dirPath,outPath,IBGE_CODES,lati,latf,loni,lonf,
-                deltaX,deltaY,roadFileName,roadDensPrefix)
+    if userGrid == 0:
+        roadDensity(dirPath,outPath,IBGE_CODES,lati,latf,loni,lonf,
+                    deltaX,deltaY,roadFileName,roadDensPrefix)
+    elif userGrid == 1:
+        roadDensityMCIP(dirPath,outPath,IBGE_CODES,lati,latf,loni,lonf,
+                    deltaX,deltaY,roadFileName,roadDensPrefix,mcipPath)
 
 # Calling roadEmiss function
 if runOrnotRoadEmiss==1:

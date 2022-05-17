@@ -58,6 +58,7 @@ def ChemicalSpeciationLight(roadX,dfSpc,smm,conver):
     
     # Filling direct emissions
     dataEmissX['ALDX'] = roadX['Exh_EmissRCHO']*conver/np.array(smm[smm.iloc[:,0]=='ALDX'].MM)
+    dataEmissX['ALD2_PRIMARY'] = roadX['Exh_EmissRCHO']*conver/np.array(smm[smm.iloc[:,0]=='ALD2_PRIMARY'].MM)
     dataEmissX['CH4_INV'] = roadX['Exh_EmissCH4']*conver
     dataEmissX['CH4'] = roadX['Exh_EmissCH4']*conver/np.array(smm[smm.iloc[:,0]=='CH4'].MM)
     dataEmissX['CO'] = roadX['Exh_EmissCO']*conver/np.array(smm[smm.iloc[:,0]=='CO'].MM)
@@ -83,7 +84,12 @@ def ChemicalSpeciationLight(roadX,dfSpc,smm,conver):
     dataEmissX['SO2'] = roadX['Exh_EmissSO2']*conver/np.array(smm[smm.iloc[:,0]=='SO2'].MM)
     dataEmissX['VOC_INV'] = roadX['Exh_EmissNMHC']*conver + roadX['Evap_D_EmissNMHC']*conver +\
         roadX['Refuel_EmissNMHC']*conver + roadX['Evap_H_EmissNMHC']*conver + roadX['Evap_R_EmissNMHC']*conver
-    dataEmissX['PMFINE'] = roadX['Exh_EmissMP2.5']*conver
+    dataEmissX['PMFINE'] = roadX['Exh_EmissMP2.5']*conver+ \
+        0.4*roadX['break_tier_EmissMP10']*conver + \
+            0.17*roadX['Resus_EmissMP10']*conver + \
+                0.53*roadX['wear_EmissMP10']*conver
+        
+        
     return dataEmissX
 
 def ChemicalSpeciationHeavy(roadX,dfSpc,smm,conver):  
@@ -105,6 +111,7 @@ def ChemicalSpeciationHeavy(roadX,dfSpc,smm,conver):
     
     # Filling direct emissions
     dataEmissX['ALDX'] = roadX['Exh_EmissRCHO']*conver/np.array(smm[smm.iloc[:,0]=='ALDX'].MM)   
+    dataEmissX['ALD2_PRIMARY'] = roadX['Exh_EmissRCHO']*conver/np.array(smm[smm.iloc[:,0]=='ALD2_PRIMARY'].MM)
     dataEmissX['CH4_INV'] = roadX['Exh_EmissCH4']*conver
     dataEmissX['CH4'] = roadX['Exh_EmissCH4']*conver/np.array(smm[smm.iloc[:,0]=='CH4'].MM)
     dataEmissX['CO'] = roadX['Exh_EmissCO']*conver/np.array(smm[smm.iloc[:,0]=='CO'].MM)
@@ -130,5 +137,9 @@ def ChemicalSpeciationHeavy(roadX,dfSpc,smm,conver):
     dataEmissX['SO2'] = roadX['Exh_EmissSO2']*conver/np.array(smm[smm.iloc[:,0]=='SO2'].MM)
     dataEmissX['VOC_INV'] = roadX['Exh_EmissNMHC']*conver + roadX['Evap_D_EmissNMHC']*conver +\
         roadX['Refuel_EmissNMHC']*conver + roadX['Evap_H_EmissNMHC']*conver + roadX['Evap_R_EmissNMHC']*conver
-    dataEmissX['PMFINE'] = roadX['Exh_EmissMP2.5']*conver
+    dataEmissX['PMFINE'] = roadX['Exh_EmissMP2.5']*conver+ \
+        0.4*roadX['break_tier_EmissMP10']*conver + \
+            0.17*roadX['Resus_EmissMP10']*conver + \
+                0.53*roadX['wear_EmissMP10']*conver
+                
     return dataEmissX
