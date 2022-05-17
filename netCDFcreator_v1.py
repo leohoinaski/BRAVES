@@ -36,6 +36,7 @@ import netCDF4 as nc4
 #from pyproj import Proj, transform
 import numpy as np
 import datetime
+import pandas as pd
 #import tarfile
 #import os
 
@@ -139,8 +140,8 @@ def createNETCDFannual(folder,name,data,xX,yY,dates,area,ltz):
     
     # Building variables
     TFLAG = f2.createVariable('TFLAG', 'i4', ('TSTEP', 'VAR', 'DATE-TIME'))
-    LON = f2.createVariable('LON', 'f4', ( 'ROW','COL'))
-    LAT = f2.createVariable('LAT', 'f4', ( 'ROW','COL'))
+    LON = f2.createVariable('Longitute', 'f4', ( 'ROW','COL'))
+    LAT = f2.createVariable('Latitude', 'f4', ( 'ROW','COL'))
     AREA = f2.createVariable('AREA', 'f4', ( 'ROW','COL'))
     LTZ = f2.createVariable('LTZ', 'f4', ( 'ROW','COL'))
     #TFLAG = f2.createVariable('TFLAG', 'i4', ('TSTEP'))
@@ -446,8 +447,8 @@ def createNETCDFtemporalfromNC(folder,name,data,xX,yY,dates,area):
     
     # Building variables
     TFLAG = f2.createVariable('TFLAG', 'i4', ('TSTEP', 'VAR', 'DATE-TIME'))
-    LON = f2.createVariable('LON', 'f4', ( 'ROW','COL'))
-    LAT = f2.createVariable('LAT', 'f4', ( 'ROW','COL'))
+    LON = f2.createVariable('Longitute', 'f4', ( 'ROW','COL'))
+    LAT = f2.createVariable('Latitude', 'f4', ( 'ROW','COL'))
     AREA = f2.createVariable('AREA', 'f4', ( 'ROW','COL'))
     #TFLAG = f2.createVariable('TFLAG', 'i4', ('TSTEP'))
     ACET = f2.createVariable('ACET', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
@@ -736,8 +737,8 @@ def createNETCDFtemporalBySpecies(folder,name,data,xX,yY,dates,specie,area):
     TFLAG[:,:,:] = tflag
     TFLAG.units = '<YYYYDDD,HHMMSS>'
     
-    LON = f2.createVariable('LON', 'f4', ( 'ROW','COL'))
-    LAT = f2.createVariable('LAT', 'f4', ( 'ROW','COL'))  
+    LON = f2.createVariable('Longitute', 'f4', ( 'ROW','COL'))
+    LAT = f2.createVariable('Latitude', 'f4', ( 'ROW','COL'))  
     AREA = f2.createVariable('AREA', 'f4', ( 'ROW','COL'))
     LAT[:,:,] =  yY
     LON[:,:,] = xX
@@ -1005,13 +1006,13 @@ def createNETCDFtemporalBySpecies(folder,name,data,xX,yY,dates,specie,area):
 
 
     #%% Creating a dataset
-def createNETCDFtemporalfromNCforWRFCHEM(folder,name,data,xX,yY,dates,area):
+def createNETCDFtemporalfromNCforWRFCHEM(rootPath,folder,name,dataTempo,xX,yY,dates,area):
     print('===================STARTING netCDFcreator_v1.py=======================')
     cdate = datetime.datetime.now()
     cdateStr = int(str(cdate.year)+str(cdate.timetuple().tm_yday))
     ctime = int(str(cdate.hour)+str(cdate.minute)+str(cdate.second))
 
-    tflag = np.empty([dates.shape[0],data.shape[1],2],dtype='i4')
+    tflag = np.empty([dates.shape[0],dataTempo.shape[1],2],dtype='i4')
     for ii in range(0,dates.shape[0]):
         tflag[ii,:,0]=int(dates['year'][0]*1000 + dates.index[ii].timetuple().tm_yday)
         tflag[ii,:,1]=int(str(dates['hour'][ii])+'0000')
@@ -1020,7 +1021,16 @@ def createNETCDFtemporalfromNCforWRFCHEM(folder,name,data,xX,yY,dates,area):
     
     
     # Converting emissions in g(mol)/s to g(mol)/h.km2 - WRF-CHEM
-    data = (data/area)*3600
+    print('Converting to emission density in ug/h.km2')
+    convPath = rootPath + '/ChemicalSpec/WRFCHEM_speciesConv.csv'
+    conv = pd.read_csv(convPath)
+    data = np.zeros([dataTempo.shape[0],dataTempo.shape[1],
+                          dataTempo.shape[2],dataTempo.shape[3]])
+
+    for ii in range(0,dataTempo.shape[1]):
+        print(str(ii))
+        data[:,ii,:,:] = (dataTempo[:,ii,:,:]/area)*conv['CONV'][ii]
+        
     
     f2 = nc4.Dataset(folder+'/'+name,'w', format='NETCDF4_CLASSIC') #'w' stands for write    
     #Add global attributes
@@ -1094,8 +1104,8 @@ def createNETCDFtemporalfromNCforWRFCHEM(folder,name,data,xX,yY,dates,area):
     
     # Building variables
     TFLAG = f2.createVariable('TFLAG', 'i4', ('TSTEP', 'VAR', 'DATE-TIME'))
-    LON = f2.createVariable('LON', 'f4', ( 'ROW','COL'))
-    LAT = f2.createVariable('LAT', 'f4', ( 'ROW','COL'))
+    LON = f2.createVariable('Longitute', 'f4', ( 'ROW','COL'))
+    LAT = f2.createVariable('Latitude', 'f4', ( 'ROW','COL'))
     AREA = f2.createVariable('AREA', 'f4', ( 'ROW','COL'))
     #TFLAG = f2.createVariable('TFLAG', 'i4', ('TSTEP'))
     ACET = f2.createVariable('ACET', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
@@ -1240,69 +1250,69 @@ def createNETCDFtemporalfromNCforWRFCHEM(folder,name,data,xX,yY,dates,area):
     
     #Add local attributes to variable instances
     TFLAG.units = '<YYYYDDD,HHMMSS>'
-    ACET.units = 'moles/(km2.h) '
-    ACROLEIN.units = 'moles/(km2.h) '
-    ALD2.units = 'moles/(km2.h) '
-    ALD2_PRIMARY.units = 'moles/(km2.h) '
-    ALDX.units = 'moles/(km2.h) '
-    BENZ.units = 'moles/(km2.h) '
-    BUTADIENE13.units = 'moles/(km2.h) '
-    CH4.units = 'moles/(km2.h) '
-    CH4_INV.units = 'moles/(km2.h) '
-    CL2.units = 'moles/(km2.h) '
-    CO.units = 'moles/(km2.h) '
-    CO2_INV.units = 'g/(km2.h) '
-    ETH.units = 'moles/(km2.h) '
-    ETHA.units = 'moles/(km2.h) '
-    ETHY.units = 'moles/(km2.h) '
-    ETOH.units = 'moles/(km2.h) '
-    FORM.units = 'moles/(km2.h) '
-    FORM_PRIMARY.units = 'moles/(km2.h) '
-    HCL.units = 'moles/(km2.h) '
-    HONO.units = 'moles/(km2.h) '
-    IOLE.units = 'moles/(km2.h) '
-    ISOP.units = 'moles/(km2.h) '
-    KET.units = 'moles/(km2.h) '
-    MEOH.units = 'moles/(km2.h) '
-    N2O_INV.units = 'moles/(km2.h) '
-    NAPH.units = 'moles/(km2.h) '
-    NH3.units = 'moles/(km2.h) '
-    NH3_FERT.units = 'moles/(km2.h) '
-    NO.units = 'moles/(km2.h) '
-    NO2.units = 'moles/(km2.h) '
-    NVOL.units = 'moles/(km2.h) '
-    OLE.units = 'moles/(km2.h) '
-    PAL.units = 'moles/(km2.h) '
-    PAR.units = 'moles/(km2.h) '
-    PCA.units = 'g/(km2.h) '
-    PCL.units = 'g/(km2.h) '
-    PEC.units = 'g/(km2.h) '
-    PFE.units = 'g/(km2.h) '
-    PH2O.units = 'g/(km2.h) '
-    PK.units = 'g/(km2.h) '
-    PMC.units = 'g/(km2.h) '
-    PMG.units = 'g/(km2.h) '
-    PMN.units = 'g/(km2.h) '
-    PMOTHR.units = 'g/(km2.h) '
-    PNA.units = 'g/(km2.h) '
-    PNCOM.units = 'g/(km2.h) '
-    PNH4.units = 'g/(km2.h) '
-    PNO3.units = 'g/(km2.h) '
-    POC.units = 'g/(km2.h) ' 
-    PRPA.units = 'moles/(km2.h) '
-    PSI.units = 'g/(km2.h) '
-    PSO4.units = 'g/(km2.h) '
-    PTI.units = 'g/(km2.h) '
-    SO2.units = 'moles/(km2.h) '
-    SOAALK.units = 'moles/(km2.h) '
-    SULF.units = 'moles/(km2.h) '
-    TERP.units = 'moles/(km2.h) '
-    TOL.units = 'moles/(km2.h) '
-    UNK.units = 'moles/(km2.h) '
-    UNR.units = 'moles/(km2.h) '
-    VOC_INV.units = 'g/(km2.h) '
-    XYLMN.units = 'moles/(km2.h) '
-    PMFINE.units = 'g/(km2.h) '
+    ACET.units = 'ug/(km2.h) '
+    ACROLEIN.units = 'ug/(km2.h) '
+    ALD2.units = 'ug/(km2.h) '
+    ALD2_PRIMARY.units = 'ug/(km2.h) '
+    ALDX.units = 'ug/(km2.h) '
+    BENZ.units = 'ug/(km2.h) '
+    BUTADIENE13.units = 'ug/(km2.h) '
+    CH4.units = 'ug/(km2.h) '
+    CH4_INV.units = 'ug/(km2.h) '
+    CL2.units = 'ug/(km2.h) '
+    CO.units = 'ug/(km2.h) '
+    CO2_INV.units = 'ug/(km2.h) '
+    ETH.units = 'ug/(km2.h)'
+    ETHA.units = 'ug/(km2.h)'
+    ETHY.units = 'ug/(km2.h) '
+    ETOH.units = 'ug/(km2.h) '
+    FORM.units = 'ug/(km2.h)'
+    FORM_PRIMARY.units = 'ug/(km2.h) '
+    HCL.units = 'ug/(km2.h) '
+    HONO.units = 'ug/(km2.h) '
+    IOLE.units = 'ug/(km2.h) '
+    ISOP.units = 'ug/(km2.h) '
+    KET.units = 'ug/(km2.h) '
+    MEOH.units = 'ug/(km2.h) '
+    N2O_INV.units = 'ug/(km2.h) '
+    NAPH.units = 'ug/(km2.h) '
+    NH3.units = 'ug/(km2.h) '
+    NH3_FERT.units = 'ug/(km2.h) '
+    NO.units = 'ug/(km2.h) '
+    NO2.units = 'ug/(km2.h) '
+    NVOL.units = 'ug/(km2.h) '
+    OLE.units = 'ug/(km2.h) '
+    PAL.units = 'ug/(m2.s) '
+    PAR.units = 'ug/(km2.h)'
+    PCA.units = 'ug/(m2.s)  '
+    PCL.units = 'ug/(m2.s)  '
+    PEC.units = 'ug/(m2.s) '
+    PFE.units = 'ug/(m2.s)  '
+    PH2O.units = 'ug/(m2.s) '
+    PK.units = 'ug/(m2.s)  '
+    PMC.units = 'ug/(m2.s) '
+    PMG.units = 'ug/(m2.s)  '
+    PMN.units = 'ug/(m2.s)  '
+    PMOTHR.units = 'ug/(m2.s)  '
+    PNA.units = 'ug/(m2.s) '
+    PNCOM.units = 'ug/(m2.s)  '
+    PNH4.units = 'ug/(m2.s)  '
+    PNO3.units = 'ug/(m2.s) '
+    POC.units = 'ug/(m2.s)  ' 
+    PRPA.units = 'ug/(km2.h) '
+    PSI.units = 'ug/(m2.s)  '
+    PSO4.units = 'ug/(m2.s)  '
+    PTI.units = 'ug/(m2.s)  '
+    SO2.units = 'ug/(km2.h)'
+    SOAALK.units = 'ug/(km2.h) '
+    SULF.units = 'ug/(km2.h) '
+    TERP.units = 'ug/(km2.h) '
+    TOL.units = 'ug/(km2.h) '
+    UNK.units = 'ug/(km2.h) '
+    UNR.units = 'ug/(km2.h) '
+    VOC_INV.units = 'ug/(km2.h) '
+    XYLMN.units = 'ug/(km2.h) '
+    PMFINE.units = 'ug/(m2.s) '
     LON.units = 'degrees '
     LAT.units = 'degrees '
     AREA.units = 'km2 '
