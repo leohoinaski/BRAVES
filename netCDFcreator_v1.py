@@ -1007,7 +1007,13 @@ def createNETCDFtemporalBySpecies(folder,name,data,xX,yY,dates,specie,area):
 
 
     #%% Creating a dataset
-def createNETCDFtemporalfromNCforWRFCHEM(rootPath,folder,name,data,xX,yY,dates,area):
+def createNETCDFtemporalfromNCforWRFCHEM(rootPath,folder,name,data,xX,yY,dates,area,wrfPath):
+    # import netCDF4 as nc
+    # path='/media/leohoinaski/HDD/wrfchemi_00_d02/wrfchemi_00z_d02'
+    # ds = nc.Dataset(path)
+    # dataVar = list(ds.variables.keys())
+    # dataNC = ds[dataVar[5]][:]
+    
     print('===================STARTING netCDFcreator_v1.py=======================')
     cdate = datetime.datetime.now()
     cdateStr = int(str(cdate.year)+str(cdate.timetuple().tm_yday))
@@ -1034,10 +1040,13 @@ def createNETCDFtemporalfromNCforWRFCHEM(rootPath,folder,name,data,xX,yY,dates,a
         
     
     f2 = nc4.Dataset(folder+'/'+name,'w', format='NETCDF4_CLASSIC') #'w' stands for write    
-    #Add global attributes
-    #f2.IOAPI_VERSION ='$Id: @(#) ioapi library version 3.1 $'
-    #f2.EXEC_ID = '???????????????'
-    f2.FTYPE =  1
+
+    ds3 = nc4.Dataset(wrfPath)
+    for gatr in ds3.ncattrs() :
+        f2.gatr = ds3.getncattr(gatr)
+    
+    
+    f2.TITLE= ' BRAVES emissions for WRFCHEM'
     f2.CDATE= cdateStr
     f2.CTIME= ctime
     f2.WDATE= cdateStr
@@ -1091,22 +1100,30 @@ def createNETCDFtemporalfromNCforWRFCHEM(rootPath,folder,name,data,xX,yY,dates,a
     SULF            TERP            TOL             UNK\n\
     UNR             VOC_INV         XYLMN           PMFINE'        
     f2.VAR_LIST=strVAR
-    f2.FILEDESC= 'BRAVES database vehicular emissions ready for CMAQ'
+    #f2.FILEDESC= 'BRAVES database vehicular emissions ready for CMAQ'
     f2.HISTORY ='' 
        
     # # Specifying dimensions
     #tempgrp = f.createGroup('vehicularEmissions_data')
-    f2.createDimension('TSTEP', dates.shape[0])
-    f2.createDimension('DATE-TIME', 2)
-    f2.createDimension('LAY', 1)
-    f2.createDimension('VAR', data.shape[1])
-    f2.createDimension('ROW', np.size(yY,0))
-    f2.createDimension('COL', np.size(xX,1))
+    f2.createDimension('DateStrLen', len(ds3['Times'][0,:]))
+    f2.createDimension('Time', data.shape[0])
+    f2.createDimension('emissions_zdim_stag', 1)
+    #f2.createDimension('VAR', data.shape[1])
+    f2.createDimension('south_north', np.size(yY,0))
+    f2.createDimension('west_east', np.size(xX,1))
     
     # Building variables
-    TFLAG = f2.createVariable('TFLAG', 'i4', ('TSTEP', 'VAR', 'DATE-TIME'))
-    LON = f2.createVariable('Longitute', 'f4', ( 'ROW','COL'))
-    LAT = f2.createVariable('Latitude', 'f4', ( 'ROW','COL'))
+    #TFLAG = f2.createVariable('TFLAG', 'i4', ('TSTEP', 'VAR', 'DATE-TIME'))
+    DateStrLen = f2.createVariable('DateStrLen', 'i4', ('DateStrLen'))
+    Time = f2.createVariable('Time', 'i4', ('Time'))
+    Times = f2.createVariable('Times', 'dtype=np.object_', ('Time','DateStrLen'))
+    west_east = f2.createVariable('west_east', 'i4', ( 'west_east'))
+    south_north = f2.createVariable('south_north', 'i4', ( 'south_north'))
+    XLAT = f2.createVariable('XLAT', 'f4', ( 'south_north','west_east'))
+    XLONG = f2.createVariable('XLONG', 'f4', ( 'south_north','west_east'))
+    emissions_zdim_stag = f2.createVariable('emissions_zdim_stag', 'i4', ( 'emissions_zdim_stag'))
+    e_co = f2.createVariable('e_co', 'f4', ('Time', 'emissions_zdim_stag', 'south_north', 'west_east'))
+    
     AREA = f2.createVariable('AREA', 'f4', ( 'ROW','COL'))
     #TFLAG = f2.createVariable('TFLAG', 'i4', ('TSTEP'))
     ACET = f2.createVariable('ACET', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))

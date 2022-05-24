@@ -129,7 +129,8 @@ def roadEmiss(outPath,bravesPath,years,IBGE_CODES,roadDensPrefix,typeEmiss):
             roadE['index'] = df.index.values
         
             # OPEN EMISSION DATA
-            df_emiss2 = pd.read_csv(bravesPath+"/EmissCityBRAVES_LightDuty_"+str(int(year))+".txt",skipinitialspace=True)          
+            df_emiss2 = pd.read_csv(bravesPath+"/EmissCityBRAVES_LightDuty_"+str(int(year))+".csv",
+                                    skipinitialspace=True, delimiter=';')          
             df_emiss2.columns = df_emiss2.columns.str.replace(' ', '')
             
             # Selecting emission type
@@ -149,7 +150,8 @@ def roadEmiss(outPath,bravesPath,years,IBGE_CODES,roadDensPrefix,typeEmiss):
             
             # ================Commercial-ligh vehicles
             # Reading emissions data 
-            df_emiss = pd.read_csv(bravesPath+"/EmissCityBRAVES_CommercialLight_"+str(int(year))+".txt",skipinitialspace=True)
+            df_emiss = pd.read_csv(bravesPath+"/EmissCityBRAVES_CommercialLight_"+str(int(year))+".csv",
+                                   skipinitialspace=True, delimiter=';')
             df_emiss.columns = df_emiss.columns.str.replace(' ', '')
             # Selecting emission type
             df_emiss = zeroEmiss (df_emiss,typeEmiss)
@@ -168,7 +170,8 @@ def roadEmiss(outPath,bravesPath,years,IBGE_CODES,roadDensPrefix,typeEmiss):
             
             # ================motorcicles vehicles
             # Reading emissions data 
-            df_emiss3 = pd.read_csv(bravesPath+"/EmissCityBRAVES_Motorcycle_"+str(int(year))+".txt",skipinitialspace=True)
+            df_emiss3 = pd.read_csv(bravesPath+"/EmissCityBRAVES_Motorcycle_"+str(int(year))+".csv",
+                                    skipinitialspace=True, delimiter=';')
             df_emiss3.columns = df_emiss3.columns.str.replace(' ', '')
             # Selecting emission type
             df_emiss3 = zeroEmiss (df_emiss3,typeEmiss)
@@ -188,7 +191,8 @@ def roadEmiss(outPath,bravesPath,years,IBGE_CODES,roadDensPrefix,typeEmiss):
             
             # ================heavy vehicles
             # Reading emissions data 
-            df_emiss4 = pd.read_csv(bravesPath+"/EmissCityBRAVES_HeavyDuty_"+str(int(year))+".txt",skipinitialspace=True)
+            df_emiss4 = pd.read_csv(bravesPath+"/EmissCityBRAVES_HeavyDuty_"+str(int(year))+".csv",
+                                    skipinitialspace=True, delimiter=';')
             df_emiss4.columns = df_emiss4.columns.str.replace(' ', '')
             # Selecting emission type
             df_emiss4 = zeroEmiss (df_emiss4,typeEmiss)
@@ -208,13 +212,13 @@ def roadEmiss(outPath,bravesPath,years,IBGE_CODES,roadDensPrefix,typeEmiss):
             
 
         
-            roadE1 = roadEmissBySource(df_emissYearState1,df,
+            roadEmissBySource(df_emissYearState1,df,
                               'roadEmiss_BySource_ComLight_'+typeEmiss+'_'+roadDensPrefix,factor,outPath,year,IBGE_CODE)
-            roadE2 = roadEmissBySource(df_emissYearState2,df,
+            roadEmissBySource(df_emissYearState2,df,
                               'roadEmiss_BySource_Light_'+typeEmiss+'_'+roadDensPrefix,factor,outPath,year,IBGE_CODE)
-            roadE4 = roadEmissBySource(df_emissYearState4,df,
+            roadEmissBySource(df_emissYearState4,df,
                               'roadEmiss_BySource_Heavy_'+typeEmiss+'_'+roadDensPrefix,factor,outPath,year,IBGE_CODE)
-            roadE3 = roadEmissBySource(df_emissYearState3,df,
+            roadEmissBySource(df_emissYearState3,df,
                               'roadEmiss_BySource_Motorcycle_'+typeEmiss+'_'+roadDensPrefix,factor,outPath,year,IBGE_CODE)
     
 

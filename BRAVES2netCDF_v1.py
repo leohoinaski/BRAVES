@@ -62,7 +62,9 @@ from shapely.geometry import MultiLineString
 from shapely.ops import polygonize
 from netCDFcreator_v1 import createNETCDFannual
 #from BRAVES_temporalDisag import temporalDisagVehicular
-from BRAVES_ChemicalSpec_v1 import ChemicalSpeciationLight, ChemicalSpeciationHeavy
+from BRAVES_ChemicalSpec_v1 import ChemicalSpeciationLight
+from BRAVES_ChemicalSpec_v1 import ChemicalSpeciationHeavy,ChemicalSpeciationMotorcycle
+
 import datetime
 import numpy.matlib
 
@@ -244,7 +246,7 @@ def BRAVES2netCDF (folder,folderSpec,outPath,years,fileId,roadDensPrefix,typeEmi
         roadX.insert(0, 'A', 0)
         centerX = roadX.geometry.centroid
         centerX.to_crs("EPSG:4326")
-        dataEmiss3 = ChemicalSpeciationLight(roadX,dfSpc,smm,conver)
+        dataEmiss3 = ChemicalSpeciationMotorcycle(roadX,dfSpc,smm,conver)
         prefix = 'Motorcycles'
         splitnetCDFfiles(dataEmiss3,centerX,xX,yY,year,prefix,
                          outPath,fileId,roadDensPrefix,area,ltz)
