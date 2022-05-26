@@ -117,16 +117,16 @@ def ChemicalSpeciationHeavy(roadX,dfSpc,smm,conver):
     dataEmissX=pd.DataFrame()
     # Filling VOC emissions
     for ii in range(0,dfSpc.shape[0]):
-        dataEmissX[dfSpc.ID[ii]] = dfSpc['LightVOC'][ii]*roadX['EXH_NMHC']*conver/smm.iloc[ii,1] +\
-           dfSpc['LightPM'][ii]*roadX['EXH_PMFINE']*conver/smm.iloc[ii,1]  +\
+        dataEmissX[dfSpc.ID[ii]] = dfSpc['HeavyVOC'][ii]*roadX['EXH_NMHC']*conver/smm.iloc[ii,1] +\
+           dfSpc['HeavyPM'][ii]*roadX['EXH_PMFINE']*conver/smm.iloc[ii,1]  +\
                dfSpc['road'][ii]*roadX['RW_PMC']*conver/smm.iloc[ii,1] +\
                    dfSpc['road'][ii]*roadX['RDR_PMC']*conver/smm.iloc[ii,1] +\
                        dfSpc['brakes'][ii]*roadX['BT_PMC']*conver/smm.iloc[ii,1] +\
                            dfSpc['tires'][ii]*roadX['BT_PMC']*conver/smm.iloc[ii,1] +\
-                               dfSpc['LightEvap'][ii]*roadX['RFUEL_NMHC']*conver/smm.iloc[ii,1] +\
-                                   dfSpc['LightEvap'][ii]*roadX['EVD_NMHC']*conver/smm.iloc[ii,1] +\
-                                       dfSpc['LightEvap'][ii]*roadX['EVH_NMHC']*conver/smm.iloc[ii,1] +\
-                                           dfSpc['LightEvap'][ii]*roadX['EVR_NMHC']*conver/smm.iloc[ii,1]
+                               dfSpc['HeavyEvap'][ii]*roadX['RFUEL_NMHC']*conver/smm.iloc[ii,1] +\
+                                   dfSpc['HeavyEvap'][ii]*roadX['EVD_NMHC']*conver/smm.iloc[ii,1] +\
+                                       dfSpc['HeavyEvap'][ii]*roadX['EVH_NMHC']*conver/smm.iloc[ii,1] +\
+                                           dfSpc['HeavyEvap'][ii]*roadX['EVR_NMHC']*conver/smm.iloc[ii,1]
     
     # Filling direct emissions
     # dataEmissX['ALDX'] = 

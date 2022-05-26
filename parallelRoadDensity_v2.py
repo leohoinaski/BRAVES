@@ -630,7 +630,7 @@ def roadDensityWRF (dirPath,outPath,IBGE_CODES,lati,latf,loni,lonf,
     # -------------------------- Domain borders ----------------------------------
     # Grind covering entire country 
     
-    print('Extracting MCIP coordinates')
+    print('Extracting WRF geogrid coordinates')
     ds = nc4.Dataset(wrfPath)
     #dataVar = list(ds.variables.keys())
     x = np.unique(ds['XLAT_C'][:])

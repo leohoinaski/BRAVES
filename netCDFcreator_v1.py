@@ -1008,6 +1008,7 @@ def createNETCDFtemporalBySpecies(folder,name,data,xX,yY,dates,specie,area):
 
     #%% Creating a dataset
 def createNETCDFtemporalfromNCforWRFCHEM(rootPath,folder,name,data,xX,yY,dates,area,wrfPath):
+    #https://github.com/wrf-model/WRF/blob/master/Registry/registry.chem
     # import netCDF4 as nc
     # path='/media/leohoinaski/HDD/wrfchemi_00_d02/wrfchemi_00z_d02'
     # ds = nc.Dataset(path)
@@ -1018,11 +1019,6 @@ def createNETCDFtemporalfromNCforWRFCHEM(rootPath,folder,name,data,xX,yY,dates,a
     cdate = datetime.datetime.now()
     cdateStr = int(str(cdate.year)+str(cdate.timetuple().tm_yday))
     ctime = int(str(cdate.hour)+str(cdate.minute)+str(cdate.second))
-
-    tflag = np.empty([dates.shape[0],data.shape[1],2],dtype='i4')
-    for ii in range(0,dates.shape[0]):
-        tflag[ii,:,0]=int(dates['year'][0]*1000 + dates.index[ii].timetuple().tm_yday)
-        tflag[ii,:,1]=int(str(dates['hour'][ii])+'0000')
     
     sdate =  dates['year'][0]*1000 + dates.index[0].timetuple().tm_yday            
     
@@ -1040,11 +1036,12 @@ def createNETCDFtemporalfromNCforWRFCHEM(rootPath,folder,name,data,xX,yY,dates,a
         
     
     f2 = nc4.Dataset(folder+'/'+name,'w', format='NETCDF4_CLASSIC') #'w' stands for write    
-
+    # ff = '/media/leohoinaski/HDD/wrfchemi_00_d02/wrfchemi_00z_d02'
+    # ds = nc.Dataset(ff) 
     ds3 = nc4.Dataset(wrfPath)
     for gatr in ds3.ncattrs() :
-        f2.gatr = ds3.getncattr(gatr)
-    
+        setattr(f2, gatr, ds3.getncattr(gatr))
+
     
     f2.TITLE= ' BRAVES emissions for WRFCHEM'
     f2.CDATE= cdateStr
@@ -1080,26 +1077,8 @@ def createNETCDFtemporalfromNCforWRFCHEM(rootPath,folder,name,data,xX,yY,dates,a
     f2.VGTYP= -1
     f2.VGTOP= 0.0
     f2.VGLVLS= [0,0]
-    
-    #f2.GDNAM= 'SE53BENCH'       
-    #f2.UPNAM= 'M3WNDW'   
-    strVAR = ' ACET            ACROLEIN        ALD2           \n\
-    ALD2_PRIMARY    ALDX            BENZ            BUTADIENE13\n\
-    CH4             CH4_INV         CL2             CO\n\
-    CO2_INV         ETH             ETHA            ETHY\n\
-    ETOH            FORM            FORM_PRIMARY    HCL\n\
-    HONO            IOLE            ISOP            KET\n\
-    MEOH            N2O_INV         NAPH            NH3\n\
-    NH3_FERT        NO              NO2             NVOL\n\
-    OLE             PAL             PAR             PCA\n\
-    PCL             PEC             PFE             PH2O\n\
-    PK              PMC             PMG             PMN\n\
-    PMOTHR          PNA             PNCOM           PNH4\n\
-    PNO3            POC             PRPA            PSI\n\
-    PSO4            PTI             SO2             SOAALK\n\
-    SULF            TERP            TOL             UNK\n\
-    UNR             VOC_INV         XYLMN           PMFINE'        
-    f2.VAR_LIST=strVAR
+
+
     #f2.FILEDESC= 'BRAVES database vehicular emissions ready for CMAQ'
     f2.HISTORY ='' 
        
@@ -1113,227 +1092,244 @@ def createNETCDFtemporalfromNCforWRFCHEM(rootPath,folder,name,data,xX,yY,dates,a
     f2.createDimension('west_east', np.size(xX,1))
     
     # Building variables
+    #https://ruc.noaa.gov/wrf/wrf-chem/Emission_guide.pdf
     #TFLAG = f2.createVariable('TFLAG', 'i4', ('TSTEP', 'VAR', 'DATE-TIME'))
-    DateStrLen = f2.createVariable('DateStrLen', 'i4', ('DateStrLen'))
-    Time = f2.createVariable('Time', 'i4', ('Time'))
-    Times = f2.createVariable('Times', 'dtype=np.object_', ('Time','DateStrLen'))
-    west_east = f2.createVariable('west_east', 'i4', ( 'west_east'))
-    south_north = f2.createVariable('south_north', 'i4', ( 'south_north'))
-    XLAT = f2.createVariable('XLAT', 'f4', ( 'south_north','west_east'))
-    XLONG = f2.createVariable('XLONG', 'f4', ( 'south_north','west_east'))
-    emissions_zdim_stag = f2.createVariable('emissions_zdim_stag', 'i4', ( 'emissions_zdim_stag'))
-    e_co = f2.createVariable('e_co', 'f4', ('Time', 'emissions_zdim_stag', 'south_north', 'west_east'))
+    # DateStrLen = f2.createVariable('DateStrLen', 'i4', ('DateStrLen'))  
+    # Time = f2.createVariable('Time', 'i4', ('Time'))
+    # west_east = f2.createVariable('west_east', 'i4', ( 'west_east')) 
+    # south_north = f2.createVariable('south_north', 'i4', ( 'south_north'))
+    # emissions_zdim_stag = f2.createVariable('emissions_zdim_stag', 'i4', ( 'emissions_zdim_stag'))
     
-    AREA = f2.createVariable('AREA', 'f4', ( 'ROW','COL'))
-    #TFLAG = f2.createVariable('TFLAG', 'i4', ('TSTEP'))
-    ACET = f2.createVariable('ACET', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
-    ACROLEIN = f2.createVariable('ACROLEIN', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
-    ALD2 = f2.createVariable('ALD2', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
-    ALD2_PRIMARY = f2.createVariable('ALD2_PRIMARY', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
-    ALDX = f2.createVariable('ALDX', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
-    BENZ = f2.createVariable('BENZ', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
-    BUTADIENE13 = f2.createVariable('BUTADIENE13', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
-    CH4 = f2.createVariable('CH4', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
-    CH4_INV = f2.createVariable('CH4_INV', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
-    CL2 = f2.createVariable('CL2', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
-    CO = f2.createVariable('CO', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
-    CO2_INV = f2.createVariable('CO2_INV', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
-    ETH = f2.createVariable('ETH', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
-    ETHA = f2.createVariable('ETHA', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
-    ETHY = f2.createVariable('ETHY', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
-    ETOH = f2.createVariable('ETOH', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
-    FORM = f2.createVariable('FORM', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
-    FORM_PRIMARY = f2.createVariable('FORM_PRIMARY', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
-    HCL = f2.createVariable('HCL', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
-    HONO = f2.createVariable('HONO', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
-    IOLE = f2.createVariable('IOLE', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
-    ISOP = f2.createVariable('ISOP', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
-    KET = f2.createVariable('KET', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
-    MEOH = f2.createVariable('MEOH', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
-    N2O_INV = f2.createVariable('N2O_INV', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
-    NAPH = f2.createVariable('NAPH', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
-    NH3 = f2.createVariable('NH3', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
-    NH3_FERT = f2.createVariable('NH3_FERT', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
-    NO = f2.createVariable('NO', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
-    NO2 = f2.createVariable('NO2', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
-    NVOL = f2.createVariable('NVOL', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
-    OLE = f2.createVariable('OLE', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
-    PAL = f2.createVariable('PAL', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
-    PAR = f2.createVariable('PAR', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
-    PCA = f2.createVariable('PCA', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
-    PCL = f2.createVariable('PCL', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
-    PEC = f2.createVariable('PEC', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
-    PFE = f2.createVariable('PFE', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
-    PH2O = f2.createVariable('PH2O', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
-    PK = f2.createVariable('PK', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
-    PMC = f2.createVariable('PMC', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
-    PMG = f2.createVariable('PMG', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
-    PMN = f2.createVariable('PMN', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
-    PMOTHR = f2.createVariable('PMOTHR', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
-    PNA = f2.createVariable('PNA', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
-    PNCOM = f2.createVariable('PNCOM', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
-    PNH4 = f2.createVariable('PNH4', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
-    PNO3 = f2.createVariable('PNO3', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
-    POC = f2.createVariable('POC', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
-    PRPA = f2.createVariable('PRPA', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
-    PSI = f2.createVariable('PSI', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
-    PSO4 = f2.createVariable('PSO4', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
-    PTI = f2.createVariable('PTI', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
-    SO2 = f2.createVariable('SO2', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
-    SOAALK = f2.createVariable('SOAALK', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
-    SULF = f2.createVariable('SULF', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
-    TERP = f2.createVariable('TERP', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
-    TOL = f2.createVariable('TOL', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
-    UNK = f2.createVariable('UNK', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
-    UNR = f2.createVariable('UNR', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
-    VOC_INV = f2.createVariable('VOC_INV', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
-    XYLMN = f2.createVariable('XYLMN', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
-    PMFINE = f2.createVariable('PMFINE', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
+
+     
+    dtes = np.array(dates.index.strftime("%Y-%m-%d_%H:%M:%S").str.split('',expand=True))
+    dts=np.empty((dtes.shape[0],19), dtype=object)
+    for ii in range(0,dtes.shape[0]):
+        for jj in range(0,19):
+            dts[ii,jj] = dtes[ii][jj+1]
+    
+    
+    Times = f2.createVariable('Times', 'S1', ('Time','DateStrLen'))
+    Times[:,:] = dts
+    
+    XLAT = f2.createVariable('XLAT', 'f4', ( 'south_north','west_east'))
+    XLAT[:,:] = ds3['XLAT'][0,:,:]
+    XLAT.units = 'degree north '
+    
+    XLONG = f2.createVariable('XLONG', 'f4', ( 'south_north','west_east'))
+    XLONG[:,:] = ds3['XLONG'][0,:,:]
+    XLONG.units = 'degree_east '
 
     
-    # Passing data into variables
-    TFLAG[:,:,:] = tflag
-    #TFLAG[:] = dates.index
-    print(yY.shape)
-    print(xX.shape)
-    LAT[:,:] =  yY
-    LON[:,:] = xX
-    print(area.shape)
-    AREA[:,:] = area
-    print(str(ACET.shape) + str(data.shape))
-    ACET[:,:,:,:] =  data[:,0,:,:]
-    ACROLEIN[:,:,:,:] = data[:,1,:,:]
-    ALD2[:,:,:,:] = data[:,2,:,:]
-    ALD2_PRIMARY[:,:,:,:] = data[:,3,:,:]
-    ALDX[:,:,:,:] = data[:,4,:,:]
-    BENZ[:,:,:,:] = data[:,5,:,:]
-    BUTADIENE13[:,:,:,:] = data[:,6,:,:]
-    CH4[:,:,:,:] = data[:,7,:,:]
-    CH4_INV[:,:,:,:] = data[:,8,:,:]
-    CL2[:,:,:,:] =  data[:,9,:,:]
-    CO[:,:,:,:] = data[:,10,:,:]
-    CO2_INV[:,:,:,:] =  data[:,11,:,:]
-    ETH[:,:,:,:] =  data[:,12,:,:]
-    ETHA[:,:,:,:] =  data[:,13,:,:]
-    ETHY[:,:,:,:] =  data[:,14,:,:]
-    ETOH[:,:,:,:] = data[:,15,:,:]
-    FORM[:,:,:,:] = data[:,16,:,:]
-    FORM_PRIMARY[:,:,:,:] = data[:,17,:,:]
-    HCL[:,:,:,:] = data[:,18,:,:]
-    HONO[:,:,:,:] = data[:,19,:,:]
-    IOLE[:,:,:,:] = data[:,20,:,:]
-    ISOP[:,:,:,:] = data[:,21,:,:]
-    KET[:,:,:,:] = data[:,22,:,:]
-    MEOH[:,:,:,:] = data[:,23,:,:]
-    N2O_INV[:,:,:,:] = data[:,24,:,:]
-    NAPH[:,:,:,:] = data[:,25,:,:]
-    NH3[:,:,:,:] = data[:,26,:,:]
-    NH3_FERT[:,:,:,:] = data[:,27,:,:]
-    NO[:,:,:,:] = data[:,28,:,:]
-    NO2[:,:,:,:] = data[:,29,:,:]
-    NVOL[:,:,:,:] = data[:,30,:,:]
-    OLE[:,:,:,:] = data[:,31,:,:]
-    PAL[:,:,:,:] = data[:,32,:,:]
-    PAR[:,:,:,:] = data[:,33,:,:]
-    PCA[:,:,:,:] = data[:,34,:,:]
-    PCL[:,:,:,:] = data[:,35,:,:]
-    PEC[:,:,:,:] = data[:,36,:,:]
-    PFE[:,:,:,:] = data[:,37,:,:]
-    PH2O[:,:,:,:] = data[:,38,:,:]
-    PK[:,:,:,:] = data[:,39,:,:]
-    PMC[:,:,:,:] = data[:,40,:,:]
-    PMG[:,:,:,:] = data[:,41,:,:]
-    PMN[:,:,:,:] = data[:,42,:,:]
-    PMOTHR[:,:,:,:] = data[:,43,:,:]
-    PNA[:,:,:,:] = data[:,44,:,:]
-    PNCOM[:,:,:,:] = data[:,45,:,:]
-    PNH4[:,:,:,:] = data[:,46,:,:]
-    PNO3[:,:,:,:] = data[:,47,:,:]
-    POC[:,:,:,:] = data[:,48,:,:]
-    PRPA[:,:,:,:] = data[:,49,:,:]
-    PSI[:,:,:,:] = data[:,50,:,:]
-    PSO4[:,:,:,:] = data[:,51,:,:]
-    PTI[:,:,:,:] = data[:,52,:,:]
-    SO2[:,:,:,:] = data[:,53,:,:]
-    SOAALK[:,:,:,:] = data[:,54,:,:]
-    SULF[:,:,:,:] = data[:,55,:,:]
-    TERP[:,:,:,:] = data[:,56,:,:]
-    TOL[:,:,:,:] = data[:,57,:,:]
-    UNK[:,:,:,:]= data[:,58,:,:]
-    UNR[:,:,:,:] = data[:,59,:,:]
-    VOC_INV[:,:,:,:] = data[:,60,:,:]
-    XYLMN[:,:,:,:] = data[:,61,:,:]
-    PMFINE[:,:,:,:] = data[:,62,:,:]
+    e_acet = f2.createVariable('e_acet', 'f4', ('Time', 'emissions_zdim_stag','south_north', 'west_east'))
+    e_acet[:,:,:,:] =  data[:,0,:,:]
+    e_acet.units = 'mol km^-2 hr^-1'
+    
+    # Sum of acrolein and Butadien13
+    e_macr = f2.createVariable('e_macr', 'f4', ('Time', 'emissions_zdim_stag','south_north', 'west_east'))
+    e_macr[:,:,:,:] =  data[:,1,:,:] + data[:,6,:,:]
+    e_macr.units = 'mol km^-2 hr^-1'
+    
+    e_ald2 = f2.createVariable('e_ald2', 'f4', ('Time', 'emissions_zdim_stag','south_north', 'west_east'))
+    e_ald2[:,:,:,:] =  data[:,2,:,:]
+    e_ald2.units = 'mol km^-2 hr^-1'
+    
+    e_ald = f2.createVariable('e_ald', 'f4',('Time', 'emissions_zdim_stag','south_north', 'west_east'))
+    e_ald[:,:,:,:] =  data[:,3,:,:]
+    e_ald.units = 'mol km^-2 hr^-1'
+     
+    # Higher aldehydes
+    e_aldx = f2.createVariable('e_aldx', 'f4', ('Time', 'emissions_zdim_stag','south_north', 'west_east'))
+    e_aldx[:,:,:,:] =  data[:,4,:,:]
+    e_aldx.units = 'mol km^-2 hr^-1'
+    
+    e_benzene = f2.createVariable('e_benzene', 'f4', ('Time', 'emissions_zdim_stag','south_north', 'west_east'))
+    e_benzene[:,:,:,:] =  data[:,5,:,:]
+    e_benzene.units = 'mol km^-2 hr^-1'
     
     
-    #Add local attributes to variable instances
-    TFLAG.units = '<YYYYDDD,HHMMSS>'
-    ACET.units = 'ug/(km2.h) '
-    ACROLEIN.units = 'ug/(km2.h) '
-    ALD2.units = 'ug/(km2.h) '
-    ALD2_PRIMARY.units = 'ug/(km2.h) '
-    ALDX.units = 'ug/(km2.h) '
-    BENZ.units = 'ug/(km2.h) '
-    BUTADIENE13.units = 'ug/(km2.h) '
-    CH4.units = 'ug/(km2.h) '
-    CH4_INV.units = 'ug/(km2.h) '
-    CL2.units = 'ug/(km2.h) '
-    CO.units = 'ug/(km2.h) '
-    CO2_INV.units = 'ug/(km2.h) '
-    ETH.units = 'ug/(km2.h)'
-    ETHA.units = 'ug/(km2.h)'
-    ETHY.units = 'ug/(km2.h) '
-    ETOH.units = 'ug/(km2.h) '
-    FORM.units = 'ug/(km2.h)'
-    FORM_PRIMARY.units = 'ug/(km2.h) '
-    HCL.units = 'ug/(km2.h) '
-    HONO.units = 'ug/(km2.h) '
-    IOLE.units = 'ug/(km2.h) '
-    ISOP.units = 'ug/(km2.h) '
-    KET.units = 'ug/(km2.h) '
-    MEOH.units = 'ug/(km2.h) '
-    N2O_INV.units = 'ug/(km2.h) '
-    NAPH.units = 'ug/(km2.h) '
-    NH3.units = 'ug/(km2.h) '
-    NH3_FERT.units = 'ug/(km2.h) '
-    NO.units = 'ug/(km2.h) '
-    NO2.units = 'ug/(km2.h) '
-    NVOL.units = 'ug/(km2.h) '
-    OLE.units = 'ug/(km2.h) '
-    PAL.units = 'ug/(m2.s) '
-    PAR.units = 'ug/(km2.h)'
-    PCA.units = 'ug/(m2.s)  '
-    PCL.units = 'ug/(m2.s)  '
-    PEC.units = 'ug/(m2.s) '
-    PFE.units = 'ug/(m2.s)  '
-    PH2O.units = 'ug/(m2.s) '
-    PK.units = 'ug/(m2.s)  '
-    PMC.units = 'ug/(m2.s) '
-    PMG.units = 'ug/(m2.s)  '
-    PMN.units = 'ug/(m2.s)  '
-    PMOTHR.units = 'ug/(m2.s)  '
-    PNA.units = 'ug/(m2.s) '
-    PNCOM.units = 'ug/(m2.s)  '
-    PNH4.units = 'ug/(m2.s)  '
-    PNO3.units = 'ug/(m2.s) '
-    POC.units = 'ug/(m2.s)  ' 
-    PRPA.units = 'ug/(km2.h) '
-    PSI.units = 'ug/(m2.s)  '
-    PSO4.units = 'ug/(m2.s)  '
-    PTI.units = 'ug/(m2.s)  '
-    SO2.units = 'ug/(km2.h)'
-    SOAALK.units = 'ug/(km2.h) '
-    SULF.units = 'ug/(km2.h) '
-    TERP.units = 'ug/(km2.h) '
-    TOL.units = 'ug/(km2.h) '
-    UNK.units = 'ug/(km2.h) '
-    UNR.units = 'ug/(km2.h) '
-    VOC_INV.units = 'ug/(km2.h) '
-    XYLMN.units = 'ug/(km2.h) '
-    PMFINE.units = 'ug/(m2.s) '
-    LON.units = 'degrees '
-    LAT.units = 'degrees '
-    AREA.units = 'km2 '
+    e_ch4 = f2.createVariable('e_ch4', 'f4', ('Time', 'emissions_zdim_stag','south_north', 'west_east'))
+    e_ch4[:,:,:,:] =  data[:,7,:,:]
+    e_ch4.units = 'mol km^-2 hr^-1'
+    
+    #CH4_INV = f2.createVariable('CH4_INV', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
+    
+    e_clc = f2.createVariable('e_clc', 'f4', ('Time', 'emissions_zdim_stag','south_north', 'west_east'))
+    e_clc[:,:,:,:] =  data[:,9,:,:]
+    e_clc.units = 'ug/m3 m/s'
+    
+    e_co = f2.createVariable('e_co', 'f4', ('Time', 'emissions_zdim_stag','south_north', 'west_east'))
+    e_co[:,:,:,:] =  data[:,10,:,:]
+    e_co.units = 'mol km^-2 hr^-1'
+    
+    e_co2 = f2.createVariable('e_co2', 'f4', ('Time', 'emissions_zdim_stag','south_north', 'west_east'))
+    e_co2[:,:,:,:] =  data[:,11,:,:]
+    e_co2.units = 'mol km^-2 hr^-1'
+    
+    e_eth = f2.createVariable('e_eth', 'f4', ('Time', 'emissions_zdim_stag','south_north', 'west_east'))
+    e_eth[:,:,:,:] =  data[:,12,:,:]
+    e_eth.units = 'mol km^-2 hr^-1'
+    
+    e_etha = f2.createVariable('e_etha', 'f4', ('Time', 'emissions_zdim_stag','south_north', 'west_east'))
+    e_etha[:,:,:,:] =  data[:,13,:,:]
+    e_etha.units = 'mol km^-2 hr^-1'
+    
+    # ETHY
+    e_c2h2 = f2.createVariable('e_c2h2', 'f4', ('Time', 'emissions_zdim_stag','south_north', 'west_east'))
+    e_c2h2[:,:,:,:] =  data[:,14,:,:]
+    e_c2h2.units = 'mol km^-2 hr^-1'
+    
+    e_etoh = f2.createVariable('e_etoh', 'f4', ('Time', 'emissions_zdim_stag','south_north', 'west_east'))
+    e_etoh[:,:,:,:] =  data[:,15,:,:]
+    e_etoh.units = 'mol km^-2 hr^-1'
+    
+    e_c2h5oh = f2.createVariable('e_c2h5oh', 'f4', ('Time', 'emissions_zdim_stag','south_north', 'west_east'))
+    e_c2h5oh[:,:,:,:] =  data[:,15,:,:]
+    e_c2h5oh.units = 'mol km^-2 hr^-1'
+    
+    e_form = f2.createVariable('e_form', 'f4', ('Time', 'emissions_zdim_stag','south_north', 'west_east'))
+    e_form[:,:,:,:] =  data[:,16,:,:]
+    e_form.units = 'mol km^-2 hr^-1'
+    
+   #FORM_PRIMARY = f2.createVariable('FORM_PRIMARY', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
+   
+    e_hcl = f2.createVariable('e_hcl', 'f4', ('Time', 'emissions_zdim_stag','south_north', 'west_east'))
+    e_hcl[:,:,:,:] =  data[:,18,:,:]
+    e_hcl.units = 'mol km^-2 hr^-1'
+    
+    e_hono = f2.createVariable('e_hono', 'f4', ('Time', 'emissions_zdim_stag','south_north', 'west_east'))
+    e_hono[:,:,:,:] =  data[:,19,:,:]
+    e_hono.units = 'mol km^-2 hr^-1'   
+    
+    e_iole = f2.createVariable('e_iole', 'f4',  ('Time', 'emissions_zdim_stag','south_north', 'west_east'))
+    e_iole[:,:,:,:] =  data[:,20,:,:]
+    e_iole.units = 'mol km^-2 hr^-1'       
+    
+    e_isop = f2.createVariable('e_isop', 'f4', ('Time', 'emissions_zdim_stag','south_north', 'west_east'))
+    e_isop[:,:,:,:] =  data[:,21,:,:]
+    e_isop.units = 'mol km^-2 hr^-1'     
+    
+    e_ket = f2.createVariable('e_ket', 'f4', ('Time', 'emissions_zdim_stag','south_north', 'west_east'))
+    e_ket[:,:,:,:] =  data[:,22,:,:]
+    e_ket.units = 'mol km^-2 hr^-1'
+    
+    e_meoh = f2.createVariable('e_meoh', 'f4',('Time', 'emissions_zdim_stag','south_north', 'west_east'))
+    e_meoh[:,:,:,:] =  data[:,23,:,:]
+    e_meoh.units = 'mol km^-2 hr^-1'
+    
+    e_n2o = f2.createVariable('e_n2o', 'f4', ('Time', 'emissions_zdim_stag','south_north', 'west_east'))
+    e_n2o[:,:,:,:] =  data[:,24,:,:]
+    e_n2o.units = 'mol km^-2 hr^-1'    
+    
+    e_nh3 = f2.createVariable('e_nh3', 'f4',('Time', 'emissions_zdim_stag','south_north', 'west_east'))
+    e_nh3[:,:,:,:] =  data[:,26,:,:]
+    e_nh3.units = 'mol km^-2 hr^-1'      
+        
+    e_no = f2.createVariable('e_no', 'f4', ('Time', 'emissions_zdim_stag','south_north', 'west_east'))
+    e_no[:,:,:,:] =  data[:,28,:,:]
+    e_no.units = 'mol km^-2 hr^-1'    
+    
+    e_no2 = f2.createVariable('e_no2', 'f4', ('Time', 'emissions_zdim_stag','south_north', 'west_east'))
+    e_no2[:,:,:,:] =  data[:,29,:,:]
+    e_no2.units = 'mol km^-2 hr^-1' 
+        
+    e_ole = f2.createVariable('e_ole', 'f4', ('Time', 'emissions_zdim_stag','south_north', 'west_east'))
+    e_ole[:,:,:,:] =  data[:,31,:,:]
+    e_ole.units = 'mol km^-2 hr^-1' 
+    
+    e_par = f2.createVariable('e_par', 'f4', ('Time', 'emissions_zdim_stag','south_north', 'west_east'))
+    e_par[:,:,:,:] =  data[:,33,:,:]
+    e_par.units = 'mol km^-2 hr^-1' 
+           
+    e_cli = f2.createVariable('e_cli', 'f4', ('Time', 'emissions_zdim_stag','south_north', 'west_east'))
+    e_cli[:,:,:,:] =  data[:,35,:,:]
+    e_cli.units = 'ug/m3 m/s'
+    
+    e_clj = f2.createVariable('e_clj', 'f4', ('Time', 'emissions_zdim_stag','south_north', 'west_east'))
+    e_clj[:,:,:,:] =  data[:,35,:,:]
+    e_clj.units = 'ug/m3 m/s'
+    
+    e_clc = f2.createVariable('e_clc', 'f4', ('Time', 'emissions_zdim_stag','south_north', 'west_east'))
+    e_clc[:,:,:,:] =  data[:,36,:,:]
+    e_clc.units = 'ug/m3 m/s' 
+    
+    e_eci = f2.createVariable('e_eci', 'f4', ('Time', 'emissions_zdim_stag','south_north', 'west_east'))
+    e_eci[:,:,:,:] =  data[:,36,:,:]
+    e_eci.units = 'ug/m3 m/s'   
+    
+    e_ecj = f2.createVariable('e_ecj', 'f4', ('Time', 'emissions_zdim_stag','south_north', 'west_east'))
+    e_ecj[:,:,:,:] =  data[:,36,:,:]
+    e_ecj.units = 'ug/m3 m/s'   
+    
+    e_ecc = f2.createVariable('e_ecc', 'f4', ('Time', 'emissions_zdim_stag','south_north', 'west_east'))
+    e_ecc[:,:,:,:] =  data[:,36,:,:]
+    e_ecc.units = 'ug/m3 m/s'   
+    
+    e_pm_10 = f2.createVariable('e_pm_10', 'f4', ('Time', 'emissions_zdim_stag','south_north', 'west_east'))
+    e_pm_10[:,:,:,:] =  data[:,40,:,:]
+    e_pm_10.units = 'ug/m3 m/s' 
+    
+    e_nac = f2.createVariable('e_nac', 'f4', ('Time', 'emissions_zdim_stag','south_north', 'west_east'))
+    e_nac[:,:,:,:] =  data[:,44,:,:]
+    e_nac.units = 'ug/m3 m/s' 
+    
+    e_nh4c = f2.createVariable('e_nh4c', 'f4', ('Time', 'emissions_zdim_stag','south_north', 'west_east'))
+    e_nh4c[:,:,:,:] =  data[:,46,:,:]
+    e_nh4c.units = 'ug/m3 m/s' 
+   
+    e_no3c = f2.createVariable('e_no3c', 'f4', ('Time', 'emissions_zdim_stag','south_north', 'west_east'))
+    e_no3c[:,:,:,:] =  data[:,47,:,:]
+    e_no3c.units = 'ug/m3 m/s' 
+
+    e_oc = f2.createVariable('e_oc', 'f4', ('Time', 'emissions_zdim_stag','south_north', 'west_east'))
+    e_oc[:,:,:,:] =  data[:,48,:,:]
+    e_oc.units = 'ug/m3 m/s' 
+
+    e_c3h8 = f2.createVariable('e_c3h8', 'f4', ('Time', 'emissions_zdim_stag','south_north', 'west_east'))
+    e_c3h8[:,:,:,:] =  data[:,49,:,:]
+    e_c3h8.units = 'mol km^-2 hr^-1' 
+
+    e_so4c = f2.createVariable('e_so4c', 'f4', ('Time', 'emissions_zdim_stag','south_north', 'west_east'))
+    e_so4c[:,:,:,:] =  data[:,51,:,:]
+    e_so4c.units = 'ug/m3 m/s'
+    
+    e_so4i = f2.createVariable('e_so4i', 'f4', ('Time', 'emissions_zdim_stag','south_north', 'west_east'))
+    e_so4i[:,:,:,:] =  data[:,51,:,:]
+    e_so4i.units = 'ug/m3 m/s'
+    
+    e_so4j = f2.createVariable('e_so4j', 'f4', ('Time', 'emissions_zdim_stag','south_north', 'west_east'))
+    e_so4j[:,:,:,:] =  data[:,51,:,:]
+    e_so4i.units = 'ug/m3 m/s'
+
+    e_so2 = f2.createVariable('e_so2', 'f4', ('Time', 'emissions_zdim_stag','south_north', 'west_east'))
+    e_so2[:,:,:,:] =  data[:,53,:,:]
+    e_so2.units = 'mol km^-2 hr^-1' 
+
+    e_terp = f2.createVariable('e_terp', 'f4', ('Time', 'emissions_zdim_stag','south_north', 'west_east'))
+    e_terp[:,:,:,:] =  data[:,56,:,:]
+    e_terp.units = 'mol km^-2 hr^-1' 
+    
+    e_tol = f2.createVariable('e_tol', 'f4', ('Time', 'emissions_zdim_stag','south_north', 'west_east'))
+    e_tol[:,:,:,:] =  data[:,57,:,:]
+    e_tol.units = 'mol km^-2 hr^-1' 
+
+    e_xyl = f2.createVariable('e_xyl', 'f4', ('Time', 'emissions_zdim_stag','south_north', 'west_east'))
+    e_xyl[:,:,:,:] =  data[:,61,:,:]
+    e_xyl.units = 'mol km^-2 hr^-1'  
+    
+    e_pm25 = f2.createVariable('e_pm25', 'f4', ('Time', 'emissions_zdim_stag','south_north', 'west_east'))
+    e_pm25[:,:,:,:] =  data[:,62,:,:]
+    e_pm25.units = 'ug/m3 m/s' 
+    
+    e_pm25j = f2.createVariable('e_pm25j', 'f4', ('Time', 'emissions_zdim_stag','south_north', 'west_east'))
+    e_pm25j[:,:,:,:] =  data[:,62,:,:]
+    e_pm25j.units = 'ug/m3 m/s' 
+    
+    e_pm25i = f2.createVariable('e_pm25i', 'f4', ('Time', 'emissions_zdim_stag','south_north', 'west_east'))
+    e_pm25i[:,:,:,:] =  data[:,62,:,:]
+    e_pm25i.units = 'ug/m3 m/s' 
+       
+
    
     f2.close()
     print('Your BRAVESdatabase netCDF file is ready for WRFCHEM!')

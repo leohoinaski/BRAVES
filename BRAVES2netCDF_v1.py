@@ -193,7 +193,7 @@ def BRAVES2netCDF (folder,folderSpec,outPath,years,fileId,roadDensPrefix,typeEmi
         
         file_path = 'BRAVES_speciation.csv'
         dfSpc = pd.read_csv(folderSpec+'/'+file_path)
-        dfSpc.iloc[:,3:] = dfSpc.iloc[:,3:] # em porcentagem
+        dfSpc.iloc[:,3:] = dfSpc.iloc[:,3:]/100 # em porcentagem
         
         file_path = 'CMAQ_speciesMW.csv'
         smm = pd.read_csv(folderSpec+'/'+file_path)
