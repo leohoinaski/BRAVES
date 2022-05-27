@@ -138,7 +138,7 @@ def temporalDisagVehicular(dataNC,year,month,day,hourdis,weekdis,monthdis,ltz):
 
 
 #%%
-def BRAVES_temporalDisag(rootPath,outPath,file,fileId,month,day):
+def BRAVES_temporalDisag(rootPath,outPath,file,month,day):
     print('===================STARTING BRAVES_temporalDisag_v1.py=======================')
     hourdis = list(pd.read_csv(rootPath+'/TemporalAloc/hourdis.csv').iloc[:,1])
     weekdis = list(pd.read_csv(rootPath+'/TemporalAloc/weekdis.csv').iloc[:,1])

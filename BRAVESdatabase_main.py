@@ -89,6 +89,7 @@ mcipPath = '/media/leohoinaski/HDD/GRIDDOT2D_SC.nc'
 # If userGrid = 2, define the path to WRF geogrid file
 wrfPath = '/media/leohoinaski/HDD/wrfout_d02_2018-01-01_00:00:00'
 geowrfPath = '/media/leohoinaski/HDD/geo_em.d02.nc'
+
 # -----------------------------Emission type-----------------------------------
 # Type of emission to run
 typeEmiss = 'TOTAL' 
@@ -120,21 +121,21 @@ fileId = 'SC_WRF_' # Code to identify your output files
 # Run or not road density calculation. If you choose this option, the 
 # roadDensity calculation will start. This might take long time if you set 
 # a large domain or small detalX/Y
-runOrnotRoadDens = 1 #0 for no and 1 for yes
+runOrnotRoadDens = 0 #0 for no and 1 for yes
 
 # This option will produce the csv files with emissions from each state
-runOrnotRoadEmiss = 1 # 0 for no and 1 for yes
+runOrnotRoadEmiss = 0 # 0 for no and 1 for yes
 
 # This option will merge the emissions if you have more than one state
-runOrnotMergeRoadEmiss = 1 # 0 for no and 1 for yes
+runOrnotMergeRoadEmiss = 0 # 0 for no and 1 for yes
 
 # This option will create annual netCDF files = BRAVESdatabaseAnnual
-runOrnotBRAVES2netCDF = 1 # 0 for no and 1 for yes
+runOrnotBRAVES2netCDF = 0 # 0 for no and 1 for yes
 
 # -----------------------Temporal disagregation--------------------------------
 # If you want temporal disagregated files, you need the BRAVESdatabaseAnnual files
-files = ['BRAVESdatabaseAnnual_BR_TOTAL_Total_BR_0.05x0.05_2013.nc'] # Define the files to disaggregate
-yearsTempFiles=[2013] # Years to run the temporal files
+files = ['BRAVESdatabaseAnnual_SC_WRF_TOTAL_Total_SC_WRF_WRFgrid_2019.nc'] # Define the files to disaggregate
+yearsTempFiles=[2019] # Years to run the temporal files
 months = [1] # Set the month of your simulation
 days = [1,2] # Set the day of your simulation
 
@@ -149,7 +150,7 @@ runOrnotCMAQemiss = 0 # 0 for no and 1 for yes
 
 # This option create WRFCHEM emission inputs - temporal, spatial, and all species
 # You should define the annual file to creat the WRFCHEM inputs
-runOrnotWRFCHEMemiss=0
+runOrnotWRFCHEMemiss=1
 
 #%%============================PROCESSING========================================
 
@@ -227,9 +228,9 @@ if runOrnotCMAQemiss==1:
             for month in months:
                 for day in days:
                     dataTempo=None
-                    dataTempo,xX,yY,disvec,prefix,area = BRAVES_temporalDisag(rootPath,outPath,file,fileId,month,day)
+                    dataTempo,xX,yY,disvec,prefix,area = BRAVES_temporalDisag(rootPath,outPath,file,month,day)
                     for jj in np.unique(disvec.day):       
-                        name = 'BRAVESdatabase2CMAQ_'+('_').join(file[0].split('_')[1:-1])+'_'+str(year)+'_'+str(month)+'_'+str(jj)+'.nc'
+                        name = 'BRAVESdatabase2CMAQ'+('_').join(file[0].split('_')[1:-1])+'_'+str(year)+'_'+str(month)+'_'+str(jj)+'.nc'
                         dayT = np.where(disvec.day==jj)
                         createNETCDFtemporalfromNC(outPath,name,dataTempo,xX,yY,disvec,area)
 
@@ -244,7 +245,7 @@ if runOrnotTempFiles==1:
                         smm = pd.read_csv(folderSpec+'/'+file_path)
                         specIdx=smm[smm.ID==spec].index.to_numpy()[0]
                         dataTempo=None
-                        dataTempo,xX,yY,disvec,prefix,area=BRAVES_temporalDisag(rootPath,outPath,file,fileId,month,day)
+                        dataTempo,xX,yY,disvec,prefix,area=BRAVES_temporalDisag(rootPath,outPath,file,month,day)
                         for jj in np.unique(disvec.day):       
                             name = 'BRAVESdatabaseTempEmiss_'+('_').join(file[0].split('_')[1:-1])+'_'+str(year)+'_'+str(month)+'_'+str(jj)+'.nc'
                             dayT = np.where(disvec.day==jj)
@@ -268,7 +269,7 @@ if runOrnotWRFCHEMemiss==1:
                
         for day in days:
             dataTempo=None
-            dataTempo,xX,yY,disvec,prefix,area = BRAVES_temporalDisag(rootPath,outPath,file,fileId,month,day)
+            dataTempo,xX,yY,disvec,prefix,area = BRAVES_temporalDisag(rootPath,outPath,file,month,day)
             for jj in np.unique(disvec.day):       
                 name = 'BRAVESdatabase2WRFCHEM'+('_').join(file[0].split('_')[1:-1])+'_'+str(year)+'_'+str(month)+'_'+str(jj)+'.nc'
                 dayT = np.where(disvec.day==jj)                       

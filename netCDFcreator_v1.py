@@ -1113,6 +1113,7 @@ def createNETCDFtemporalfromNCforWRFCHEM(rootPath,folder,name,data,xX,yY,dates,a
     Times[:,:] = dts
     
     XLAT = f2.createVariable('XLAT', 'f4', ( 'south_north','west_east'))
+    print(ds3['XLAT'][0,:,:].shape)
     XLAT[:,:] = ds3['XLAT'][0,:,:]
     XLAT.units = 'degree north '
     
