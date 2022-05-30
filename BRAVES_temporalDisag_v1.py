@@ -171,7 +171,7 @@ def BRAVES_temporalDisag(rootPath,outPath,file,month,day):
     # lon = np.linspace(xi, xi+(dx*(dataNC.shape[2])), dataNC.shape[2])
     # xv, yv = np.meshgrid(lon, lat)
     
-    xX = ds['Longitute'][:]
+    xX = ds['Longitude'][:]
     yY = ds['Latitude'][:]
     area = ds['AREA'][:]
     ltz = ds['LTZ'][:]

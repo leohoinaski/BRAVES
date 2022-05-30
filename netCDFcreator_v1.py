@@ -140,7 +140,7 @@ def createNETCDFannual(folder,name,data,xX,yY,dates,area,ltz):
     
     # Building variables
     TFLAG = f2.createVariable('TFLAG', 'i4', ('TSTEP', 'VAR', 'DATE-TIME'))
-    LON = f2.createVariable('Longitute', 'f4', ( 'ROW','COL'))
+    LON = f2.createVariable('Longitude', 'f4', ( 'ROW','COL'))
     LAT = f2.createVariable('Latitude', 'f4', ( 'ROW','COL'))
     AREA = f2.createVariable('AREA', 'f4', ( 'ROW','COL'))
     LTZ = f2.createVariable('LTZ', 'f4', ( 'ROW','COL'))
@@ -1120,12 +1120,11 @@ def createNETCDFtemporalfromNCforWRFCHEM(rootPath,folder,name,data,xX,yY,dates,a
     XLONG = f2.createVariable('XLONG', 'f4', ( 'south_north','west_east'))
     XLONG[:,:] = ds3['XLONG'][0,:,:]
     XLONG.units = 'degree_east '
-
     
     e_acet = f2.createVariable('e_acet', 'f4', ('Time', 'emissions_zdim_stag','south_north', 'west_east'))
     e_acet[:,:,:,:] =  data[:,0,:,:]
     e_acet.units = 'mol km^-2 hr^-1'
-    
+          
     # Sum of acrolein and Butadien13
     e_macr = f2.createVariable('e_macr', 'f4', ('Time', 'emissions_zdim_stag','south_north', 'west_east'))
     e_macr[:,:,:,:] =  data[:,1,:,:] + data[:,6,:,:]
@@ -1250,9 +1249,9 @@ def createNETCDFtemporalfromNCforWRFCHEM(rootPath,folder,name,data,xX,yY,dates,a
     e_clj[:,:,:,:] =  data[:,35,:,:]
     e_clj.units = 'ug/m3 m/s'
     
-    e_clc = f2.createVariable('e_clc', 'f4', ('Time', 'emissions_zdim_stag','south_north', 'west_east'))
-    e_clc[:,:,:,:] =  data[:,36,:,:]
-    e_clc.units = 'ug/m3 m/s' 
+    # e_clc = f2.createVariable('e_clc', 'f4', ('Time', 'emissions_zdim_stag','south_north', 'west_east'))
+    # e_clc[:,:,:,:] =  data[:,36,:,:]
+    # e_clc.units = 'ug/m3 m/s' 
     
     e_eci = f2.createVariable('e_eci', 'f4', ('Time', 'emissions_zdim_stag','south_north', 'west_east'))
     e_eci[:,:,:,:] =  data[:,36,:,:]
