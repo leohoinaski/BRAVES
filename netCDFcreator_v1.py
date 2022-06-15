@@ -375,10 +375,10 @@ def createNETCDFtemporalfromNC(folder,name,data,xX,yY,dates,area):
     
     # Reshape area array
     
-    f2 = nc4.Dataset(folder+'/'+name,'w', format='NETCDF4_CLASSIC') #'w' stands for write    
+    f2 = nc4.Dataset(folder+'/'+name,'w', format='NETCDF3_CLASSIC') #'w' stands for write    
     #Add global attributes
-    #f2.IOAPI_VERSION ='$Id: @(#) ioapi library version 3.1 $'
-    #f2.EXEC_ID = '???????????????'
+    f2.IOAPI_VERSION ='$Id: @(#) ioapi library version 3.1 $'
+    f2.EXEC_ID = '???????????????'
     f2.FTYPE =  1
     f2.CDATE= cdateStr
     f2.CTIME= ctime
@@ -414,28 +414,29 @@ def createNETCDFtemporalfromNC(folder,name,data,xX,yY,dates,area):
     f2.VGTOP= 0.0
     f2.VGLVLS= [0,0]
     
-    #f2.GDNAM= 'SE53BENCH'       
-    #f2.UPNAM= 'M3WNDW'   
-    strVAR = ' ACET            ACROLEIN        ALD2           \n\
-    ALD2_PRIMARY    ALDX            BENZ            BUTADIENE13\n\
-    CH4             CH4_INV         CL2             CO\n\
-    CO2_INV         ETH             ETHA            ETHY\n\
-    ETOH            FORM            FORM_PRIMARY    HCL\n\
-    HONO            IOLE            ISOP            KET\n\
-    MEOH            N2O_INV         NAPH            NH3\n\
-    NH3_FERT        NO              NO2             NVOL\n\
-    OLE             PAL             PAR             PCA\n\
-    PCL             PEC             PFE             PH2O\n\
-    PK              PMC             PMG             PMN\n\
-    PMOTHR          PNA             PNCOM           PNH4\n\
-    PNO3            POC             PRPA            PSI\n\
-    PSO4            PTI             SO2             SOAALK\n\
-    SULF            TERP            TOL             UNK\n\
-    UNR             VOC_INV         XYLMN           PMFINE'        
-    f2.VAR_LIST=strVAR
+    f2.GDNAM= 'SE53BENCH'       
+    f2.UPNAM= 'M3WNDW'   
+    #strVAR = ' ACET            ACROLEIN        ALD2           \n\
+    #ALD2_PRIMARY    ALDX            BENZ            BUTADIENE13\n\
+    #CH4             CH4_INV         CL2             CO\n\
+    #CO2_INV         ETH             ETHA            ETHY\n\
+    #ETOH            FORM            FORM_PRIMARY    HCL\n\
+    #HONO            IOLE            ISOP            KET\n\
+    #MEOH            N2O_INV         NAPH            NH3\n\
+    #NH3_FERT        NO              NO2             NVOL\n\
+    #OLE             PAL             PAR             PCA\n\
+    #PCL             PEC             PFE             PH2O\n\
+    #PK              PMC             PMG             PMN\n\
+    #PMOTHR          PNA             PNCOM           PNH4\n\
+    #PNO3            POC             PRPA            PSI\n\
+    #PSO4            PTI             SO2             SOAALK\n\
+    #SULF            TERP            TOL             UNK\n\
+    #UNR             VOC_INV         XYLMN           PMFINE'        
+    #f2.VAR_LIST=strVAR
+    strVAR ='ACET            ACROLEIN        ALD2            ALD2_PRIMARY    ALDX            BENZ            BUTADIENE13     CH4             CH4_INV         CL2             CO              CO2_INV         ETH             ETHA            ETHY            ETOH            FORM            FORM_PRIMARY    HCL             HONO            IOLE            ISOP            KET             MEOH            N2O_INV         NAPH            NH3             NH3_FERT        NO              NO2             NVOL            OLE             PAL             PAR             PCA             PCL             PEC             PFE             PH2O            PK              PMC             PMG             PMN             PMOTHR          PNA             PNCOM           PNH4            PNO3            POC             PRPA            PSI             PSO4            PTI             SO2             SOAALK          SULF            TERP            TOL             UNK             UNR             VOC_INV         XYLMN           PMFINE            '
+    setattr(f2, 'VAR-LIST', strVAR)
     f2.FILEDESC= 'BRAVES database vehicular emissions ready for CMAQ'
-    f2.HISTORY ='' 
-       
+    f2.HISTORY =''
     # # Specifying dimensions
     #tempgrp = f.createGroup('vehicularEmissions_data')
     f2.createDimension('TSTEP', dates.shape[0])
@@ -451,6 +452,7 @@ def createNETCDFtemporalfromNC(folder,name,data,xX,yY,dates,area):
     LAT = f2.createVariable('Latitude', 'f4', ( 'ROW','COL'))
     AREA = f2.createVariable('AREA', 'f4', ( 'ROW','COL'))
     #TFLAG = f2.createVariable('TFLAG', 'i4', ('TSTEP'))
+    #AACD = f2.createVariable('AACD', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
     ACET = f2.createVariable('ACET', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
     ACROLEIN = f2.createVariable('ACROLEIN', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
     ALD2 = f2.createVariable('ALD2', 'f4', ('TSTEP', 'LAY', 'ROW','COL'))
@@ -526,6 +528,7 @@ def createNETCDFtemporalfromNC(folder,name,data,xX,yY,dates,area):
     print(area.shape)
     AREA[:,:] = area
     print(str(ACET.shape) + str(data.shape))
+    #AACD[:,:,:,:] =  data[:,0,:,:]
     ACET[:,:,:,:] =  data[:,0,:,:]
     ACROLEIN[:,:,:,:] = data[:,1,:,:]
     ALD2[:,:,:,:] = data[:,2,:,:]
@@ -593,69 +596,135 @@ def createNETCDFtemporalfromNC(folder,name,data,xX,yY,dates,area):
     
     #Add local attributes to variable instances
     TFLAG.units = '<YYYYDDD,HHMMSS>'
+    TFLAG.var_desc = 'Timestep-valid flags:  (1) YYYYDDD or (2) HHMMSS'
+    #AACD.units = 'moles/s '
+    #AACD.var_desc ='AACD[1]' 
     ACET.units = 'moles/s '
+    ACET.var_desc ='ACET[1]' 
+    ACROLEIN.var_desc ='ACROLEIN[1] '
     ACROLEIN.units = 'moles/s '
     ALD2.units = 'moles/s '
+    ALD2.var_desc = 'ALD2[1]'
     ALD2_PRIMARY.units = 'moles/s '
+    ALD2_PRIMARY.var_desc = 'ALD2_PRIMARY[1]'
     ALDX.units = 'moles/s '
+    ALDX.var_desc = 'ALDX[1]'
     BENZ.units = 'moles/s '
+    BENZ.var_desc = 'BENZ[1]'
     BUTADIENE13.units = 'moles/s '
+    BUTADIENE13.var_desc = 'BUTADIENE13[1]'
     CH4.units = 'moles/s '
+    CH4.var_desc = 'CH4[1]'
     CH4_INV.units = 'g/s '
-    CL2.units = 'moles/s ' 
+    CH4_INV.var_desc = 'CH4_INV[1]'
+    CL2.units = 'moles/s '
+    CL2.var_desc = 'CL2[1]' 
     CO.units = 'moles/s '
+    CO.var_desc = 'CO[1]'
     CO2_INV.units = 'g/s '
+    CO2_INV.var_desc = 'CO2_INV[1]'
     ETH.units = 'moles/s '
+    ETH.var_desc = 'ETH[1]'
     ETHA.units = 'moles/s '
+    ETHA.var_desc = 'ETHA[1]'
     ETHY.units = 'moles/s '
+    ETHY.var_desc = 'ETHY[1]'
     ETOH.units = 'moles/s '
+    ETOH.var_desc = 'ETOH[1]'
     FORM.units = 'moles/s '
+    FORM.var_desc = 'FORM[1]'
     FORM_PRIMARY.units = 'moles/s '
+    FORM_PRIMARY.var_desc = 'FORM_PRIMARY[1]'
     HCL.units = 'moles/s '
+    HCL.var_desc = 'HCL[1]'
     HONO.units = 'moles/s '
+    HONO.var_desc = 'HONO[1]'
     IOLE.units = 'moles/s '
+    IOLE.var_desc = 'IOLE[1]'
     ISOP.units = 'moles/s '
+    ISOP.var_desc = 'ISOP[1]'
     KET.units = 'moles/s '
+    KET.var_desc = 'KET[1]'
     MEOH.units = 'moles/s '
+    MEOH.var_desc = 'MEOH[1]'
     N2O_INV.units = 'g/s '
+    N2O_INV.var_desc = 'N2O_INV[1]'
     NAPH.units = 'moles/s '
+    NAPH.var_desc = 'NAPH[1]'
     NH3.units = 'moles/s '
+    NH3.var_desc = 'NH3[1]'
     NH3_FERT.units = 'moles/s '
+    NH3_FERT.var_desc = 'NH3_FERT[1]'
     NO.units = 'moles/s '
+    NO.var_desc = 'NO[1]'
     NO2.units = 'moles/s '
+    NO2.var_desc = 'NO2[1]'
     NVOL.units = 'moles/s '
+    NVOL.var_desc = 'NVOL[1]'
     OLE.units = 'moles/s '
+    OLE.var_desc = 'OLE[1]'
     PAL.units = 'moles/s '
+    PAL.var_desc = 'PAL[1]'
     PAR.units = 'moles/s '
+    PAR.var_desc = 'PAR[1]'
     PCA.units = 'g/s '
+    PCA.var_desc = 'PCA[1]'
     PCL.units = 'g/s '
+    PCL.var_desc = 'PCL[1]'
     PEC.units = 'g/s '
+    PEC.var_desc = 'PEC[1]'
     PFE.units = 'g/s '
+    PFE.var_desc = 'PFE[1]'
     PH2O.units = 'g/s '
+    PH2O.var_desc = 'PH2O[1]'
     PK.units = 'g/s '
+    PK.var_desc = 'PK[1]'
     PMC.units = 'g/s ' 
+    PMC.var_desc = 'PMC[1]' 
     PMG.units = 'g/s '
+    PMG.var_desc = 'PMG[1]'
     PMN.units = 'g/s ' 
+    PMN.var_desc = 'PMN[1]'
     PMOTHR.units = 'g/s ' 
+    PMOTHR.var_desc = 'PMOTHR[1]'
     PNA.units = 'g/s ' 
+    PNA.var_desc = 'PNA[1]'
     PNCOM.units = 'g/s ' 
+    PNCOM.var_desc = 'PNCOM[1]'
     PNH4.units = 'g/s ' 
+    PNH4.var_desc = 'PNH4[1]'
     PNO3.units = 'g/s ' 
+    PNO3.var_desc = 'PNO3[1]'
     POC.units = 'g/s ' 
+    POC.var_desc = 'POC[1]'
     PRPA.units = 'moles/s '
+    PRPA.var_desc = 'PRPA[1]'
     PSI.units = 'g/s ' 
+    PSI.var_desc = 'PSI[1]'
     PSO4.units = 'g/s ' 
-    PTI.units = 'g/s ' 
+    PSO4.var_desc = 'PSO4[1]'
+    PTI.units = 'g/s '
+    PTI.var_desc = 'PTI[1]'
     SO2.units = 'moles/s ' 
-    SOAALK.units = 'moles/s ' 
+    SO2.var_desc = 'SO2[1]'
+    SOAALK.units = 'moles/s '
+    SOAALK.var_desc = 'SOAALK[1]' 
     SULF.units = 'moles/s ' 
-    TERP.units = 'moles/s ' 
-    TOL.units = 'moles/s ' 
+    SULF.var_desc = 'SULF[1]'
+    TERP.units = 'moles/s '
+    TERP.var_desc = 'TERP[1]' 
+    TOL.units = 'moles/s '
+    TOL.var_desc = 'TOL[1]'
     UNK.units = 'moles/s ' 
+    UNK.var_desc = 'UNK[1]'
     UNR.units = 'moles/s ' 
+    UNR.var_desc = 'UNR[1]'
     VOC_INV.units = 'g/s ' 
+    VOC_INV.var_desc = 'VOC_INV[1]'
     XYLMN.units = 'moles/s '
+    XYLMN.var_desc = 'XYLMN[1]'
     PMFINE.units = 'g/s '
+    PMFINE.var_desc = 'PMFINE[1]'
     LON.units = 'degrees '
     LAT.units = 'degrees '
     AREA.units = 'km2 '
