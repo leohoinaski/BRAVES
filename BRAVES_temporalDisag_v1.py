@@ -189,16 +189,18 @@ def BRAVES_temporalDisag(rootPath,outPath,file,month,day):
     return dataTempo,xX,yY,disvec,prefix,area
 
 #%%
-def BRAVES_temporalDisagMCIP(rootPath,outPath,file,year,jdays):
+def BRAVES_temporalDisagMCIP(rootPath,outPath,file,time):
     print('===================STARTING BRAVES_temporalDisag_v1.py=======================')
     hourdis = list(pd.read_csv(rootPath+'/TemporalAloc/hourdis.csv').iloc[:,1])
     weekdis = list(pd.read_csv(rootPath+'/TemporalAloc/weekdis.csv').iloc[:,1])
     monthdis = list(pd.read_csv(rootPath+'/TemporalAloc/monthdis.csv').iloc[:,1])
     
+    hours = [np.array(time[:,0,:][:,1]/10000)[0],
+             np.array(time[:,0,:][:,1]/10000)[-1]]
 
     prefix = '_'.join(file.split('_')[1:6])  
     
-    year = int(file.split('_')[-1][0:4])
+    # year = int(file.split('_')[-1][0:4])
     
     ds = nc.Dataset(outPath+'/'+file)
     dataVar = list(ds.variables.keys())
@@ -231,23 +233,27 @@ def BRAVES_temporalDisagMCIP(rootPath,outPath,file,year,jdays):
     #lc2utc, tag = local2UTC(xX,yY)
     
     # Calling temporalDisagVehicular
-    dataTempo,datePfct,disvec = temporalDisagVehicularMCIP(dataNC,year,jdays,
+    dataTempo,datePfct,disvec = temporalDisagVehicularMCIP(dataNC,time,
                                                        hourdis,weekdis,
-                                                       monthdis,ltz)
+                                                       monthdis,ltz,hours)
 
     return dataTempo,xX,yY,disvec,prefix,area
 
 
-def temporalDisagVehicularMCIP(dataNC,year,jdays,hourdis,weekdis,monthdis,ltz):
+def temporalDisagVehicularMCIP(dataNC,time,hourdis,weekdis,monthdis,ltz,hours):
     # Create the MultiIndex from pollutant and time.
     #year=2013
-    dt0 = datetime.datetime.strptime(str(int(year-1000*np.floor(year/1000)))+str(int(jdays[0])), '%y%j').date()
-    dt1 = datetime.datetime.strptime(str(int(year-1000*np.floor(year/1000)))+str(int(jdays[-1])), '%y%j').date()
+    dt0 = datetime.datetime.strptime(str(time[:,0,:][:,0][0]),'%Y%j').date()
+    dt1 = datetime.datetime.strptime(str(time[:,0,:][:,0][-1]),'%Y%j').date()
 
+    hours = [np.array(time[:,0,:][:,1]/10000)[0],
+             np.array(time[:,0,:][:,1]/10000)[-1]]
 
     print('Temporal disagregation')
-    startDate = datetime.datetime(year, dt0.month, dt0.day, 0, 0)
-    endDate = datetime.datetime(year, dt1.month, dt1.day, 0, 0)
+    startDate = datetime.datetime(
+        int(dt0.year), int(dt0.month), int(dt0.day), int(hours[0]), 0)
+    endDate = datetime.datetime(
+        int(dt1.year), int(dt1.month), int(dt1.day), int(hours[1]), 0)
     datePfct = np.arange(np.datetime64(startDate),np.datetime64(endDate),3600000000)
     numWeeks = datePfct.shape[0]/(7*24) # Number of weeks
     disvec = pd.DataFrame()

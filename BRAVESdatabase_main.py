@@ -81,9 +81,11 @@ deltaX = 0.05 # Grid resolution/spacing in x direction
 
 deltaY = 0.05 # Grig resolution/spacing in y direction
 
-# If userGrid = 1, define the path to mcip grid - GRIDDOT2D file
-mcipGRIDDOTPath = '/home/nobre/CMAQ_REPO/data/inputs_SC_2019/GRIDDOT2D_SC_2019.nc'
-mcipMETCROpath = '/home/nobre/CMAQ_REPO/data/inputs_SC_2019/METCRO2D_SC_2019.nc'
+# If userGrid = 1, define the path to mcip grid - GRIDDOT2D and METCROD2D files
+mcipGRIDDOT2DPath = '/home/nobre/CMAQ_REPO/data/inputs_SC_2019/GRIDDOT2D_SC_2019.nc'
+mcipGRIDDOT2DPath = '/media/leohoinaski/HDD/SC_2019/GRIDDOT2D_SC_2019.nc'
+mcipMETCRO2Dpath = '/home/nobre/CMAQ_REPO/data/inputs_SC_2019/METCRO2D_SC_2019.nc'
+mcipMETCRO2Dpath = '/media/leohoinaski/HDD/SC_2019/METCRO2D_SC_2019.nc'
 
 # If userGrid = 2, define the path to WRF geogrid file
 wrfPath = '/media/leohoinaski/HDD/wrfout_d02_2019-06-01_00:00:00'
@@ -114,7 +116,7 @@ IBGE_CODES = [42]
 years = [2019]
 
 #----------------------- Output identification---------------------------------
-fileId = 'BR_' # Code to identify your output files 
+fileId = 'SC_2019' # Code to identify your output files 
 
 #-------------------Controls and Outputs definition----------------------------
 # Run or not road density calculation. If you choose this option, the 
@@ -129,19 +131,11 @@ runOrnotRoadEmiss = 0 # 0 for no and 1 for yes
 runOrnotMergeRoadEmiss = 0 # 0 for no and 1 for yes
 
 # This option will create annual netCDF files = BRAVESdatabaseAnnual
-runOrnotBRAVES2netCDF = 1 # 0 for no and 1 for yes
+runOrnotBRAVES2netCDF = 0 # 0 for no and 1 for yes
 
 # -----------------------Temporal disagregation--------------------------------
 # If you want temporal disagregated files, you need the BRAVESdatabaseAnnual files
-files = ['BRAVESdatabaseAnnual_BR_TOTAL_Total_BR_MCIPgrid_2019.nc'] # Define the files to disaggregate
-yearsTempFiles=[2019] # Years to run the temporal files
-months = [6] # Set the month of your simulation
-days = [2] # Set the day of your simulation
-
-# This option Create disaggregated files - temporal, spatial, and one specie
-# You should define the year and specie to create your files
-runOrnotTempFiles = 0 # 0 for no and 1 for yes
-specs = ['SO2']  # Identification of the specie 
+files = ['BRAVESdatabaseAnnual_SC_2019_TOTAL_Total_SC_2019_MCIPgrid_2019.nc'] # Define the files to disaggregate
 
 # This option create CMAQ emission inputs - temporal, spatial, and all species
 # You should define the annual file to creat the CMAQ inputs
@@ -150,6 +144,14 @@ runOrnotCMAQemiss = 1 # 0 for no and 1 for yes
 # This option create WRFCHEM emission inputs - temporal, spatial, and all species
 # You should define the annual file to creat the WRFCHEM inputs
 runOrnotWRFCHEMemiss=0
+
+# This option Create disaggregated files - temporal, spatial, and one specie
+# You should define the year and specie to create your files
+runOrnotTempFiles = 0 # 0 for no and 1 for yes
+specs = ['SO2']  # Identification of the specie 
+yearsTempFiles=[2019] # Years to run the temporal files
+months = [6] # Set the month of your simulation
+days = [2] # Set the day of your simulation
 
 #%%============================PROCESSING========================================
 
@@ -162,13 +164,13 @@ rootPath = os.path.abspath(os.getcwd())
 os.chdir(rootPath)
 
 # Defining folder path with openstreetmaps folder
-dirPath = rootPath + "/Shapefiles"
+dirPath = rootPath + '/Shapefiles'
 
 # Path to folder with roadLenght....csv
-outPath = rootPath +"/Outputs"
+outPath = rootPath +'/Outputs'
 
 # Path to folder with BRAVES outputs'
-bravesPath = rootPath +"/BRAVESoutputs"
+bravesPath = rootPath +'/BRAVESoutputs'
 
 # Path to folder with chemical speciation profiles
 folderSpec = rootPath +'/ChemicalSpec'
@@ -181,15 +183,19 @@ roadFileName = 'gis_osm_roads_free_1.shp'
 # Creating output directory
 if os.path.isdir(outPath)==0:
     os.mkdir(outPath)
+    
+outPath = rootPath +'/Outputs/'+fileId
+if os.path.isdir(outPath)==0:
+    os.mkdir(outPath)
 
 
 # THis is your grid identification   
 if userGrid == 0:
-    roadDensPrefix = fileId+str(deltaX)+'x'+str(deltaY) # grid definition identification
+    roadDensPrefix = fileId+'_'+str(deltaX)+'x'+str(deltaY) # grid definition identification
 elif userGrid == 1:
-    roadDensPrefix = fileId+'MCIPgrid' # grid definition identification
+    roadDensPrefix = fileId+'_'+'MCIPgrid' # grid definition identification
 elif userGrid == 2:
-    roadDensPrefix = fileId+'WRFgrid' # grid definition identification
+    roadDensPrefix = fileId+'_'+'WRFgrid' # grid definition identification
     
     
 # Calling roadDensity function
@@ -199,7 +205,7 @@ if runOrnotRoadDens==1:
                     deltaX,deltaY,roadFileName,roadDensPrefix)
     elif userGrid == 1:
         roadDensityMCIP(dirPath,outPath,IBGE_CODES,lati,latf,loni,lonf,
-                    deltaX,deltaY,roadFileName,roadDensPrefix,mcipGRIDDOTPath)
+                    deltaX,deltaY,roadFileName,roadDensPrefix,mcipGRIDDOT2DPath)
     elif userGrid == 2:
         roadDensityWRF(dirPath,outPath,IBGE_CODES,lati,latf,loni,lonf,
                     deltaX,deltaY,roadFileName,roadDensPrefix,geowrfPath)
@@ -217,21 +223,25 @@ if runOrnotMergeRoadEmiss==1:
 
 # Calling BRAVES2netCDF
 if runOrnotBRAVES2netCDF==1:
-    BRAVES2netCDF(outPath,folderSpec,outPath,years,fileId+typeEmiss,roadDensPrefix,typeEmiss)
+    BRAVES2netCDF(outPath,folderSpec,outPath,years,fileId+'_'+typeEmiss,roadDensPrefix,typeEmiss)
 
 
 # Creating input files for CMAQ
 if runOrnotCMAQemiss==1:
     for file in files:
-        ds3 = nc.Dataset(mcipMETCROpath)
+        ds3 = nc.Dataset(mcipMETCRO2Dpath)
         time=ds3['TFLAG'][:]       
-        year = np.unique(np.floor(time[:,0,:][:,0]/1000))
-        jdays = np.unique(time[:,0,:][:,0] - 1000*np.floor(time[:,0,:][:,0]/1000))
-        dt0 = datetime.datetime.strptime(str(int(year-1000*np.floor(year/1000)))+str(int(jdays[0])), '%y%j').date()
+        dt0 = datetime.datetime.strptime(str(time[:,0,:][:,0][0]),'%Y%j').date()
+        dt1 = datetime.datetime.strptime(str(time[:,0,:][:,0][-1]),'%Y%j').date()
+        hours = [np.array(time[:,0,:][:,1]/10000)[0],
+                 np.array(time[:,0,:][:,1]/10000)[-1]]
         dataTempo=None
-        dataTempo,xX,yY,disvec,prefix,area = BRAVES_temporalDisagMCIP(rootPath,outPath,file,dt0.year,jdays)
-        name = 'BRAVESdatabase2CMAQ'+'_'+str(dt0.year)+'_'+str(dt0.month)+'_'\+str(dt0.day)+'.nc'
-        createNETCDFtemporalfromNC(outPath,name,dataTempo,xX,yY,disvec,mcipMETCROpath)
+        dataTempo,xX,yY,disvec,prefix,area = BRAVES_temporalDisagMCIP(
+            rootPath,outPath,file,time)
+        name = 'BRAVESdatabase2CMAQ'+\
+            '_'+str(dt0.year)+'_'+str(dt0.month)+'_'+str(dt0.day)+'_'+str(int(hours[0]))+':00'\
+                + '_to_'+str(dt1.year)+'_'+str(dt1.month)+'_'+str(dt1.day)+'_'+str(int(hours[1]))+':00'+'.nc'
+        createNETCDFtemporalfromNC(outPath,name,dataTempo,xX,yY,mcipMETCRO2Dpath)
 
                     
 # Creating temporal files for one specie
