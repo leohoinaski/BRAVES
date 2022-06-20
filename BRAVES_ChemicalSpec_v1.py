@@ -85,7 +85,7 @@ def ChemicalSpeciationLight(roadX,dfSpc,smm,conver):
                 roadX['RW_PMC']*conver
             
     dataEmissX['PNCOM'] = dataEmissX['POC']*0.25
-    dataEmissX['PMOTHR'] = 1-(dataEmissX['POC'] + dataEmissX['PEC'] +
+    dataEmissX['PMOTHR'] = dataEmissX['PMC']-(dataEmissX['POC'] + dataEmissX['PEC'] +
                               dataEmissX['PSO4'] + dataEmissX['PNO3'] +
                               dataEmissX['PNH4'] + dataEmissX['PNCOM'] +
                               dataEmissX['PFE'] + dataEmissX['PAL'] +
@@ -149,7 +149,7 @@ def ChemicalSpeciationHeavy(roadX,dfSpc,smm,conver):
                 roadX['RW_PMC']*conver
             
     dataEmissX['PNCOM'] = dataEmissX['POC']*0.25
-    dataEmissX['PMOTHR'] = 1-(dataEmissX['POC'] + dataEmissX['PEC'] +
+    dataEmissX['PMOTHR'] = dataEmissX['PMC']-(dataEmissX['POC'] + dataEmissX['PEC'] +
                               dataEmissX['PSO4'] + dataEmissX['PNO3'] +
                               dataEmissX['PNH4'] + dataEmissX['PNCOM'] +
                               dataEmissX['PFE'] + dataEmissX['PAL'] +
@@ -174,16 +174,17 @@ def ChemicalSpeciationMotorcycle(roadX,dfSpc,smm,conver):
     print('===================STARTING BRAVES_ChemicalSpec_v1.py=======================')
     # Filling VOC emissions
     for ii in range(0,dfSpc.shape[0]):
-        dataEmissX[dfSpc.ID[ii]] = dfSpc['LightVOC'][ii]*roadX.iloc[:,6]*conver/smm.iloc[ii,1] +\
-           dfSpc['LightPM'][ii]*roadX.iloc[:,10]*conver/smm.iloc[ii,1]  +\
-               dfSpc['road'][ii]*roadX.iloc[:,18]*conver/smm.iloc[ii,1] +\
-                   dfSpc['road'][ii]*roadX.iloc[:,17]*conver/smm.iloc[ii,1] +\
-                       dfSpc['brakes'][ii]*roadX.iloc[:,16]*conver/smm.iloc[ii,1] +\
-                           dfSpc['tires'][ii]*roadX.iloc[:,16]*conver/smm.iloc[ii,1] +\
-                               dfSpc['LightEvap'][ii]*roadX.iloc[:,19]*conver/smm.iloc[ii,1] +\
-                                   dfSpc['LightEvap'][ii]*roadX.iloc[:,20]*conver/smm.iloc[ii,1] +\
-                                       dfSpc['LightEvap'][ii]*roadX.iloc[:,21]*conver/smm.iloc[ii,1] +\
-                                           dfSpc['LightEvap'][ii]*roadX.iloc[:,14]*conver/smm.iloc[ii,1]
+        dataEmissX[dfSpc.ID[ii]] = dfSpc['LightVOC'][ii]*roadX['EXH_NMHC']*conver/smm.iloc[ii,1] +\
+           dfSpc['LightPM'][ii]*roadX['EXH_PMFINE']*conver/smm.iloc[ii,1]  +\
+               dfSpc['road'][ii]*roadX['RW_PMC']*conver/smm.iloc[ii,1] +\
+                   dfSpc['road'][ii]*roadX['RDR_PMC']*conver/smm.iloc[ii,1] +\
+                       dfSpc['brakes'][ii]*roadX['BT_PMC']*conver/smm.iloc[ii,1] +\
+                           dfSpc['tires'][ii]*roadX['BT_PMC']*conver/smm.iloc[ii,1] +\
+                               dfSpc['LightEvap'][ii]*roadX['RFUEL_NMHC']*conver/smm.iloc[ii,1] +\
+                                   dfSpc['LightEvap'][ii]*roadX['EVD_NMHC']*conver/smm.iloc[ii,1] +\
+                                       dfSpc['LightEvap'][ii]*roadX['EVH_NMHC']*conver/smm.iloc[ii,1] +\
+                                           dfSpc['LightEvap'][ii]*roadX['EVR_NMHC']*conver/smm.iloc[ii,1]
+
     
     # Filling direct emissions
     # dataEmissX['ALDX'] = roadX.iloc[:,9]*conver/smm[smm.iloc[:,0]=='ALDX'].MM   
@@ -200,7 +201,7 @@ def ChemicalSpeciationMotorcycle(roadX,dfSpc,smm,conver):
                 roadX['RW_PMC']*conver
             
     dataEmissX['PNCOM'] = dataEmissX['POC']*0.25
-    dataEmissX['PMOTHR'] = 1-(dataEmissX['POC'] + dataEmissX['PEC'] +
+    dataEmissX['PMOTHR'] = dataEmissX['PMC']-(dataEmissX['POC'] + dataEmissX['PEC'] +
                               dataEmissX['PSO4'] + dataEmissX['PNO3'] +
                               dataEmissX['PNH4'] + dataEmissX['PNCOM'] +
                               dataEmissX['PFE'] + dataEmissX['PAL'] +
