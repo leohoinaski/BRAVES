@@ -384,10 +384,9 @@ def createNETCDFtemporalfromNC(folder,name,data,xX,yY,mcipPath):
     f2.VGTOP= 0.0
     f2.VGLVLS= [0,0]
     f2.NLAYS = 1 
-    f2.NCOLS = f2.NCOLS-1
-    f2.NROWS = f2.NROWS-1
-    f2.IOAPI_VERSION ='$Id: @(#) ioapi library version 3.1 $'
-    f2.EXEC_ID = '???????????????'
+    # f2.NCOLS = f2.NCOLS
+    # f2.NROWS = f2.NROWS
+
 
 
     strVAR ='ACET            ACROLEIN        ALD2            ALD2_PRIMARY    ALDX            BENZ            BUTADIENE13     CH4             CH4_INV         CL2             CO              CO2_INV         ETH             ETHA            ETHY            ETOH            FORM            FORM_PRIMARY    HCL             HONO            IOLE            ISOP            KET             MEOH            N2O_INV         NAPH            NH3             NH3_FERT        NO              NO2             NVOL            OLE             PAL             PAR             PCA             PCL             PEC             PFE             PH2O            PK              PMC             PMG             PMN             PMOTHR          PNA             PNCOM           PNH4            PNO3            POC             PRPA            PSI             PSO4            PTI             SO2             SOAALK          SULF            TERP            TOL             UNK             UNR             VOC_INV         XYLMN           PMFINE          '

@@ -239,8 +239,8 @@ if runOrnotCMAQemiss==1:
         dataTempo,xX,yY,disvec,prefix,area = BRAVES_temporalDisagMCIP(
             rootPath,outPath,file,time)
         name = 'BRAVESdatabase2CMAQ'+\
-            '_'+str(dt0.year)+'_'+str(dt0.month)+'_'+str(dt0.day)+'_'+str(int(hours[0]))+':00'\
-                + '_to_'+str(dt1.year)+'_'+str(dt1.month)+'_'+str(dt1.day)+'_'+str(int(hours[1]))+':00'+'.nc'
+            '_'+str(dt0.year)+'_'+str(dt0.month).zfill(2)+'_'+str(dt0.day).zfill(2)+'_'+str(int(hours[0])).zfill(2)+'00'+\
+                '_to_'+str(dt1.year)+'_'+str(dt1.month).zfill(2)+'_'+str(dt1.day).zfill(2)+'_'+str(int(hours[1])).zfill(2)+'00'+'.nc'
         createNETCDFtemporalfromNC(outPath,name,dataTempo,xX,yY,mcipMETCRO2Dpath)
 
                     
