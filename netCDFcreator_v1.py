@@ -384,6 +384,7 @@ def createNETCDFtemporalfromNC(folder,name,data,xX,yY,mcipPath):
     f2.VGTOP= 0.0
     f2.VGLVLS= [0,0]
     f2.NLAYS = 1 
+    f2.NVARS= data.shape[1]
     # f2.NCOLS = f2.NCOLS
     # f2.NROWS = f2.NROWS
 
@@ -473,9 +474,9 @@ def createNETCDFtemporalfromNC(folder,name,data,xX,yY,mcipPath):
     # Passing data into variables
     TFLAG[:,:,:] = np.repeat(ds3['TFLAG'][:,0,:][:, np.newaxis,:], 
                              data.shape[1], axis=1)
-    print(yY.shape)
-    print(xX.shape)
-    print(str(ACET.shape) + str(data.shape))
+    # print(yY.shape)
+    # print(xX.shape)
+    # print(str(ACET.shape) + str(data.shape))
 
     ACET[:,:,:,:] =  data[:,0,:,:]
     ACROLEIN[:,:,:,:] = data[:,1,:,:]
