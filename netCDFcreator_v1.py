@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+an#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 -------------------------------------------------------------------------------
@@ -610,7 +610,7 @@ def createNETCDFtemporalfromNC(folder,name,data,xX,yY,mcipPath):
     NVOL.var_desc = 'NVOL[1]'
     OLE.units = 'moles/s '
     OLE.var_desc = 'OLE[1]'
-    PAL.units = 'moles/s '
+    PAL.units = 'g/s '
     PAL.var_desc = 'PAL[1]'
     PAR.units = 'moles/s '
     PAR.var_desc = 'PAR[1]'
