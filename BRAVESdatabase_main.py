@@ -201,8 +201,7 @@ elif userGrid == 2:
 # Calling roadDensity function
 if runOrnotRoadDens==1:
     if userGrid == 0:
-        roadDensity(dirPath,outPath,IBGE_CODES,lati,latf,loni,lonf,
-                    deltaX,deltaY,roadFileName,roadDensPrefix)
+        roadDensity(dirPath,outPath,IBGE_CODES,roadFileName,roadDensPrefix)
     elif userGrid == 1:
         roadDensityMCIP(dirPath,outPath,IBGE_CODES,lati,latf,loni,lonf,
                     deltaX,deltaY,roadFileName,roadDensPrefix,mcipGRIDDOT2DPath)

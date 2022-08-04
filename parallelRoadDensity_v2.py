@@ -427,8 +427,7 @@ def roadDensity (dirPath,outPath,IBGE_CODES,lati,latf,loni,lonf,
 
 
 #%% Main function MCIP
-def roadDensityMCIP (dirPath,outPath,IBGE_CODES,lati,latf,loni,lonf,
-                 deltaX,deltaY,roadFileName,roadDensPrefix,mcipPath):
+def roadDensityMCIP (dirPath,outPath,IBGE_CODES,roadFileName,roadDensPrefix,mcipPath):
 
     # Opening cities shapefile
     citySHP = gpd.read_file(dirPath+"/citySHP.shp")
@@ -455,8 +454,6 @@ def roadDensityMCIP (dirPath,outPath,IBGE_CODES,lati,latf,loni,lonf,
     #dataVar = list(ds.variables.keys())
     x = np.unique(ds['LOND'][:])
     y = np.unique(ds['LATD'][:])
-    #x = np.arange(loni, lonf+2*deltaX, deltaX)
-    #y = np.arange(lati, latf+2*deltaY, deltaY)
     test_naive = pd.date_range('2019-01-01', '2019-04-07', freq='4H')
     tf = TimezoneFinder(in_memory=True)
     #Loop over each cel in x direction
