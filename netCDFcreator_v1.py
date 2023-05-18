@@ -372,7 +372,7 @@ def createNETCDFtemporalfromNC(folder,name,data,xX,yY,mcipPath):
     #     tflag[ii,:,1]=int(str(dates['hour'][ii])+'0000')
     
     # sdate =  dates['year'][0]*1000 + dates.index[0].timetuple().tm_yday            
-    f2 = nc4.Dataset(folder+'/'+name,'w', format='NETCDF3_CLASSIC') #'w' stands for write   
+    f2 = nc4.Dataset(folder+'/'+name,'w', format='NETCDF4_CLASSIC') #'w' stands for write   
     #Add global attributes
     f2.IOAPI_VERSION ='$Id: @(#) ioapi library version 3.1 $'
     f2.EXEC_ID = '???????????????'

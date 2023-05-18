@@ -45,15 +45,19 @@ IBGE code description:
 
 
 Author: Leonardo Hoinaski - leonardo.hoinaski@ufsc.br
+Colaboration: Bianca Meotti
 
+Upgrades:
+    
+    17/05/2023 - Including weighting factor for primary and secundary roads.
 -------------------------------------------------------------------------------
 """
 #%%============================================================================
 #from roadDensity_v1 import roadDensity
-from parallelRoadDensity_v2 import roadDensity,roadDensityMCIP,roadDensityWRF
-from roadEmiss_v1 import roadEmiss
-from mergeRoadEmiss_v1 import mergeRoadEmiss
-from BRAVES2netCDF_v1 import BRAVES2netCDF
+from parallelRoadDensity_v3 import roadDensity,roadDensityMCIP,roadDensityWRF
+from roadEmiss_v2 import roadEmiss
+from mergeRoadEmiss_v2 import mergeRoadEmiss
+from BRAVES2netCDF_v2 import BRAVES2netCDF
 from BRAVES_temporalDisag_v1 import BRAVES_temporalDisag,BRAVES_temporalDisagMCIP
 from netCDFcreator_v1 import createNETCDFtemporalfromNC
 from netCDFcreator_v1 import createNETCDFtemporalBySpecies
@@ -82,10 +86,12 @@ deltaX = 0.05 # Grid resolution/spacing in x direction
 deltaY = 0.05 # Grig resolution/spacing in y direction
 
 # If userGrid = 1, define the path to mcip grid - GRIDDOT2D and METCROD2D files
-mcipGRIDDOT2DPath = '/home/nobre/CMAQ_REPO/data/inputs_SC_2019/GRIDDOT2D_SC_2019.nc'
-mcipGRIDDOT2DPath = '/media/leohoinaski/HDD/SC_2019/GRIDDOT2D_SC_2019.nc'
-mcipMETCRO2Dpath = '/home/nobre/CMAQ_REPO/data/inputs_SC_2019/METCRO2D_SC_2019.nc'
-mcipMETCRO2Dpath = '/media/leohoinaski/HDD/SC_2019/METCRO2D_SC_2019.nc'
+# mcipGRIDDOT2DPath = '/home/nobre/CMAQ_REPO/data/inputs_SC_2019/GRIDDOT2D_SC_2019.nc'
+# mcipGRIDDOT2DPath = '/media/leohoinaski/HDD/CMAQ_REPO/data/mcip/SC_2019/GRIDDOT2D_SC_2019.nc'
+mcipGRIDDOT2DPath = '/home/bianca/SC_2019/GRIDDOT2D_SC_2019.nc'
+# mcipMETCRO2Dpath = '/home/nobre/CMAQ_REPO/data/inputs_SC_2019/METCRO2D_SC_2019.nc'
+# mcipMETCRO2Dpath = '/media/leohoinaski/HDD/CMAQ_REPO/data/mcip/SC_2019/METCRO2D_SC_2019.nc'
+mcipMETCRO2Dpath = '/home/bianca/SC_2019/METCRO2D_SC_2019.nc'
 
 # If userGrid = 2, define the path to WRF geogrid file
 wrfPath = '/media/leohoinaski/HDD/wrfout_d02_2019-06-01_00:00:00'
@@ -109,7 +115,9 @@ IBGE_CODES = [11,12,13,14,15,16,17,
               41,42,43,
               50,51,52,53] # include the IBGE code from the states to be consid>
 
-IBGE_CODES = [42] 
+# IBGE_CODES = [42] 
+
+IBGE_CODES = [41,42,43] 
 
 #------------------ Years for running annual BRAVESdatabase--------------------
 #years=[2013,2014,2015,2016,2017,2018,2019]
@@ -135,7 +143,7 @@ runOrnotBRAVES2netCDF = 0 # 0 for no and 1 for yes
 
 # -----------------------Temporal disagregation--------------------------------
 # If you want temporal disagregated files, you need the BRAVESdatabaseAnnual files
-files = ['BRAVESdatabaseAnnual_SC_2019_TOTAL_Total_SC_2019_MCIPgrid_2019.nc'] # Define the files to disaggregate
+files = ['BRAVESdatabaseAnnual_SC_2019_TOTAL_RoadEmiss_Total_SC_2019_MCIPgrid_2019.nc'] # Define the files to disaggregate
 
 # This option create CMAQ emission inputs - temporal, spatial, and all species
 # You should define the annual file to creat the CMAQ inputs
@@ -201,19 +209,23 @@ elif userGrid == 2:
 # Calling roadDensity function
 if runOrnotRoadDens==1:
     if userGrid == 0:
-        roadDensity(dirPath,outPath,IBGE_CODES,roadFileName,roadDensPrefix)
+        roadDensity(dirPath,outPath,IBGE_CODES,lati,latf,loni,lonf,
+                         deltaX,deltaY,roadFileName,roadDensPrefix,'highways')
+        roadDensity(dirPath,outPath,IBGE_CODES,lati,latf,loni,lonf,
+                         deltaX,deltaY,roadFileName,roadDensPrefix,'road')
+        
     elif userGrid == 1:
-        roadDensityMCIP(dirPath,outPath,IBGE_CODES,lati,latf,loni,lonf,
-                    deltaX,deltaY,roadFileName,roadDensPrefix,mcipGRIDDOT2DPath)
+        roadDensityMCIP(dirPath,outPath,IBGE_CODES,roadFileName,roadDensPrefix,mcipGRIDDOT2DPath,'highways')
+        roadDensityMCIP(dirPath,outPath,IBGE_CODES,roadFileName,roadDensPrefix,mcipGRIDDOT2DPath,'road')
+
     elif userGrid == 2:
-        roadDensityWRF(dirPath,outPath,IBGE_CODES,lati,latf,loni,lonf,
-                    deltaX,deltaY,roadFileName,roadDensPrefix,geowrfPath)
+        roadDensityWRF(dirPath,outPath,IBGE_CODES,roadFileName,roadDensPrefix,geowrfPath,'highways')
+        roadDensityWRF(dirPath,outPath,IBGE_CODES,roadFileName,roadDensPrefix,geowrfPath,'road')
 
 
 # Calling roadEmiss function
 if runOrnotRoadEmiss==1:
-    roadEmiss(outPath,bravesPath,years,IBGE_CODES,roadDensPrefix,typeEmiss)
-
+    roadEmiss(outPath,dirPath,bravesPath,years,IBGE_CODES,roadDensPrefix,typeEmiss)
 
 # Calling mergeRoadEmiss function 
 if runOrnotMergeRoadEmiss==1:

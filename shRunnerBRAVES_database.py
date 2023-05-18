@@ -8,9 +8,9 @@ Created on Thu Aug  4 18:05:07 2022
 
 #%%============================================================================
 #from roadDensity_v1 import roadDensity
-from parallelRoadDensity_v2 import roadDensityMCIP
-from roadEmiss_v1 import roadEmiss
-from mergeRoadEmiss_v1 import mergeRoadEmiss
+from parallelRoadDensity_v3 import roadDensityMCIP
+from roadEmiss_v2 import roadEmiss
+from mergeRoadEmiss_v2 import mergeRoadEmiss
 from BRAVES2netCDF_v1 import BRAVES2netCDF
 from BRAVES_temporalDisag_v1 import BRAVES_temporalDisagMCIP
 from netCDFcreator_v1 import createNETCDFtemporalfromNC
@@ -27,6 +27,11 @@ if __name__ == '__main__':
     parser.add_argument('mcipPath')
     parser.add_argument('GDNAM')
     parser.add_argument('YEAR', type=int)
+    parser.add_argument('runOrnotRoadDens', type=int)
+    parser.add_argument('runOrnotRoadEmiss', type=int)
+    parser.add_argument('runOrnotMergeRoadEmiss', type=int)
+    parser.add_argument('runOrnotBRAVES2netCDF', type=int)
+    parser.add_argument('runOrnotCMAQemiss', type=int)
     args = parser.parse_args()
     
     # Shell inputs
@@ -34,6 +39,11 @@ if __name__ == '__main__':
     mcipPath = args.mcipPath
     year = np.array(args.YEAR)
     rootPath = args.BRAVEShome
+    runOrnotRoadDens = args.runOrnotRoadDens #1 #0 for no and 1 for yes
+    runOrnotRoadEmiss = args.runOrnotRoadEmiss #1 # 0 for no and 1 for yes
+    runOrnotMergeRoadEmiss = args.runOrnotMergeRoadEmiss #1 # 0 for no and 1 for yes
+    runOrnotBRAVES2netCDF = args.runOrnotBRAVES2netCDF #1 # 0 for no and 1 for yes
+    runOrnotCMAQemiss = args.runOrnotCMAQemiss #1 # 0 for no and 1 for yes
 
     # BRAVES inputs and paths
     dirPath = rootPath + '/Shapefiles'  
@@ -47,11 +57,7 @@ if __name__ == '__main__':
     IBGE_CODES = [41,42,43] 
     typeEmiss = 'TOTAL' 
     fleetEmiss = 'Total'
-    runOrnotRoadDens = 1 #0 for no and 1 for yes
-    runOrnotRoadEmiss = 1 # 0 for no and 1 for yes
-    runOrnotMergeRoadEmiss = 1 # 0 for no and 1 for yes
-    runOrnotBRAVES2netCDF = 1 # 0 for no and 1 for yes
-    runOrnotCMAQemiss = 1 # 0 for no and 1 for yes
+
     
     # Running
     os.chdir(rootPath)
@@ -65,7 +71,8 @@ if __name__ == '__main__':
 
     # Calling roadDensity function
     if runOrnotRoadDens==1:
-        roadDensityMCIP(dirPath,outPath,IBGE_CODES,roadFileName,roadDensPrefix,mcipGRIDDOT2DPath)
+        roadDensityMCIP(dirPath,outPath,IBGE_CODES,roadFileName,roadDensPrefix,mcipGRIDDOT2DPath,'highways')
+        roadDensityMCIP(dirPath,outPath,IBGE_CODES,roadFileName,roadDensPrefix,mcipGRIDDOT2DPath,'road')
     
     # Calling roadEmiss function
     if runOrnotRoadEmiss==1:
