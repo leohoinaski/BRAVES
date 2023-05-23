@@ -106,14 +106,15 @@ def roadEmissBySource(df_emissYearState,df,df1,df2,name,factor,outPath,year,IBGE
     sumCity1 = df1.sum()
     sumCity2 = df2.sum()
     for jj in range(0, df_emissYearState.shape[1]): # poluente
-        emiss_dv = pd.DataFrame()    
+        #emiss_dv = pd.DataFrame()    
         emiss1 = pd.DataFrame()
         emiss2 = pd.DataFrame()
         res = [i for i, val in enumerate(df.columns=='geometry') if val]
         for ii in range(res[0]+1,df.shape[1]): # cidade
             wf1 = float(wfs[cat+' wf'][wfs['CD_GEOCMU'] == int(df1.columns[ii])])
             wf2 = abs(wf1 - 1)
-            if sumCity1[(str(df1.columns[ii]) == sumCity1.index)].to_numpy() != 0:
+            # 3 conditions to use wf: (1) the city has primary roads; (2) wf > 0 and (3) wf <=1 
+            if (sumCity1[(str(df1.columns[ii]) == sumCity1.index)].to_numpy() != 0) and (wf1 > 0) and (wf1 <=1):
                 dfec1= df_emissYearState[(int(df1.columns[ii]) == df_emissYearState.index)] * wf1
                 dfec2= df_emissYearState[(int(df2.columns[ii]) == df_emissYearState.index)] * wf2
                 emiss1[str(df1.columns[ii])] = (df1.iloc[:,ii]/sumCity1[(str(df1.columns[ii]) == sumCity1.index)].to_numpy())*dfec1.iloc[0,jj]/factor
