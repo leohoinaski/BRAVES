@@ -72,4 +72,5 @@ UBUNTU LIBS
 
 This is the version 2.0
 Esta é uma atualização do Thiago
+Esta é uma atualização do Camilo
 
