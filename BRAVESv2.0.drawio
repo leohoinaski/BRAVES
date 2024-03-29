@@ -1,23 +1,130 @@
-<mxfile host="app.diagrams.net" modified="2024-03-28T19:00:50.214Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:124.0) Gecko/20100101 Firefox/124.0" etag="A8FgIOKqRqyRbjrQ_4o8" version="24.0.5" type="github">
+<mxfile host="app.diagrams.net" modified="2024-03-29T22:06:15.855Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36" etag="MvxuxzIZ1WgNnLrerH1S" version="24.2.1" type="device">
   <diagram name="Page-1" id="Ej0-S0-GbEZb4ICbwNAr">
-    <mxGraphModel dx="1434" dy="726" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="4350" dy="1740" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="Sf3JMctmSrdisTES08zo-3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="Sf3JMctmSrdisTES08zo-1" target="Sf3JMctmSrdisTES08zo-2">
-          <mxGeometry relative="1" as="geometry" />
+        <mxCell id="DUTUmIXobXM5Z29R_gFR-2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#FF3333;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="LhrJip5Tm4qAm9nvCpEB-2" target="DUTUmIXobXM5Z29R_gFR-1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="437.5" y="420" as="sourcePoint" />
+          </mxGeometry>
         </mxCell>
-        <mxCell id="Sf3JMctmSrdisTES08zo-1" value="&lt;div&gt;Fuel consuption from ANP&lt;/div&gt;&lt;div&gt;link para download dos dados:&lt;/div&gt;&lt;div&gt;http:&lt;br&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="40" y="50" width="160" height="130" as="geometry" />
+        <mxCell id="LhrJip5Tm4qAm9nvCpEB-2" value="&lt;font color=&quot;#ff3333&quot;&gt;&lt;b&gt;BRAVES&lt;br&gt;&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;div&gt;Função principal, onde todas as outras funções estão sendo chamadas&lt;/div&gt;" style="rhombus;whiteSpace=wrap;html=1;strokeColor=#FF3333;fillColor=#FFCCCC;" parent="1" vertex="1">
+          <mxGeometry x="300" y="10" width="275" height="280" as="geometry" />
         </mxCell>
-        <mxCell id="Sf3JMctmSrdisTES08zo-5" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="Sf3JMctmSrdisTES08zo-2" target="Sf3JMctmSrdisTES08zo-4">
-          <mxGeometry relative="1" as="geometry" />
+        <mxCell id="DUTUmIXobXM5Z29R_gFR-1" value="Scripts para adequar os dados de entrada:&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;ul&gt;&lt;li style=&quot;text-align: left;&quot;&gt;&lt;font color=&quot;#3333ff&quot;&gt;Indentify_CODE_IBGE.m&lt;/font&gt;&lt;/li&gt;&lt;li style=&quot;text-align: left;&quot;&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;&lt;font color=&quot;#3333ff&quot;&gt;prep_ConsumoComb.m &lt;/font&gt;(Etanol, Gasolina C e Diesel)&lt;/span&gt;&lt;/li&gt;&lt;li style=&quot;text-align: left;&quot;&gt;&lt;font color=&quot;#3333ff&quot;&gt;AddIBGEdata_ConsumoComb.m&amp;nbsp;&lt;span style=&quot;color: rgb(0, 0, 0);&quot;&gt;(Etanol, Gasolina C e Diesel)&lt;/span&gt;&lt;br&gt;&lt;/font&gt;&lt;/li&gt;&lt;li style=&quot;text-align: left;&quot;&gt;&lt;font color=&quot;#3333ff&quot;&gt;prep_YEARMOD.m&lt;br&gt;&lt;/font&gt;&lt;/li&gt;&lt;li style=&quot;text-align: left;&quot;&gt;&lt;font color=&quot;#3333ff&quot;&gt;AddIBGEdata_FROTADATA.m&lt;br&gt;&lt;/font&gt;&lt;/li&gt;&lt;li style=&quot;text-align: left;&quot;&gt;&lt;font color=&quot;#3333ff&quot;&gt;prep_FUELTYPE.m&lt;br&gt;&lt;/font&gt;&lt;/li&gt;&lt;li style=&quot;text-align: left;&quot;&gt;&lt;font color=&quot;#3333ff&quot;&gt;prep_veicCATEGORY.m&lt;/font&gt;&lt;br&gt;&lt;/li&gt;&lt;/ul&gt;&lt;div style=&quot;text-align: left;&quot;&gt;&lt;font color=&quot;#cc00cc&quot;&gt;&lt;br&gt;&lt;/font&gt;&lt;/div&gt;&lt;/div&gt;&lt;div style=&quot;text-align: left;&quot;&gt;&lt;font color=&quot;#cc00cc&quot;&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;Outputs:&lt;/span&gt;&lt;br&gt;&lt;/font&gt;&lt;/div&gt;&lt;div style=&quot;text-align: left;&quot;&gt;&lt;font color=&quot;#cc00cc&quot;&gt;- Matriz de consumo de Etanol por município (ConsumoETANOL)&lt;/font&gt;&lt;/div&gt;&lt;div style=&quot;text-align: left;&quot;&gt;&lt;font color=&quot;#cc00cc&quot;&gt;- Matriz de consumo de Gasolina C por município (ConsumoGASOLINA)&lt;/font&gt;&lt;/div&gt;&lt;div style=&quot;text-align: left;&quot;&gt;&lt;font color=&quot;#cc00cc&quot;&gt;- Matriz de consumo de Diesel por município (ConsumoDIESEL)&lt;/font&gt;&lt;/div&gt;&lt;div style=&quot;text-align: left;&quot;&gt;&lt;font color=&quot;#cc00cc&quot;&gt;- Matriz de ano modelo por município (YEARMOD)&lt;/font&gt;&lt;/div&gt;&lt;div style=&quot;text-align: left;&quot;&gt;&lt;font color=&quot;#cc00cc&quot;&gt;- Matriz de categorias de veículo por município (veicCATEGORY)&lt;/font&gt;&lt;/div&gt;&lt;div style=&quot;text-align: left;&quot;&gt;&lt;font color=&quot;#cc00cc&quot;&gt;- Matriz de tipo de combustível por município (FUELTYPE)&lt;/font&gt;&lt;/div&gt;" style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;strokeColor=#3333FF;" vertex="1" parent="1">
+          <mxGeometry x="162.5" y="460" width="550" height="300" as="geometry" />
         </mxCell>
-        <mxCell id="Sf3JMctmSrdisTES08zo-2" value="&lt;div&gt;prepFuelConsumption.py&lt;/div&gt;&lt;div&gt;Dados da ANP chegam em formato csv e por código IBGE. A função &lt;br&gt;&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="40" y="210" width="160" height="100" as="geometry" />
+        <mxCell id="DUTUmIXobXM5Z29R_gFR-4" value="&lt;font color=&quot;#ff3333&quot;&gt;&lt;b&gt;CombustívelTransportes_BEN.m&lt;/b&gt;&lt;/font&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Esta função importa a proporção de combustível (Diesel, Etanol e Gasolina C) produzido no país que é destinado ao transporte Rodoviário, e multiplica pelo consumo de combustível da ANP.&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Esses dados devem ser disponibilizados pelo usuário em um arquivo (.xlsx:) para ser reconhecido pela função.&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;&lt;font color=&quot;#33ff33&quot;&gt;Fonte:&amp;nbsp;&lt;span style=&quot;background-color: initial;&quot;&gt;BEN - Balanço Energético Nacional&lt;/span&gt;&lt;/font&gt;&lt;/b&gt;&lt;/div&gt;&lt;div&gt;Arquivo:&amp;nbsp;&lt;font color=&quot;#ffb570&quot;&gt;\INPUT\&lt;/font&gt;ConsumoCombustiveTransporte_BEN.xlsx&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;font color=&quot;#cc00cc&quot;&gt;OUTPUT:&lt;/font&gt;&lt;br&gt;&lt;span style=&quot;color: rgb(204, 0, 204); text-align: left;&quot;&gt;ConsumoETANOL&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;color: rgb(204, 0, 204); text-align: left;&quot;&gt;ConsumoGASOLINA&lt;/span&gt;&lt;div&gt;&lt;span style=&quot;color: rgb(204, 0, 204); text-align: left;&quot;&gt;ConsumoDIESEL&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#FF3333;" vertex="1" parent="1">
+          <mxGeometry x="-790" y="990" width="373.75" height="350" as="geometry" />
         </mxCell>
-        <mxCell id="Sf3JMctmSrdisTES08zo-4" value="&lt;div&gt;fuelCon&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="90" y="350" width="60" height="30" as="geometry" />
+        <mxCell id="DUTUmIXobXM5Z29R_gFR-6" value="&lt;b&gt;&lt;font size=&quot;1&quot; style=&quot;&quot;&gt;&lt;u style=&quot;font-size: 16px;&quot;&gt;** 1 **&lt;/u&gt;&lt;/font&gt;&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="-633.12" y="1020" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="DUTUmIXobXM5Z29R_gFR-7" value="&lt;font color=&quot;#ff3333&quot;&gt;&lt;b&gt;CurvaSUCATEAMENTO2.m&lt;/b&gt;&lt;/font&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Esta função aplica a curva de sucateamento.&lt;br&gt;OBS: Utiliza como dado de entrada um vetor com o ano do ano base, por exemplo, a curva de sucatemento do ano base de 2020, vai ser diferente da curva de sucateamento do ano base 2019.&lt;br&gt;Deve ser copiado o arquivo mais recente do Ano modelo dos veículos para a pasta SCRAPPAGE, para poder calcular a idade.&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Esses dados devem ser disponibilizados pelo usuário em um arquivo (.xlsx:) para ser reconhecido pela função.&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;b&gt;&lt;font color=&quot;#33ff33&quot;&gt;Fonte:&amp;nbsp;&lt;span style=&quot;background-color: initial;&quot;&gt;SENATRAN - Secretária Nacional de Trânsito&lt;/span&gt;&lt;/font&gt;&lt;/b&gt;&lt;/div&gt;&lt;div&gt;Arquivo:&amp;nbsp;&lt;font color=&quot;#ffb570&quot;&gt;\SCRAPPAGE\&lt;/font&gt;BR_YEARMOD_2020_JULHO.xlsx&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;font color=&quot;#cc00cc&quot;&gt;OUTPUT:&lt;/font&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;font color=&quot;#cc00cc&quot;&gt;ValoresSUC&lt;/font&gt;&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#FF3333;" vertex="1" parent="1">
+          <mxGeometry x="-400" y="990" width="391.24" height="400" as="geometry" />
+        </mxCell>
+        <mxCell id="DUTUmIXobXM5Z29R_gFR-8" value="&lt;b&gt;&lt;font size=&quot;1&quot; style=&quot;&quot;&gt;&lt;u style=&quot;font-size: 16px;&quot;&gt;** 2 **&lt;/u&gt;&lt;/font&gt;&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="-225.63" y="1020" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="DUTUmIXobXM5Z29R_gFR-12" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;strokeColor=#FF3333;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" target="DUTUmIXobXM5Z29R_gFR-7">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-195.63" y="790" as="sourcePoint" />
+            <mxPoint x="-313.13" y="970" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="DUTUmIXobXM5Z29R_gFR-13" value="" style="endArrow=classic;html=1;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#FF3333;" edge="1" parent="1" target="DUTUmIXobXM5Z29R_gFR-4">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-195.13" y="790" as="sourcePoint" />
+            <mxPoint x="-293.13" y="970" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="DUTUmIXobXM5Z29R_gFR-14" value="&lt;div&gt;Consumo de Combustível&lt;br&gt;&lt;font color=&quot;#33ff33&quot;&gt;&lt;b&gt;Fonte: ANP&lt;/b&gt;&lt;/font&gt;&lt;/div&gt;&lt;div&gt;-Diesel&lt;/div&gt;&lt;div&gt;-Gasolina&lt;/div&gt;&lt;div&gt;-Etanol&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#33FF33;" vertex="1" parent="1">
+          <mxGeometry x="-40" y="290" width="160" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="DUTUmIXobXM5Z29R_gFR-15" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#33FF33;" edge="1" parent="1" source="DUTUmIXobXM5Z29R_gFR-14" target="DUTUmIXobXM5Z29R_gFR-1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="290" y="440" as="sourcePoint" />
+            <mxPoint x="340" y="390" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="DUTUmIXobXM5Z29R_gFR-16" value="&lt;span style=&quot;color: rgb(204, 0, 204); font-family: Helvetica; font-size: 12px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: left; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; background-color: rgb(251, 251, 251); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; display: inline !important; float: none;&quot;&gt;ConsumoETANOL&lt;/span&gt;&lt;br&gt;&lt;span style=&quot;color: rgb(204, 0, 204); text-align: left;&quot;&gt;ConsumoGASOLINA&lt;/span&gt;&lt;div&gt;&lt;span style=&quot;color: rgb(204, 0, 204); text-align: left;&quot;&gt;ConsumoDIESEL&lt;/span&gt;&lt;span style=&quot;color: rgb(204, 0, 204); text-align: left;&quot;&gt;&lt;br&gt;&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="-463.13" y="860" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="DUTUmIXobXM5Z29R_gFR-17" value="&lt;font color=&quot;#ff3333&quot;&gt;&lt;b&gt;PROBABILIDADE_YEARMOD.m&lt;/b&gt;&lt;/font&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Esta função refina os dados de ano modelo para os veículos circulantes de cada categoria.&lt;br&gt;-Automóveis&lt;br&gt;-Comerciais Leves Otto&lt;br&gt;- Comerciais Leves Diesel&lt;br&gt;- Motos&lt;/div&gt;&lt;div&gt;- Pesados - caminhões&lt;/div&gt;&lt;div&gt;- Pesados - ônibus&lt;/div&gt;&lt;div&gt;Primeiro, é realizada a multiplicação da taxa de sobrevivência (curva de sucateamento) pela quantidade de veículos de cada ano modelo.&lt;br&gt;Segundo, é consolidado em uma unica matriz a quantidade de veículos da frota circulante para cada ano base da estimativa.&lt;/div&gt;&lt;div&gt;Terceiro, é realizada a probabilidade de circulação de cada veiculo de cada ano modelo&lt;/div&gt;&lt;div&gt;OBS: Essa função utiliza a função consolidator do MATLAB&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;font color=&quot;#cc00cc&quot;&gt;OUTPUT:&lt;/font&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: rgb(204, 0, 204); text-align: left;&quot;&gt;YEARMOD&lt;/span&gt;&lt;br&gt;&lt;/div&gt;&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#FF3333;" vertex="1" parent="1">
+          <mxGeometry x="-514.22" y="1580" width="608.44" height="420" as="geometry" />
+        </mxCell>
+        <mxCell id="DUTUmIXobXM5Z29R_gFR-18" value="&lt;font color=&quot;#ff3333&quot;&gt;&lt;b&gt;Categorizacao_Combustiveis.m&lt;/b&gt;&lt;/font&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Esta função organiza em agrupamentos os diferentes tipos de combustíveis de veículos da frota brasileira provenientes do dado de entrada da ANP.&lt;/div&gt;&lt;div&gt;Existem diversos tipos de combustivel: Alcool, Gasolina, Flex, Diesel, GNV, Gasogenio, Eletrico, etc...&lt;/div&gt;&lt;div&gt;Serão agrupados os tipos de combustivel para os mais comuns, e serão utilizados apenas aqueles movido a Alcool, Gasolina e Diesel&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;font color=&quot;#cc00cc&quot;&gt;OUTPUT:&lt;/font&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;font color=&quot;#cc00cc&quot;&gt;FUELTYPE&lt;/font&gt;&lt;/div&gt;&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#FF3333;" vertex="1" parent="1">
+          <mxGeometry x="130" y="1010" width="373.75" height="350" as="geometry" />
+        </mxCell>
+        <mxCell id="DUTUmIXobXM5Z29R_gFR-19" value="&lt;font color=&quot;#ff3333&quot;&gt;&lt;b&gt;Consumos_FlexFuel.m&lt;/b&gt;&lt;/font&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#FF3333;" vertex="1" parent="1">
+          <mxGeometry x="132.5" y="1565" width="373.75" height="350" as="geometry" />
+        </mxCell>
+        <mxCell id="DUTUmIXobXM5Z29R_gFR-20" value="&lt;font color=&quot;#ff3333&quot;&gt;&lt;b&gt;Segregacao_ConsumosCOMB.m&lt;/b&gt;&lt;/font&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#FF3333;" vertex="1" parent="1">
+          <mxGeometry x="1230" y="990" width="373.75" height="350" as="geometry" />
+        </mxCell>
+        <mxCell id="DUTUmIXobXM5Z29R_gFR-21" value="&lt;font color=&quot;#ff3333&quot;&gt;&lt;b&gt;Substituindo_STRINGcomb.m&lt;/b&gt;&lt;/font&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#FF3333;" vertex="1" parent="1">
+          <mxGeometry x="830.01" y="1730" width="373.75" height="350" as="geometry" />
+        </mxCell>
+        <mxCell id="DUTUmIXobXM5Z29R_gFR-22" value="&lt;font color=&quot;#ff3333&quot;&gt;&lt;b&gt;BRAVES&lt;br&gt;&lt;/b&gt;&lt;/font&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="rhombus;whiteSpace=wrap;html=1;strokeColor=#FF3333;fillColor=#FFCCCC;" vertex="1" parent="1">
+          <mxGeometry x="879.38" y="1390" width="275" height="280" as="geometry" />
+        </mxCell>
+        <mxCell id="DUTUmIXobXM5Z29R_gFR-23" value="&lt;font color=&quot;#ff3333&quot;&gt;&lt;b&gt;FatorDETERIORACAO5.m&lt;/b&gt;&lt;/font&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#FF3333;" vertex="1" parent="1">
+          <mxGeometry x="700" y="1020" width="373.75" height="350" as="geometry" />
+        </mxCell>
+        <mxCell id="DUTUmIXobXM5Z29R_gFR-24" value="EQUAÇÃO:&lt;br&gt;Consumo Combustivel = ConsumoANP * %RodobiarioBEN" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fixedSize=1;" vertex="1" parent="1">
+          <mxGeometry x="-763.12" y="1310" width="320" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="DUTUmIXobXM5Z29R_gFR-25" value="EQUAÇÃO:&lt;div&gt;&lt;br/&gt;&lt;/div&gt;" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fixedSize=1;" vertex="1" parent="1">
+          <mxGeometry x="-370" y="1320" width="320" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="DUTUmIXobXM5Z29R_gFR-26" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;strokeColor=#FF3333;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="DUTUmIXobXM5Z29R_gFR-28" target="DUTUmIXobXM5Z29R_gFR-17">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-205.81" y="1420" as="sourcePoint" />
+            <mxPoint x="-214.18" y="1620" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="DUTUmIXobXM5Z29R_gFR-27" value="&lt;div style=&quot;text-align: left;&quot;&gt;&lt;font color=&quot;#cc00cc&quot;&gt;ANO BASE&lt;/font&gt;&lt;/div&gt;&lt;div style=&quot;text-align: left;&quot;&gt;&lt;font color=&quot;#cc00cc&quot;&gt;(Ano_unico2)&lt;/font&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="-255.63" y="870" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="DUTUmIXobXM5Z29R_gFR-29" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;strokeColor=#FF3333;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="DUTUmIXobXM5Z29R_gFR-25" target="DUTUmIXobXM5Z29R_gFR-28">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-210" y="1400" as="sourcePoint" />
+            <mxPoint x="-210" y="1620" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="DUTUmIXobXM5Z29R_gFR-28" value="&lt;div style=&quot;text-align: left;&quot;&gt;&lt;font color=&quot;#cc00cc&quot;&gt;YEARMOD&lt;/font&gt;&lt;/div&gt;&lt;div style=&quot;text-align: left;&quot;&gt;&lt;font color=&quot;#cc00cc&quot;&gt;ValoresSUC&lt;/font&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="-270" y="1450" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="DUTUmIXobXM5Z29R_gFR-30" value="EQUAÇÃO:&lt;div&gt;1 - Veículos circulantes = Qtd de veículos de cada ano modelo * taxa de sobrevivência&lt;/div&gt;&lt;div&gt;2 - N.A.&lt;/div&gt;&lt;div&gt;3 - Quantidade de veículos de determinado ano modelo e determinada categoria / Total&lt;/div&gt;" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fixedSize=1;" vertex="1" parent="1">
+          <mxGeometry x="-470" y="1940" width="550" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="DUTUmIXobXM5Z29R_gFR-31" value="" style="endArrow=classic;html=1;rounded=0;strokeColor=#FF3333;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="316.78" y="805" as="sourcePoint" />
+            <mxPoint x="316.47" y="1010" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="DUTUmIXobXM5Z29R_gFR-32" value="&lt;div style=&quot;text-align: left;&quot;&gt;&lt;span style=&quot;color: rgb(204, 0, 204);&quot;&gt;FUELTYPE&lt;/span&gt;&lt;br&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="256.88" y="875" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="DUTUmIXobXM5Z29R_gFR-33" value="&lt;b&gt;&lt;font size=&quot;1&quot; style=&quot;&quot;&gt;&lt;u style=&quot;font-size: 16px;&quot;&gt;** 3 **&lt;/u&gt;&lt;/font&gt;&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="286.88" y="1025" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="DUTUmIXobXM5Z29R_gFR-34" value="&lt;b&gt;&lt;font size=&quot;1&quot; style=&quot;&quot;&gt;&lt;u style=&quot;font-size: 16px;&quot;&gt;** 2 ** - Ver documento do word&lt;/u&gt;&lt;/font&gt;&lt;/b&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="-342" y="1360" width="260" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="DUTUmIXobXM5Z29R_gFR-35" value="EQUAÇÃO:&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;N.A.&lt;br&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;/div&gt;" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fixedSize=1;" vertex="1" parent="1">
+          <mxGeometry x="156.88" y="1300" width="320" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="DUTUmIXobXM5Z29R_gFR-36" value="" style="endArrow=classic;html=1;rounded=0;strokeColor=#FF3333;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="319.0999999999999" y="1360" as="sourcePoint" />
+            <mxPoint x="318.78999999999996" y="1565" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="DUTUmIXobXM5Z29R_gFR-37" value="&lt;div style=&quot;text-align: left;&quot;&gt;&lt;span style=&quot;color: rgb(204, 0, 204);&quot;&gt;FUELTYPE&lt;/span&gt;&lt;br&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="256.88" y="1425" width="120" height="60" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
