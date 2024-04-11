@@ -89,7 +89,7 @@ nbformat==5.1.3
 nest-asyncio==1.5.1
 netCDF4==1.5.7
 networkx==2.6.3
-numpy==1.21.2
+numpy
 numpydoc==1.1.0
 openpyxl==3.0.7
 packaging==21.0
