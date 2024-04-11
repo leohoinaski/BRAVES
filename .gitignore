@@ -4,3 +4,4 @@ inputs/emissionFactors
 outputs
 inputs/inventory
 inputs
+venv
