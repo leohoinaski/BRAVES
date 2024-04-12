@@ -5,3 +5,4 @@ outputs
 inputs/inventory
 inputs
 venv
+*.pyc
