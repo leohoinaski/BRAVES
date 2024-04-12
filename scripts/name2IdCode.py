@@ -57,6 +57,7 @@ def name2Code(inputFolder,file,year,month):
     for ii, uuf in enumerate(uniqueUF):
         munUF = df['MUN2'][df['UF']==uuf]
         munShapUF = munShp['MUN2'][munShp['UF']==uuf]
+        print(uuf)
         for jj,mun in enumerate(munUF):
             valMun = difflib.get_close_matches(mun, munShapUF)[0]
             print(valMun)
