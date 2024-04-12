@@ -21,7 +21,7 @@ ufs = {
        'SAO PAULO', 'SERGIPE', 'TOCANTINS'],
   "SIGLA":['AC','AL','AP','AM','BA','CE','DF','ES','GO','MA','MT','MS','MG',
            'PA','PB','PR' ,'PE','PI','RJ','RN','RS','RO','RR','SC','SP','SE','TO'],
-  "CODE": [12,27,16,13,29,23,53,32,52,21,51,50,31,15,25,41,26,22,33,24,43,11,14,
+  "IBGE_CODE": [12,27,16,13,29,23,53,32,52,21,51,50,31,15,25,41,26,22,33,24,43,11,14,
            42,35,28,17]
 }
 
@@ -66,7 +66,7 @@ def name2Code(shapeFolder,filePath):
     for ii, mun in munShp.iterrows():
         try:
             munShp['MUN2'][ii] = unidecode(munShp['NM_MUNICIP'][ii].upper())
-            munShp['UF'][ii] = np.array(ufs['UF'])[np.array(ufs['CODE']) == int(str(munShp['CD_GEOCMU'][ii])[0:2])]
+            munShp['UF'][ii] = np.array(ufs['UF'])[np.array(ufs['IBGE_CODE']) == int(str(munShp['CD_GEOCMU'][ii])[0:2])]
         except:
             print('skiping')
             munShp['MUN2'][ii] = np.nan
