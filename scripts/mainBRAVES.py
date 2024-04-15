@@ -14,14 +14,17 @@ inputFolder = rootFolder +'/inputs/'
 
 
 # fuelType
-shapeFolder = inputFolder+'shapefiles/BRMUE250GC_SIR.shp'
+shapeFolder = inputFolder+'shapefiles/BR_Municipios_2022.shp'
 filePath = inputFolder+'fleet/fuelType/fuelType_2021_01.csv' 
-dfFuel = m2id.name2Code(shapeFolder, filePath)
+interFolder = rootFolder + '/outputs/intermediate/fuelType'
+dfFuel = m2id.name2Code(shapeFolder,filePath,interFolder)
 
 # vehicularCategory
 filePath = inputFolder+'fleet/vehicularCategory/vehicularCategory_2021_01.csv'
-dfVCat = m2id.name2Code(shapeFolder, filePath)
+interFolder = rootFolder + '/outputs/intermediate/vehicularCategory'
+dfVCat = m2id.name2Code(shapeFolder,filePath,interFolder)
 
 # yearModel
 filePath = inputFolder+'fleet/yearModel/yearModel_2021_01.csv'
-dfYM = m2id.name2Code(shapeFolder, filePath)
+interFolder = rootFolder + '/outputs/intermediate/yearModel'
+dfYM = m2id.name2Code(shapeFolder,filePath,interFolder)
