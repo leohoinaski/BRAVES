@@ -60,7 +60,7 @@ def yearModelByVcat(interFolder,filePath,dfVCat,dfYM,
 #     seq_type= type(seq)
 #     return seq_type().join(filter(seq_type.isdigit, seq))
 
-def scrapppageAll(vehicularCategory,dfYM,munShp):
+def scrapppageAll(interFolder,filePath,vehicularCategory,dfYM,munShp):
     for vcat in vehicularCategories:
         dfYM[vcat+'_scrapPerc'] = np.nan
     for IBGE_CODE in munShp['CD_MUN']:
@@ -68,11 +68,13 @@ def scrapppageAll(vehicularCategory,dfYM,munShp):
         if cityData.shape[0]>0:
             ts = np.nanmax(cityData['yearModel'])-cityData['yearModel']
             for vcat in vehicularCategories:
+                print(vcat)
                 s = []
                 for t in ts:
                     s.append(scrappage(np.array(vcat),t))
-            dfYM[vcat+'_scrapPerc'][np.array(dfYM['IBGE_CODE']).astype(int)== int(IBGE_CODE)] = np.array(s)
-            
+                dfYM[vcat+'_scrapPerc'][np.array(dfYM['IBGE_CODE']).astype(int)== int(IBGE_CODE)] = np.array(s)
+    dfYM.to_csv(interFolder +'/BRAVES_scrapppageAll_' + filePath.split('/')[-1]) 
+    return dfYM     
         
         
     
