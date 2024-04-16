@@ -11,7 +11,7 @@ import numpy as np
 import geopandas as gpd
 import difflib
 import os
-import ismember
+
 
 
 ufs = {
@@ -76,12 +76,14 @@ def name2Code(shapeFolder,filePath,interFolder):
         try:
             df['MUN2'][ii] = unidecode(df['MUN'][ii].upper())
             if len(str(df['UF'][ii]))==2:
-                df['UF_SIGLA'] = df['UF'].copy()
+                print('UF  = sigla')
+                df['UF_SIGLA'][ii] = df['UF'][ii]
                 df['UF'][ii] = np.array(ufs['UF'])[np.array(ufs['SIGLA']) == (str(df['UF'][ii]))]
             else:
                 df['UF_SIGLA'][ii] = np.array(ufs['SIGLA'])[np.array(ufs['UF']) == (str(df['UF'][ii]))]
-
+                
         except:
+            print('skiping')
             df['MUN2'][ii] = np.nan
             
     # Loop para arrumar os caracteres do shapefile

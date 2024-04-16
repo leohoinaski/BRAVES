@@ -7,10 +7,12 @@ Created on Fri Apr 12 16:02:54 2024
 """
 
 import name2IdCode as m2id
+import scrappage as scrp
 import os
 
 rootFolder = os.path.dirname(os.getcwd())
 inputFolder = rootFolder +'/inputs/'
+vehicularCategories =['LIGHT','COMMERCIAL-LIGHT','MOTORCYCLES','HEAVY']
 
 
 # fuelType
@@ -28,3 +30,7 @@ dfVCat = m2id.name2Code(shapeFolder,filePath,interFolder)
 filePath = inputFolder+'fleet/yearModel/yearModel_2021_01.csv'
 interFolder = rootFolder + '/outputs/intermediate/yearModel'
 dfYM = m2id.name2Code(shapeFolder,filePath,interFolder)
+
+
+dfYM,munShp = scrp.yearModelByVcat(interFolder,filePath,dfVCat,dfYM,
+                    shapeFolder,vehicularCategories)
