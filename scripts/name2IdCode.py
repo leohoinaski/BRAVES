@@ -96,7 +96,7 @@ def name2Code(shapeFolder,filePath,interFolder):
     # Encontrando os códigos com base no arquivo de shapefile    
     df['IBGE_CODE'] = np.nan
     uniqueUF = np.unique(munShp['SIGLA_UF'])
-    uniqueUF=['RN']
+    #uniqueUF=['RN']
     # Loop em cada estado
     for ii, uuf in enumerate(uniqueUF):
         munUF = df[df['UF_SIGLA']==str(uuf)]
@@ -120,7 +120,7 @@ def name2Code(shapeFolder,filePath,interFolder):
                     valMun=[]  
                     cityNot.append(mun)
                     cityWcode.append(-999)
-        cityWcodeTrue = np.array(cityWcode[np.array(cityWcode)!=-999])
+        cityWcodeTrue = np.array(cityWcode)[np.array(cityWcode)!=-999]
         munUF['IBGE_CODE'][np.array(cityWcode)!=-999]=\
             np.array(munShp['CD_MUN'][cityWcodeTrue]).astype(float)
         df['IBGE_CODE'][df['UF_SIGLA']==str(uuf)] = munUF['IBGE_CODE']
