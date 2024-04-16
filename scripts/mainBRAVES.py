@@ -31,6 +31,6 @@ filePath = inputFolder+'fleet/yearModel/yearModel_2021_01.csv'
 interFolder = rootFolder + '/outputs/intermediate/yearModel'
 dfYM = m2id.name2Code(shapeFolder,filePath,interFolder)
 
-
-dfYM,munShp = scrp.yearModelByVcat(interFolder,filePath,dfVCat,dfYM,
-                    shapeFolder,vehicularCategories)
+# Scrappage
+dfYM,munShp = scrp.main(shapeFolder,interFolder,filePath,vehicularCategories,
+                        dfVCat,dfYM)

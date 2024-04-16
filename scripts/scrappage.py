@@ -53,14 +53,14 @@ def yearModelByVcat(interFolder,filePath,dfVCat,dfYM,
             
         #munShp[munShp['CD_GEOCMU']== IBGE_CODE]
         #dfFuel[dfFuel['IBGE_CODE']== IBGE_CODE]
-    dfYM.to_csv(interFolder +'/BRAVES_yearModelByVcat_' + filePath.split('/')[-1]) 
+    dfYM.to_csv(interFolder +'/BRAVES_scrappage_' + filePath.split('/')[-1]) 
     return dfYM,munShp
 
 # def only_numerics(seq):
 #     seq_type= type(seq)
 #     return seq_type().join(filter(seq_type.isdigit, seq))
 
-def scrapppageAll(interFolder,filePath,vehicularCategory,dfYM,munShp):
+def scrapppageAll(interFolder,filePath,vehicularCategories,dfYM,munShp):
     for vcat in vehicularCategories:
         dfYM[vcat+'_scrapPerc'] = np.nan
     for IBGE_CODE in munShp['CD_MUN']:
@@ -73,13 +73,16 @@ def scrapppageAll(interFolder,filePath,vehicularCategory,dfYM,munShp):
                 for t in ts:
                     s.append(scrappage(np.array(vcat),t))
                 dfYM[vcat+'_scrapPerc'][np.array(dfYM['IBGE_CODE']).astype(int)== int(IBGE_CODE)] = np.array(s)
-    dfYM.to_csv(interFolder +'/BRAVES_scrapppageAll_' + filePath.split('/')[-1]) 
-    return dfYM     
-        
-        
+    dfYM.to_csv(interFolder +'/BRAVES_scrappage_' + filePath.split('/')[-1]) 
+    return dfYM 
+
+def main(shapeFolder,interFolder,filePath,vehicularCategories,dfVCat,dfYM):   
+    dfYM,munShp = yearModelByVcat(interFolder,filePath,dfVCat,dfYM,
+                shapeFolder,vehicularCategories)
+    dfYM = scrapppageAll(interFolder,filePath,vehicularCategories,dfYM,munShp)
     
     
-    
+    return dfYM,munShp
     
     
 
