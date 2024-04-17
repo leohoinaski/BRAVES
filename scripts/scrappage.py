@@ -49,7 +49,8 @@ def yearModelByVcat(interFolder,filePath,dfVCat,dfYM,
         else:
             cityPropFleet = cityCat[vehicularCategories]/np.array(cityCat[vehicularCategories].sum(axis=1)).astype(float)[0]
             for vcat in vehicularCategories:
-                dfYM[vcat][np.array(dfYM['IBGE_CODE']).astype(int)== int(IBGE_CODE)] = cityYM['N']*np.nanmean(np.array(cityPropFleet[vcat]))
+                dfYM[vcat][np.array(dfYM['IBGE_CODE']).astype(int)== int(IBGE_CODE)] =\
+                    cityYM['N']*np.nanmean(np.array(cityPropFleet[vcat]))
             
         #munShp[munShp['CD_GEOCMU']== IBGE_CODE]
         #dfFuel[dfFuel['IBGE_CODE']== IBGE_CODE]
@@ -63,6 +64,7 @@ def yearModelByVcat(interFolder,filePath,dfVCat,dfYM,
 def scrapppageAll(interFolder,filePath,vehicularCategories,dfYM,munShp):
     for vcat in vehicularCategories:
         dfYM[vcat+'_scrapPerc'] = np.nan
+        dfYM[vcat+'_circulating'] = np.nan
     for IBGE_CODE in munShp['CD_MUN']:
         cityData = dfYM[np.array(dfYM['IBGE_CODE']).astype(int)== int(IBGE_CODE)]
         if cityData.shape[0]>0:
@@ -73,6 +75,9 @@ def scrapppageAll(interFolder,filePath,vehicularCategories,dfYM,munShp):
                 for t in ts:
                     s.append(scrappage(np.array(vcat),t))
                 dfYM[vcat+'_scrapPerc'][np.array(dfYM['IBGE_CODE']).astype(int)== int(IBGE_CODE)] = np.array(s)
+                dfYM[vcat+'_circulating'][np.array(dfYM['IBGE_CODE']).astype(int)== int(IBGE_CODE)] = np.array(s) * \
+                    dfYM[vcat][np.array(dfYM['IBGE_CODE']).astype(int)== int(IBGE_CODE)]
+                        
     dfYM.to_csv(interFolder +'/BRAVES_scrappage_' + filePath.split('/')[-1]) 
     return dfYM 
 
@@ -81,6 +86,7 @@ def main(shapeFolder,interFolder,filePath,vehicularCategories,dfVCat,dfYM):
                 shapeFolder,vehicularCategories)
     dfYM = scrapppageAll(interFolder,filePath,vehicularCategories,dfYM,munShp)
     
+    dfYM
     
     return dfYM,munShp
     
