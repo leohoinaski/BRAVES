@@ -40,7 +40,7 @@ ufs = {
 
 
 
-def name2Code(shapeFolder,filePath,interFolder):
+def name2Code(munShp,filePath,interFolder):
     """
     Esta função encontra os códigos IBGE nas planilhas que não possuem este
     dado. A função procura as cidades dentro de cada estado e insere o código 
@@ -66,7 +66,7 @@ def name2Code(shapeFolder,filePath,interFolder):
     df['MUN2'] = np.nan
     df['UF_SIGLA'] = ''
     df = df.reset_index(drop=True)
-    munShp = gpd.read_file(shapeFolder)
+    #munShp = gpd.read_file(shapeFolder)
     munShp['MUN2'] = ''
     munShp['UF'] = ''
     munShp = munShp.reset_index(drop=True)

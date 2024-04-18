@@ -38,8 +38,8 @@ def scrappage(vehicularCategory,t):
     return s
 
 def yearModelByVcat(interFolder,filePath,dfVCat,dfYM,
-                    shapeFolder,vehicularCategories):
-    munShp = gpd.read_file(shapeFolder)
+                    munShp,vehicularCategories):
+    #munShp = gpd.read_file(shapeFolder)
     dfYM[vehicularCategories]=np.nan
     for IBGE_CODE in munShp['CD_MUN']:
         cityYM = dfYM[np.array(dfYM['IBGE_CODE']).astype(int)== int(IBGE_CODE)]
@@ -81,12 +81,11 @@ def scrapppageAll(interFolder,filePath,vehicularCategories,dfYM,munShp):
     dfYM.to_csv(interFolder +'/BRAVES_scrappage_' + filePath.split('/')[-1]) 
     return dfYM 
 
-def main(shapeFolder,interFolder,filePath,vehicularCategories,dfVCat,dfYM):   
+def main(munShp,interFolder,filePath,vehicularCategories,dfVCat,dfYM):   
     dfYM,munShp = yearModelByVcat(interFolder,filePath,dfVCat,dfYM,
-                shapeFolder,vehicularCategories)
+                munShp,vehicularCategories)
     dfYM = scrapppageAll(interFolder,filePath,vehicularCategories,dfYM,munShp)
     
-    dfYM
     
     return dfYM,munShp
     
