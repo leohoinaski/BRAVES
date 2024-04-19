@@ -132,51 +132,52 @@ def main(munShp,metcrod2dPath,tablePath,ethanolPercentage,dfFuelCons):
     ds = nc.Dataset(metcrod2dPath)
     tamb = ds['TEMP2'][:]
     atribute = 'CD_MUN'
-    #cities = gpd.read_file(shapeFolder)
+    # cities = gpd.read_file(shapeFolder)
     munShp.crs = "EPSG:4326"
     datesTime = datePrepCMAQ(ds)
     nDays = monthrange(datesTime.year.min(), datesTime.month.min())[1]
-    xv,yv,lon,lat = ioapiCoords(ds)
-    xlon,ylat = eqmerc2latlon(ds,xv,yv)
-    s,cityMat = citiesINdomain(xlon,ylat,munShp,atribute)
-    efCarRefueling,efCarRefuelingETHANOL,rvp = carRefuelingEF(tamb,tablePath,ethanolPercentage)
+    xv, yv, lon, lat = ioapiCoords(ds)
+    xlon, ylat = eqmerc2latlon(ds, xv, yv)
+    s, cityMat = citiesINdomain(xlon, ylat, munShp, atribute)
+    efCarRefueling, efCarRefuelingETHANOL, rvp = carRefuelingEF(
+        tamb, tablePath, ethanolPercentage)
     # for ii in np.array(range(1,13),dtype=str):
     #     #print(str(ii).zfill(2))
     #     dfFuelCons['emisCarRefuel_'+str(ii).zfill(2)] = np.nan
-    # filter_col = [col for col in dfFuelCons if col.startswith('emisCarRefuel_'+str(datesTime.month.min()).zfill(2))]  
-    for ii,IBGE_CODE in enumerate(munShp[atribute]):
-        
+    # filter_col = [col for col in dfFuelCons if col.startswith('emisCarRefuel_'+str(datesTime.month.min()).zfill(2))]
+    for ii, IBGE_CODE in enumerate(munShp[atribute]):
+
         print(IBGE_CODE)
-        
+
         if ii == 0:
-            cityData,cityDataPoints,cityDataFrame,matData = dataINcity(
-                efCarRefueling,datesTime,cityMat,s,int(IBGE_CODE))      
-            
+            cityData, cityDataPoints, cityDataFrame, matData = dataINcity(
+                efCarRefueling, datesTime, cityMat, s, int(IBGE_CODE))
+
             try:
-                matData[:,0,cityMat==int(IBGE_CODE)] = np.repeat(np.nanmean(cityData,axis=1),cityData.shape[1]).reshape(cityData.shape)* \
-                        np.array(dfFuelCons[str(datesTime.month.min())][
-                            (np.array(dfFuelCons['IBGE_CODE'],dtype=int)==int(IBGE_CODE)) &
-                            (dfFuelCons['FUEL'].replace(' ','')=='GASOLINE')]/nDays)  + \
-                        np.array(dfFuelCons[str(datesTime.month.min())][
-                            (np.array(dfFuelCons['IBGE_CODE'],dtype=int)==int(IBGE_CODE)) &
-                            (dfFuelCons['FUEL'].replace(' ','')=='GASOLINE')]/nDays)*880
+                matData[:, 0, cityMat == int(IBGE_CODE)] = np.repeat(np.nanmean(cityData, axis=1), cityData.shape[1]).reshape(cityData.shape) * \
+                    np.array(dfFuelCons[str(datesTime.month.min())][
+                            (np.array(dfFuelCons['IBGE_CODE'], dtype=int) == int(IBGE_CODE)) &
+                            (dfFuelCons['FUEL'].replace(' ', '') == 'GASOLINE')]/nDays) + \
+                    np.array(dfFuelCons[str(datesTime.month.min())][
+                            (np.array(dfFuelCons['IBGE_CODE'], dtype=int) == int(IBGE_CODE)) &
+                            (dfFuelCons['FUEL'].replace(' ', '') == 'GASOLINE')]/nDays)*880
             except:
                 print('Municipality with no gasoline consumption')
-                
-            cityData,cityDataPoints,cityDataFrame,matData2 = dataINcity(
-                efCarRefuelingETHANOL,datesTime,cityMat,s,int(IBGE_CODE))      
-            
+
+            cityData, cityDataPoints, cityDataFrame, matData2 = dataINcity(
+                efCarRefuelingETHANOL, datesTime, cityMat, s, int(IBGE_CODE))
+
             try:
-                matData2[:,0,cityMat==int(IBGE_CODE)] = np.repeat(np.nanmean(cityData,axis=1),cityData.shape[1]).reshape(cityData.shape)* \
-                        np.array(dfFuelCons[str(datesTime.month.min())][
-                            (np.array(dfFuelCons['IBGE_CODE'],dtype=int)==int(IBGE_CODE)) &
-                            (dfFuelCons['FUEL'].replace(' ','')=='GASOLINE')]/nDays)  + \
-                        np.array(dfFuelCons[str(datesTime.month.min())][
-                            (np.array(dfFuelCons['IBGE_CODE'],dtype=int)==int(IBGE_CODE)) &
-                            (dfFuelCons['FUEL'].replace(' ','')=='GASOLINE')]/nDays)*(880*2/rvp)
+                matData2[:, 0, cityMat == int(IBGE_CODE)] = np.repeat(np.nanmean(cityData, axis=1), cityData.shape[1]).reshape(cityData.shape) * \
+                    np.array(dfFuelCons[str(datesTime.month.min())][
+                            (np.array(dfFuelCons['IBGE_CODE'], dtype=int) == int(IBGE_CODE)) &
+                            (dfFuelCons['FUEL'].replace(' ', '') == 'GASOLINE')]/nDays) + \
+                    np.array(dfFuelCons[str(datesTime.month.min())][
+                            (np.array(dfFuelCons['IBGE_CODE'], dtype=int) == int(IBGE_CODE)) &
+                            (dfFuelCons['FUEL'].replace(' ', '') == 'GASOLINE')]/nDays)*(880*2/rvp)
             except:
                 print('Municipality with no ethanol consumption')
-            matData = np.nan_to_num(matData) 
+            matData = np.nan_to_num(matData)
             matData2 = np.nan_to_num(matData2)
 
             # try:
@@ -185,7 +186,7 @@ def main(munShp,metcrod2dPath,tablePath,ethanolPercentage,dfFuelCons):
             #         (dfFuelCons['FUEL']=='GASOLINE'),filter_col] = np.array(np.nanmean(matData) * \
             #         dfFuelCons[str(datesTime.month.min())][
             #             (np.array(dfFuelCons['IBGE_CODE'],dtype=int)==int(IBGE_CODE)) &
-            #             (dfFuelCons['FUEL']=='GASOLINE')])[0]/nDays      
+            #             (dfFuelCons['FUEL']=='GASOLINE')])[0]/nDays
             # except:
             #     print('Municipality with no gasoline consumption')
             # try:
@@ -194,32 +195,31 @@ def main(munShp,metcrod2dPath,tablePath,ethanolPercentage,dfFuelCons):
             #         (dfFuelCons['FUEL']=='ETHANOL'),filter_col] = np.array(np.nanmean(matData) * \
             #         dfFuelCons[str(datesTime.month.min())][
             #             (np.array(dfFuelCons['IBGE_CODE'],dtype=int)==int(IBGE_CODE)) &
-            #             (dfFuelCons['FUEL']=='ETHANOL')])[0]/nDays 
+            #             (dfFuelCons['FUEL']=='ETHANOL')])[0]/nDays
             # except:
             #     print('Municipality with no ethanol consumption')
-            
-            
+
         else:
-            cityData,cityDataPoints,cityDataFrame,matDataNew = dataINcity(
-                efCarRefueling,datesTime,cityMat,s,int(IBGE_CODE))
-            
+            cityData, cityDataPoints, cityDataFrame, matDataNew = dataINcity(
+                efCarRefueling, datesTime, cityMat, s, int(IBGE_CODE))
+
             try:
-                matDataNew[:,0,cityMat==int(IBGE_CODE)] = np.repeat(np.nanmean(cityData,axis=1),cityData.shape[1]).reshape(cityData.shape)* \
-                        np.array(dfFuelCons[str(datesTime.month.min())][
-                            (np.array(dfFuelCons['IBGE_CODE'],dtype=int)==int(IBGE_CODE)) &
-                            (dfFuelCons['FUEL'].replace(' ','')=='GASOLINE')]/nDays)+ \
-                        np.array(dfFuelCons[str(datesTime.month.min())][
-                            (np.array(dfFuelCons['IBGE_CODE'],dtype=int)==int(IBGE_CODE)) &
-                            (dfFuelCons['FUEL'].replace(' ','')=='GASOLINE')]/nDays)*880
+                matDataNew[:, 0, cityMat == int(IBGE_CODE)] = np.repeat(np.nanmean(cityData, axis=1), cityData.shape[1]).reshape(cityData.shape) * \
+                    np.array(dfFuelCons[str(datesTime.month.min())][
+                            (np.array(dfFuelCons['IBGE_CODE'], dtype=int) == int(IBGE_CODE)) &
+                            (dfFuelCons['FUEL'].replace(' ', '') == 'GASOLINE')]/nDays) + \
+                    np.array(dfFuelCons[str(datesTime.month.min())][
+                            (np.array(dfFuelCons['IBGE_CODE'], dtype=int) == int(IBGE_CODE)) &
+                            (dfFuelCons['FUEL'].replace(' ', '') == 'GASOLINE')]/nDays)*880
             except:
-                print('Municipality with no gasoline consumption')    
+                print('Municipality with no gasoline consumption')
             # try:
             #     dfFuelCons.loc[
             #         (np.array(dfFuelCons['IBGE_CODE'],dtype=int)==int(IBGE_CODE)) &
             #         (dfFuelCons['FUEL']=='GASOLINE'),filter_col] = np.array(np.nanmean(matDataNew) * \
             #         dfFuelCons[str(datesTime.month.min())][
             #             (np.array(dfFuelCons['IBGE_CODE'],dtype=int)==int(IBGE_CODE)) &
-            #             (dfFuelCons['FUEL']=='GASOLINE')])[0]/nDays       
+            #             (dfFuelCons['FUEL']=='GASOLINE')])[0]/nDays
             # except:
             #     print('Municipality with no gasoline consumption')
             # try:
@@ -228,27 +228,27 @@ def main(munShp,metcrod2dPath,tablePath,ethanolPercentage,dfFuelCons):
             #         (dfFuelCons['FUEL']=='ETHANOL'),filter_col] = np.array(np.nanmean(matDataNew) * \
             #         dfFuelCons[str(datesTime.month.min())][
             #             (np.array(dfFuelCons['IBGE_CODE'],dtype=int)==int(IBGE_CODE)) &
-            #             (dfFuelCons['FUEL']=='ETHANOL')])[0]/nDays 
+            #             (dfFuelCons['FUEL']=='ETHANOL')])[0]/nDays
             # except:matDataNew
             #     print('Municipality with no ethanol consumption')
             matDataNew = np.nan_to_num(matDataNew)
             matData = matData + matDataNew
-            
-            cityData,cityDataPoints,cityDataFrame,matDataNew2 = dataINcity(
-                efCarRefuelingETHANOL,datesTime,cityMat,s,int(IBGE_CODE)) 
-            
+
+            cityData, cityDataPoints, cityDataFrame, matDataNew2 = dataINcity(
+                efCarRefuelingETHANOL, datesTime, cityMat, s, int(IBGE_CODE))
+
             try:
-                matDataNew2[:,0,cityMat==int(IBGE_CODE)] = np.repeat(np.nanmean(cityData,axis=1),cityData.shape[1]).reshape(cityData.shape)* \
-                        np.array(dfFuelCons[str(datesTime.month.min())][
-                            (np.array(dfFuelCons['IBGE_CODE'],dtype=int)==int(IBGE_CODE)) &
-                            (dfFuelCons['FUEL'].replace(' ','')=='GASOLINE')]/nDays) + \
-                        np.array(dfFuelCons[str(datesTime.month.min())][
-                            (np.array(dfFuelCons['IBGE_CODE'],dtype=int)==int(IBGE_CODE)) &
-                            (dfFuelCons['FUEL'].replace(' ','')=='GASOLINE')]/nDays)*(880*2/rvp) 
+                matDataNew2[:, 0, cityMat == int(IBGE_CODE)] = np.repeat(np.nanmean(cityData, axis=1), cityData.shape[1]).reshape(cityData.shape) * \
+                    np.array(dfFuelCons[str(datesTime.month.min())][
+                            (np.array(dfFuelCons['IBGE_CODE'], dtype=int) == int(IBGE_CODE)) &
+                            (dfFuelCons['FUEL'].replace(' ', '') == 'GASOLINE')]/nDays) + \
+                    np.array(dfFuelCons[str(datesTime.month.min())][
+                            (np.array(dfFuelCons['IBGE_CODE'], dtype=int) == int(IBGE_CODE)) &
+                            (dfFuelCons['FUEL'].replace(' ', '') == 'GASOLINE')]/nDays)*(880*2/rvp)
             except:
                 print('Municipality with no ethanol consumption')
-            
+
             matDataNew2 = np.nan_to_num(matDataNew2)
             matData2 = matData2 + matDataNew2
 
-#plt.pcolor(np.log(matData[12,0,:,:]))
+#plt.pcolor(np.log(matData2[12,0,:,:]))

@@ -87,7 +87,7 @@ def main(munShp,interFolder,filePath,vehicularCategories,dfVCat,dfYM):
     dfYM = scrapppageAll(interFolder,filePath,vehicularCategories,dfYM,munShp)
     
     
-    return dfYM,munShp
+    return dfYM
     
     
 
