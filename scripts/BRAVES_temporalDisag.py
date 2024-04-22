@@ -35,6 +35,7 @@ import numpy.matlib
 import netCDF4 as nc
 #from local2UTC import local2UTC
 #from netCDFcreator_v1 import createNETCDFtemporal
+import BRAVESgridSetup as bgs
 
 
 
@@ -290,6 +291,143 @@ def BRAVES_temporalDisagMCIP(rootPath,outPath,file,time):
 
     return dataTempo,xX,yY,disvec,prefix,area
 
+#%%
+def BRAVES_temporalDisagFuel(inputFolder,metcrod2dPath,baseGrid,disagData,datesTime):
+    print('===================STARTING BRAVES_temporalDisag.py=======================')
+    hourdis = list(pd.read_csv(inputFolder+'/TemporalAloc/hourdis.csv').iloc[:,1])
+    weekdis = list(pd.read_csv(inputFolder+'/TemporalAloc/weekdis.csv').iloc[:,1])
+    monthdis = list(pd.read_csv(inputFolder+'/TemporalAloc/monthdis.csv').iloc[:,1])
+    # year = int(file.split('_')[-1][0:4])
+    ds = nc.Dataset(metcrod2dPath)
+    # xv, yv = np.meshgrid(lon, lat)
+    xv,yv,lon,lat = bgs.ioapiCoords(ds)
+    xX,yY = bgs.eqmerc2latlon(ds,xv,yv)
+    ltz = np.reshape(baseGrid['LTZ'],[ds.NCOLS, ds.NROWS]).transpose()
+    # import matplotlib.pyplot as plt
+    # fig,ax = plt.subplots()
+    # ax.pcolor(xX,yY,ltz)
+    # munShp.boundary.plot(ax=ax)
+    # Calling local2UTC
+    #lc2utc, tag = local2UTC(xX,yY)
+    # filter_col = [col for col in dfFuelCons if col.startswith('emisCarRefuel_'+str(datesTime.month.min()).zfill(2))]
+    # Calling temporalDisagVehicular
+    month = datesTime['month'].min()
+    dataINmonth = disagData[:,month,:,:]
+    
+    
+    dataTempo,datePfct,disvec = temporalDisagVehicularFuel(dataINmonth,datesTime,hourdis,weekdis,monthdis,ltz)
+
+    return dataTempo,xX,yY,disvec
+
+def temporalDisagVehicularFuel(dataINmonth,datesTime,hourdis,weekdis,monthdis,ltz):
+    # Create the MultiIndex from pollutant and time.
+    #year=2013
+    dt0 = datesTime['datetime'][0]
+    dt1 = datesTime['datetime'][datesTime['datetime'].shape[0]-1]
+    print('Temporal disagregation')
+    startDate = datetime(
+        int(dt0.year), int(dt0.month), int(dt0.day), int(dt0.hour), 0)
+    endDate = datetime(
+        int(dt1.year), int(dt1.month), int(dt1.day), int(dt1.hour), 0)
+    datePfct = np.arange(np.datetime64(startDate),np.datetime64(endDate)+3600000000,3600000000)
+    numWeeks = datePfct.shape[0]/(7*24) # Number of weeks
+    disvec = pd.DataFrame()
+    disvec = disvec.reindex(datePfct, fill_value=np.nan)
+    disvec['year'] = disvec.index.year
+    disvec['month'] = disvec.index.month
+    disvec['day'] = disvec.index.day
+    disvec['hour'] = disvec.index.hour
+    disvec['weekday'] = disvec.index.weekday # Monday is 0 and Sunday is 6
+#    disvec['hourdis'] = numpy.matlib.repmat(
+ #       hourdis, 1, int(disvec.shape[0]/24)).transpose() 
+    disvec['hourdis']=np.zeros([disvec['hour'].shape[0],1])
+    for ii in range(0,disvec['hourdis'].shape[0]):
+        if disvec['hour'][ii] == 0:
+            disvec['hourdis'][ii] = hourdis[0]
+        if disvec['hour'][ii] == 1:
+            disvec['hourdis'][ii] = hourdis[1]
+        if disvec['hour'][ii] == 2:
+            disvec['hourdis'][ii] = hourdis[2]
+        if disvec['hour'][ii] == 3:
+            disvec['hourdis'][ii] = hourdis[3]
+        if disvec['hour'][ii] == 4:
+            disvec['hourdis'][ii] = hourdis[4]
+        if disvec['hour'][ii] == 5:
+            disvec['hourdis'][ii] = hourdis[5]
+        if disvec['hour'][ii] == 6:
+            disvec['hourdis'][ii] = hourdis[6]
+        if disvec['hour'][ii] == 7:
+            disvec['hourdis'][ii] = hourdis[7]
+        if disvec['hour'][ii] == 8:
+            disvec['hourdis'][ii] = hourdis[8]
+        if disvec['hour'][ii] == 9:
+            disvec['hourdis'][ii] = hourdis[9]
+        if disvec['hour'][ii] == 10:
+            disvec['hourdis'][ii] = hourdis[10]
+        if disvec['hour'][ii] == 11:
+            disvec['hourdis'][ii] = hourdis[11]
+        if disvec['hour'][ii] == 12:
+            disvec['hourdis'][ii] = hourdis[12]
+        if disvec['hour'][ii] == 13:
+            disvec['hourdis'][ii] = hourdis[13]
+        if disvec['hour'][ii] == 14:
+            disvec['hourdis'][ii] = hourdis[14]
+        if disvec['hour'][ii] == 15:
+            disvec['hourdis'][ii] = hourdis[15]
+        if disvec['hour'][ii] == 16:
+            disvec['hourdis'][ii] = hourdis[16]
+        if disvec['hour'][ii] == 17:
+            disvec['hourdis'][ii] = hourdis[17]
+        if disvec['hour'][ii] == 18:
+            disvec['hourdis'][ii] = hourdis[18]
+        if disvec['hour'][ii] == 19:
+            disvec['hourdis'][ii] = hourdis[19]
+        if disvec['hour'][ii] == 20:
+            disvec['hourdis'][ii] = hourdis[20]
+        if disvec['hour'][ii] == 21:
+            disvec['hourdis'][ii] = hourdis[21]
+        if disvec['hour'][ii] == 22:
+            disvec['hourdis'][ii] = hourdis[22]
+        if disvec['hour'][ii] == 23:
+            disvec['hourdis'][ii] = hourdis[23] 
+
+    disvec['weekdis']=np.zeros([disvec['weekday'].shape[0],1])
+    for ii in range(0,disvec['weekday'].shape[0]):
+        if disvec['weekday'][ii] == 6:
+            disvec['weekdis'][ii] = weekdis[0] 
+        if disvec['weekday'][ii] == 0:
+            disvec['weekdis'][ii] = weekdis[1]
+        if disvec['weekday'][ii] == 1:
+            disvec['weekdis'][ii] = weekdis[2] 
+        if disvec['weekday'][ii] == 2:
+            disvec['weekdis'][ii] = weekdis[3] 
+        if disvec['weekday'][ii] == 3:
+            disvec['weekdis'][ii] = weekdis[4] 
+        if disvec['weekday'][ii] == 4:
+            disvec['weekdis'][ii] = weekdis[5] 
+        if disvec['weekday'][ii] == 5:
+            disvec['weekdis'][ii] = weekdis[6] 
+
+   
+    disvec['prod']=disvec['hourdis']*disvec['weekdis']/numWeeks        
+    # converting from hourly to second basis
+    print('============='+ str(disvec['prod'])+'==================')
+    disvec['prod'] = disvec['prod']
+    dataTempo = np.zeros([datesTime.shape[0],dataINmonth.shape[0],
+                          dataINmonth.shape[1],dataINmonth.shape[2]])
+    print(str(dataTempo.shape))
+    
+    for jj in range(0,dataTempo.shape[1]):
+        for ii in range(0,dataTempo.shape[0]):
+            utcoffs = np.unique(ltz)
+            utcoffs = utcoffs[np.isnan(utcoffs)==False]
+            for utcoff in utcoffs:
+                idx = ltz==utcoff
+                dataTempo[ii,jj,idx]= dataINmonth[jj,idx]* np.roll(disvec['prod'],int(utcoff))[ii]
+
+    return dataTempo,datePfct,disvec
+
+
 
 def temporalDisagVehicularMCIP(dataNC,time,hourdis,weekdis,monthdis,ltz,hours):
     # Create the MultiIndex from pollutant and time.
@@ -414,7 +552,7 @@ def temporalDisagVehicularMCIP(dataNC,time,hourdis,weekdis,monthdis,ltz,hours):
     disvec['prod']=disvec['hourdis']*disvec['weekdis']*disvec['monthdis']/numWeeks        
     # converting from hourly to second basis
     print('============='+ str(disvec['prod'])+'==================')
-    disvec['prod'] = disvec['prod']/3600 
+    disvec['prod'] = disvec['prod']/3600
     dataTempo = np.zeros([datePfct.shape[0],dataNC.shape[1],
                           dataNC.shape[2],dataNC.shape[3]])
     print(str(dataTempo.shape))

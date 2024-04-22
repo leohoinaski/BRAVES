@@ -18,17 +18,18 @@ Assumindo que consumo de gasolina é distribuido nos dias igualmente.
 @author: leohoinaski
 """
 import numpy as np
-import matplotlib.pyplot as plt 
+#import matplotlib.pyplot as plt 
 import netCDF4 as nc
-from datetime import datetime
+#from datetime import datetime
 import pandas as pd
-import pyproj
-from shapely.geometry import Point
-import geopandas as gpd
-from ismember import ismember
+# import pyproj
+# from shapely.geometry import Point
+# import geopandas as gpd
+# from ismember import ismember
 import os
 from scipy.optimize import curve_fit
 from calendar import monthrange
+import BRAVESgridSetup as bgs
 
 rootFolder = os.path.dirname(os.getcwd())
 baseFolder = os.path.dirname(rootFolder)
@@ -36,72 +37,6 @@ inputFolder = rootFolder +'/inputs/'
 metcrod2dPath = baseFolder + '/BR_2019/METCRO2D_BR_2019.nc'
 shapeFolder = inputFolder+'shapefiles/BR_Municipios_2022.shp'
 
-
-
-def datePrepCMAQ(ds):
-    tf = np.array(ds['TFLAG'][:][:,1,:])
-    date=[]
-    for ii in range(0,tf.shape[0]):
-        date.append(datetime.strptime(tf[:,0].astype(str)[ii] + (tf[:,1]/10000).astype(int).astype(str)[ii], '%Y%j%H').strftime('%Y-%m-%d %H:00:00'))
-    date = np.array(date,dtype='datetime64[s]')
-    dates = pd.DatetimeIndex(date)
-    datesTime=pd.DataFrame()
-    datesTime['year'] = dates.year
-    datesTime['month'] = dates.month
-    datesTime['day'] = dates.day
-    datesTime['hour'] = dates.hour
-    datesTime['datetime']=dates
-    return datesTime
-
-def ioapiCoords(ds):
-    # Latlon
-    lonI = ds.XORIG
-    latI = ds.YORIG
-    # Cell spacing 
-    xcell = ds.XCELL
-    ycell = ds.YCELL
-    ncols = ds.NCOLS
-    nrows = ds.NROWS
-    lon = np.arange(lonI,(lonI+ncols*xcell),xcell)
-    lat = np.arange(latI,(latI+nrows*ycell),ycell)
-    xv, yv = np.meshgrid(lon,lat)
-    return xv,yv,lon,lat
-
-def eqmerc2latlon(ds,xv,yv):
-    mapstr = '+proj=merc +a=%s +b=%s +lat_ts=0 +lon_0=%s' % (
-              6370000, 6370000, ds.XCENT)
-    #p = pyproj.Proj("+proj=merc +lon_0="+str(ds.P_GAM)+" +k=1 +x_0=0 +y_0=0 +a=6370000 +b=6370000 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs")
-    p = pyproj.Proj(mapstr)
-    xlon, ylat = p(xv, yv, inverse=True)
-    return xlon,ylat
-
-
-def citiesINdomain(xlon,ylat,cities,atribute):
-    s = gpd.GeoSeries(map(Point, zip(xlon.flatten(), ylat.flatten())))
-    s = gpd.GeoDataFrame(geometry=s)
-    s.crs = "EPSG:4326"
-    s.to_crs("EPSG:4326")
-    pointIn = cities.geometry.clip(s).explode()
-    pointIn = gpd.GeoDataFrame({'geometry':pointIn}).reset_index()
-    lia, loc = ismember(np.array((s.geometry.x,s.geometry.y)).transpose(),
-                        np.array((pointIn.geometry.x,pointIn.geometry.y)).transpose(),'rows')
-    s['city']=np.nan
-    s.iloc[lia,1]=cities[atribute][pointIn['level_0'][loc]].values
-    cityMat = np.reshape(np.array(s.city),(xlon.shape[0],xlon.shape[1])).astype(float)
-    return s,cityMat
-
-def dataINcity(aveData,datesTime,cityMat,s,IBGE_CODE):
-    #IBGE_CODE=4202404
-    cityData = aveData[:,:,cityMat==IBGE_CODE]
-    cityDataPoints = s[s.city.astype(float)==IBGE_CODE]
-    cityData = cityData[:,0,:]
-    matData = aveData.copy()
-    matData[:,:,cityMat!=IBGE_CODE]=np.nan
-    cityDataFrame=pd.DataFrame(cityData)
-    cityDataFrame.columns = cityDataPoints.geometry.astype(str)
-    cityDataFrame['Datetime']=datesTime.datetime
-    cityDataFrame = cityDataFrame.set_index(['Datetime'])
-    return cityData,cityDataPoints,cityDataFrame,matData
 
 def func(x, a, b, c, d):
     return a*x**3 + b*x**2 +c*x + d
@@ -134,11 +69,11 @@ def main(munShp,metcrod2dPath,tablePath,ethanolPercentage,dfFuelCons):
     atribute = 'CD_MUN'
     # cities = gpd.read_file(shapeFolder)
     munShp.crs = "EPSG:4326"
-    datesTime = datePrepCMAQ(ds)
+    datesTime = bgs.datePrepCMAQ(ds)
     nDays = monthrange(datesTime.year.min(), datesTime.month.min())[1]
-    xv, yv, lon, lat = ioapiCoords(ds)
-    xlon, ylat = eqmerc2latlon(ds, xv, yv)
-    s, cityMat = citiesINdomain(xlon, ylat, munShp, atribute)
+    xv, yv, lon, lat = bgs.ioapiCoords(ds)
+    xlon, ylat = bgs.eqmerc2latlon(ds, xv, yv)
+    s, cityMat = bgs.citiesINdomain(xlon, ylat, munShp, atribute)
     efCarRefueling, efCarRefuelingETHANOL, rvp = carRefuelingEF(
         tamb, tablePath, ethanolPercentage)
     # for ii in np.array(range(1,13),dtype=str):
@@ -150,7 +85,7 @@ def main(munShp,metcrod2dPath,tablePath,ethanolPercentage,dfFuelCons):
         print(IBGE_CODE)
 
         if ii == 0:
-            cityData, cityDataPoints, cityDataFrame, matData = dataINcity(
+            cityData, cityDataPoints, cityDataFrame, matData = bgs.dataINcity(
                 efCarRefueling, datesTime, cityMat, s, int(IBGE_CODE))
 
             try:
@@ -164,7 +99,7 @@ def main(munShp,metcrod2dPath,tablePath,ethanolPercentage,dfFuelCons):
             except:
                 print('Municipality with no gasoline consumption')
 
-            cityData, cityDataPoints, cityDataFrame, matData2 = dataINcity(
+            cityData, cityDataPoints, cityDataFrame, matData2 = bgs.dataINcity(
                 efCarRefuelingETHANOL, datesTime, cityMat, s, int(IBGE_CODE))
 
             try:
@@ -200,7 +135,7 @@ def main(munShp,metcrod2dPath,tablePath,ethanolPercentage,dfFuelCons):
             #     print('Municipality with no ethanol consumption')
 
         else:
-            cityData, cityDataPoints, cityDataFrame, matDataNew = dataINcity(
+            cityData, cityDataPoints, cityDataFrame, matDataNew = bgs.dataINcity(
                 efCarRefueling, datesTime, cityMat, s, int(IBGE_CODE))
 
             try:
@@ -234,7 +169,7 @@ def main(munShp,metcrod2dPath,tablePath,ethanolPercentage,dfFuelCons):
             matDataNew = np.nan_to_num(matDataNew)
             matData = matData + matDataNew
 
-            cityData, cityDataPoints, cityDataFrame, matDataNew2 = dataINcity(
+            cityData, cityDataPoints, cityDataFrame, matDataNew2 = bgs.dataINcity(
                 efCarRefuelingETHANOL, datesTime, cityMat, s, int(IBGE_CODE))
 
             try:
