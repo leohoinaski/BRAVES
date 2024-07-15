@@ -16,26 +16,55 @@ import BRAVESgridSetup as bgs
 import BRAVES_temporalDisag as btd
 
 
-rootFolder = os.path.dirname(os.getcwd())
+# ===============================Inputs========================================
+
+# Estabelece a pasta root do BRAVES
+rootFolder = os.path.dirname(os.getcwd()) 
+
+ # Estabelce a pasta base 
 baseFolder = os.path.dirname(rootFolder)
+
+# Definindo pasta de inputs
 inputFolder = rootFolder +'/inputs/'
+
+# Definindo categorias veiculares para uso
 vehicularCategories =['LIGHT','COMMERCIAL-LIGHT','MOTORCYCLES','HEAVY']
+
+# Ano Base simulação
 year = 2021
+
+# Mes da simulação
 month = 1
+
+# Definindo pasta com shapefile de referência
 shapeFolder = inputFolder+'shapefiles/BR_Municipios_2022.shp'
+
+# Atributo com o nome dos municipios
+atribute = 'CD_MUN'
+
+
+#Definindo pasta com tabelas
 tablePath = inputFolder+'/tables'
+
+# Definindo nome da grade
 GDNAM = 'BR_2019'
+
+# Definindo caminho para os arquivos do mcip
 mcipPath = baseFolder + '/BR_2019'
 metcrod2dPath = mcipPath + '/METCRO2D_BR_2019.nc'
 mcipGRIDDOT2DPath = mcipPath+'/GRIDDOT2D_'+GDNAM+'.nc'
-atribute = 'CD_MUN'
 
-# Oppening shapefile
+#===============================================================================
+
+# Abrindo shapefile de referencia
 munShp = gpd.read_file(shapeFolder)
 
-# Grid Setup
+# ----Grid Setup
+# Definindo pasta de arquivos intermediarios
 interFolder = rootFolder + '/outputs/intermediate/gridFiles'
+# Cria pasta dos arquivos intermediarios
 os.makedirs(interFolder, exist_ok=True)
+# Funcao gridEssential para obter 
 baseGrid, datesTime, xlon,ylat, s, cityMat = bgs.gridEssentials(mcipGRIDDOT2DPath,interFolder,GDNAM,munShp,atribute)
 
 # fuelType

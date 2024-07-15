@@ -17,6 +17,26 @@ from shapely.geometry import Point
 from ismember import ismember
 
 def baseGridDef(mcipGRIDDOT2DPath,outPath,GDNAM):
+    """
+    
+
+    Parameters
+    ----------
+    mcipGRIDDOT2DPath : TYPE
+        DESCRIPTION.
+    outPath : TYPE
+        DESCRIPTION.
+    GDNAM : TYPE
+        DESCRIPTION.
+
+    Returns
+    -------
+    baseGrid : TYPE
+        DESCRIPTION.
+    ds : TYPE
+        DESCRIPTION.
+
+    """
     print('Extracting MCIP coordinates')
     ds = nc.Dataset(mcipGRIDDOT2DPath)
     #dataVar = list(ds.variables.keys())
@@ -93,7 +113,8 @@ def citiesINdomain(xlon,ylat,cities,atribute):
     lia, loc = ismember(np.array((s.geometry.x,s.geometry.y)).transpose(),
                         np.array((pointIn.geometry.x,pointIn.geometry.y)).transpose(),'rows')
     s['city']=np.nan
-    s.iloc[lia,1]=cities[atribute][pointIn['level_0'][loc]].values
+    #s.iloc[lia,1]=cities[atribute][pointIn['level_0'][loc]].values
+    s.iloc[lia,1]=cities[atribute][pointIn['index'][loc]].values
     cityMat = np.reshape(np.array(s.city),(xlon.shape[0],xlon.shape[1])).astype(float)
     return s,cityMat
 
@@ -111,6 +132,40 @@ def dataINcity(aveData,datesTime,cityMat,s,IBGE_CODE):
     return cityData,cityDataPoints,cityDataFrame,matData
 
 def gridEssentials(mcipGRIDDOT2DPath,interFolder,GDNAM,munShp,atribute):
+    """
+    
+
+    Parameters
+    ----------
+    mcipGRIDDOT2DPath : TYPE
+        DESCRIPTION.
+    interFolder : TYPE
+        DESCRIPTION.
+    GDNAM : TYPE
+        DESCRIPTION.
+    munShp : TYPE
+        DESCRIPTION.
+    atribute : TYPE
+        DESCRIPTION.
+
+    Returns
+    -------
+    baseGrid : TYPE
+        DESCRIPTION.
+    ds : TYPE
+        DESCRIPTION.
+    datesTime : TYPE
+        DESCRIPTION.
+    xlon : TYPE
+        DESCRIPTION.
+    ylat : TYPE
+        DESCRIPTION.
+    s : TYPE
+        DESCRIPTION.
+    cityMat : TYPE
+        DESCRIPTION.
+
+    """
     baseGrid, ds = baseGridDef(mcipGRIDDOT2DPath,interFolder,GDNAM)
     datesTime = datePrepCMAQ(ds)
     xv,yv,lon,lat = ioapiCoords(ds)
