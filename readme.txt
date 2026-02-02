@@ -70,5 +70,7 @@ UBUNTU LIBS
 	sudo apt-get install python3-dev
 
 
-
+This is the version 2.0
+Esta é uma atualização do Thiago
+Esta é uma atualização do Camilo
 

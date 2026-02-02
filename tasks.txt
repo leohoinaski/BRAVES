@@ -1,0 +1,7 @@
+Tarefas
+
+1- Verificar volume evaporado antes da combustão. 
+2- Corrigir emissão por abastecimento. Esta ocorre apenas no posto. 
+3- Corrigiri ressuspensão do solo para pavimentadas e não pavimentadas, considerando umidade do solo e teor de silte. 
+4- Densidade de fluxo em cada pixel - Igor
+5- Organizar código e elaborar fluxograma
